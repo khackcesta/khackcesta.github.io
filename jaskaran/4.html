@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaskaran Anand — Artist · Researcher · Educator</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,200..400;1,9..40,200..300&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
+<style>
+:root {
+  --pink: #D85AA3;
+  --magenta: #E0488D;
+  --rose: #FF5BA6;
+  --black: #000000;
+  --blush: #F0A7D1;
+  --purple: #8D5B8F;
+  --ivory: #F5E6D3;
+  --gold: #D4A24C;
+  --dark: #080508;
+  --mid: #120d12;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
+
+body {
+  background: var(--dark);
+  color: var(--ivory);
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+#cursor {
+  position: fixed;
+  width: 12px; height: 12px;
+  background: var(--pink);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.3s, height 0.3s, background 0.3s;
+}
+#cursor-ring {
+  position: fixed;
+  width: 40px; height: 40px;
+  border: 1px solid var(--pink);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.15s ease-out, width 0.3s, height 0.3s, opacity 0.3s;
+  opacity: 0.6;
+}
+body:hover #cursor { opacity: 1; }
+
+/* ── GRAIN ── */
+#grain {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 128px 128px;
+}
+
+/* ── LOADING SCREEN ── */
+#loader {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--black);
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#loader-canvas {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+.loader-word {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  color: var(--pink);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  letter-spacing: 0.15em;
+}
+#loader-name {
+  position: absolute;
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 8vw, 96px);
+  letter-spacing: 0.3em;
+  color: var(--ivory);
+  opacity: 0;
+  white-space: nowrap;
+}
+#loader-bar {
+  position: absolute;
+  bottom: 7%;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+#loader-progress {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--purple), var(--pink), var(--rose));
+  transition: width 0.05s;
+}
+
+/* ── NAV ── */
+#main-nav {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  z-index: 500;
+  padding: 0 48px;
+  height: 64px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.4s, height 0.4s, box-shadow 0.4s;
+}
+#main-nav.scrolled {
+  background: rgba(8,5,8,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 0 rgba(216,90,163,0.12);
+  height: 56px;
+}
+/* scroll progress bar */
+#nav-progress {
+  position: absolute;
+  bottom: 0; left: 0;
+  height: 1px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--purple), var(--pink), var(--rose));
+  transition: width 0.1s linear;
+  pointer-events: none;
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.28em;
+  color: var(--ivory);
+  text-decoration: none;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.nav-logo::after {
+  content: '';
+  position: absolute;
+  bottom: -3px; left: 0;
+  width: 0; height: 1px;
+  background: var(--pink);
+  transition: width 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.nav-logo:hover::after { width: 100%; }
+
+/* flat inline links — NO ul/li, NO dropdowns */
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.nav-center a {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: rgba(245,230,211,0.45);
+  text-decoration: none;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  position: relative;
+  transition: color 0.3s;
+  white-space: nowrap;
+}
+.nav-center a::after {
+  content: '';
+  position: absolute;
+  bottom: 2px; left: 50%;
+  transform: translateX(-50%);
+  width: 0; height: 1px;
+  background: var(--pink);
+  transition: width 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+.nav-center a:hover { color: var(--ivory); }
+.nav-center a:hover::after { width: calc(100% - 36px); }
+.nav-center a.active { color: var(--pink); }
+.nav-center a.active::after { width: calc(100% - 36px); }
+
+/* separator dots between links */
+.nav-sep {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(216,90,163,0.25);
+  flex-shrink: 0;
+}
+
+/* right side: location tag */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+.nav-location {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(245,230,211,0.25);
+  text-transform: uppercase;
+}
+.nav-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  border: 1px solid var(--pink);
+  animation: pulse-ring 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+@keyframes pulse-ring {
+  0%,100% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 0 rgba(216,90,163,0.4); }
+  50% { transform: scale(1.3); opacity: 0.5; box-shadow: 0 0 0 4px rgba(216,90,163,0); }
+}
+
+/* mobile hamburger */
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 2;
+}
+.nav-burger span {
+  display: block;
+  width: 22px; height: 1px;
+  background: var(--ivory);
+  transition: transform 0.35s, opacity 0.35s, width 0.35s;
+}
+.nav-burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity: 0; width: 0; }
+.nav-burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+/* mobile drawer */
+.nav-drawer {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(8,5,8,0.97);
+  z-index: 490;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px;
+  transform: translateY(-100%);
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  pointer-events: none;
+}
+.nav-drawer.open {
+  transform: translateY(0);
+  pointer-events: all;
+}
+.nav-drawer a {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 8vw, 72px);
+  color: rgba(245,230,211,0.6);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  line-height: 1.1;
+  transition: color 0.3s;
+  display: block;
+}
+.nav-drawer a:hover { color: var(--pink); }
+.nav-drawer-line {
+  width: 40px; height: 1px;
+  background: rgba(216,90,163,0.3);
+  margin: 24px 0;
+}
+
+/* ── BACKGROUND CANVAS ── */
+#bg-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  opacity: 0.35;
+}
+
+/* ── SECTIONS BASE ── */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HERO ── */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 0 80px 0;
+  overflow: hidden;
+}
+.hero-overtitle {
+  position: absolute;
+  top: 42%;
+  right: 48px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--pink);
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  opacity: 0;
+}
+.hero-number {
+  position: absolute;
+  top: 30%;
+  left: 48px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,230,211,0.3);
+  letter-spacing: 0.15em;
+}
+.hero-main-text {
+  padding: 0 48px;
+  overflow: hidden;
+}
+.hero-line {
+  display: block;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(80px, 13vw, 200px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+}
+.hero-line span { display: block; transform: translateY(100%); }
+.hero-line.indent { padding-left: clamp(60px, 10vw, 180px); }
+.hero-line.pink { color: var(--pink); }
+.hero-subtitle-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 40px 48px 0;
+}
+.hero-discipline {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  color: rgba(245,230,211,0.5);
+  text-transform: uppercase;
+}
+.hero-scroll-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(245,230,211,0.3);
+  text-transform: uppercase;
+}
+.hero-scroll-line {
+  width: 40px;
+  height: 1px;
+  background: var(--pink);
+  transform-origin: left;
+  animation: scroll-line 2s ease-in-out infinite;
+}
+@keyframes scroll-line {
+  0%,100% { transform: scaleX(1); opacity: 1; }
+  50% { transform: scaleX(0.3); opacity: 0.3; }
+}
+.hero-decorative {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, var(--pink), transparent);
+  opacity: 0.4;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--pink);
+  text-transform: uppercase;
+  margin-bottom: 60px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-label::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--pink);
+}
+
+/* ── ABOUT ── */
+#about {
+  padding: 160px 48px 120px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.about-left {}
+.about-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(64px, 9vw, 140px);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  margin-bottom: 60px;
+  overflow: hidden;
+}
+.about-title .line { overflow: hidden; }
+.about-title .accent { color: var(--pink); }
+.about-body {
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(245,230,211,0.75);
+  font-weight: 300;
+  max-width: 520px;
+}
+.about-body em {
+  font-style: normal;
+  color: var(--blush);
+}
+.about-right {
+  padding-top: 80px;
+}
+.about-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 60px;
+}
+.tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--pink);
+  border: 1px solid rgba(216,90,163,0.35);
+  padding: 8px 16px;
+  text-transform: uppercase;
+}
+.about-quote {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 4vw, 56px);
+  line-height: 1.1;
+  color: var(--gold);
+  margin-top: 40px;
+  letter-spacing: 0.02em;
+}
+.about-number-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(216,90,163,0.15);
+  margin-top: 60px;
+}
+.stat-cell {
+  background: var(--dark);
+  padding: 32px 24px;
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px;
+  color: var(--pink);
+  line-height: 1;
+}
+.stat-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(245,230,211,0.4);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+/* ── RESEARCH SECTION ── */
+#research {
+  padding: 120px 48px;
+  overflow: hidden;
+}
+.research-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 100px;
+}
+.section-title-xl {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(72px, 11vw, 160px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+}
+.section-title-xl .stroke {
+  -webkit-text-stroke: 1px var(--pink);
+  color: transparent;
+}
+.research-desc {
+  max-width: 320px;
+  font-size: 14px;
+  color: rgba(245,230,211,0.5);
+  line-height: 1.7;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(216,90,163,0.12);
+}
+.research-card {
+  background: var(--dark);
+  padding: 48px 40px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s;
+}
+.research-card:hover { background: var(--mid); }
+.research-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--pink);
+  transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.research-card:hover::before { width: 100%; }
+.card-index {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--pink);
+  letter-spacing: 0.2em;
+  margin-bottom: 32px;
+}
+.card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+}
+.card-body {
+  font-size: 13px;
+  color: rgba(245,230,211,0.5);
+  line-height: 1.7;
+}
+.card-arrow {
+  position: absolute;
+  bottom: 40px; right: 40px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  color: rgba(216,90,163,0.3);
+  transition: color 0.3s, transform 0.3s;
+}
+.research-card:hover .card-arrow { color: var(--pink); transform: translate(4px,-4px); }
+
+/* ── PERFORMANCE ARCHIVE ── */
+#performance {
+  padding: 120px 48px;
+}
+.performance-intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 80px;
+}
+.performance-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(216,90,163,0.08);
+}
+.perf-item {
+  background: var(--dark);
+  padding: 40px 48px;
+  display: grid;
+  grid-template-columns: 80px 1fr 200px 140px;
+  align-items: center;
+  gap: 40px;
+  border-bottom: 1px solid rgba(216,90,163,0.08);
+  transition: background 0.3s, padding-left 0.4s;
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
+}
+.perf-item::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0;
+  width: 3px; height: 100%;
+  background: var(--pink);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+}
+.perf-item:hover { background: var(--mid); padding-left: 64px; }
+.perf-item:hover::before { transform: scaleY(1); }
+.perf-year {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: var(--pink);
+  letter-spacing: 0.1em;
+}
+.perf-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(24px, 2.5vw, 34px);
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+.perf-location {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,230,211,0.4);
+  letter-spacing: 0.05em;
+}
+.perf-type {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--pink);
+  border: 1px solid rgba(216,90,163,0.3);
+  padding: 6px 12px;
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ── CHOREOGRAPHIC ── */
+#choreographic {
+  padding: 120px 48px;
+  background: var(--mid);
+  overflow: hidden;
+}
+.choreo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-top: 80px;
+}
+.choreo-visual {
+  position: relative;
+  height: 500px;
+}
+.choreo-canvas-wrap {
+  width: 100%; height: 100%;
+  position: relative;
+}
+.choreo-label {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(80px, 12vw, 160px);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  -webkit-text-stroke: 1px rgba(216,90,163,0.25);
+  color: transparent;
+  top: -20px; left: -20px;
+  pointer-events: none;
+  z-index: 0;
+}
+.choreo-content { padding-top: 40px; }
+.choreo-text-block {
+  margin-bottom: 48px;
+}
+.choreo-text-block h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 3vw, 42px);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+}
+.choreo-text-block p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(245,230,211,0.5);
+}
+.choreo-tags-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 1px solid rgba(216,90,163,0.25);
+  padding-left: 24px;
+  margin-top: 40px;
+}
+.choreo-tag-v {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(245,230,211,0.35);
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.choreo-tag-v:hover { color: var(--pink); }
+
+/* ── EXHIBITIONS ── */
+#exhibitions {
+  padding: 120px 48px;
+}
+.exhibitions-row {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 1px;
+  background: rgba(216,90,163,0.1);
+  margin-top: 80px;
+}
+.exhib-card {
+  background: var(--dark);
+  padding: 56px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.exhib-card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 40px;
+}
+.exhib-year-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--gold);
+  letter-spacing: 0.15em;
+}
+.exhib-type-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(245,230,211,0.3);
+  letter-spacing: 0.1em;
+}
+.exhib-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 3.5vw, 52px);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  margin-bottom: 24px;
+}
+.exhib-subtitle {
+  font-size: 13px;
+  color: rgba(245,230,211,0.45);
+  line-height: 1.6;
+}
+.exhib-card-bg {
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 180px; height: 180px;
+  border-radius: 50%;
+  border: 40px solid rgba(216,90,163,0.05);
+  pointer-events: none;
+}
+
+/* ── EDUCATION ── */
+#education {
+  padding: 120px 48px;
+  background: var(--mid);
+}
+.edu-header {
+  margin-bottom: 80px;
+}
+.edu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+}
+.edu-card {
+  padding: 40px 32px;
+  border: 1px solid rgba(216,90,163,0.15);
+  position: relative;
+  transition: border-color 0.3s;
+}
+.edu-card:hover { border-color: rgba(216,90,163,0.5); }
+.edu-card-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 72px;
+  color: rgba(216,90,163,0.1);
+  line-height: 1;
+  position: absolute;
+  top: 16px; right: 24px;
+}
+.edu-card-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(20px, 2.5vw, 32px);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+.edu-card-body {
+  font-size: 13px;
+  color: rgba(245,230,211,0.45);
+  line-height: 1.6;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── CONTACT ── */
+#contact {
+  padding: 140px 48px 100px;
+  overflow: hidden;
+  position: relative;
+}
+.contact-bg-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(120px, 20vw, 280px);
+  color: rgba(216,90,163,0.03);
+  white-space: nowrap;
+  pointer-events: none;
+  letter-spacing: -0.02em;
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+.contact-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(64px, 10vw, 140px);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  margin-bottom: 60px;
+}
+.contact-title span { color: var(--pink); }
+.contact-info-item {
+  margin-bottom: 48px;
+}
+.contact-info-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--pink);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.contact-info-value {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 18px;
+  color: var(--ivory);
+  font-weight: 300;
+  text-decoration: none;
+  display: block;
+  transition: color 0.3s;
+}
+.contact-info-value:hover { color: var(--pink); }
+.contact-right { padding-top: 40px; }
+.contact-form-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(245,230,211,0.35);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 10px;
+}
+.contact-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(216,90,163,0.25);
+  padding: 16px 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ivory);
+  outline: none;
+  margin-bottom: 40px;
+  transition: border-color 0.3s;
+}
+.contact-input:focus { border-bottom-color: var(--pink); }
+.contact-input::placeholder { color: rgba(245,230,211,0.2); }
+.contact-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(216,90,163,0.25);
+  padding: 16px 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ivory);
+  outline: none;
+  resize: none;
+  min-height: 120px;
+  margin-bottom: 40px;
+  transition: border-color 0.3s;
+}
+.contact-textarea:focus { border-bottom-color: var(--pink); }
+.contact-textarea::placeholder { color: rgba(245,230,211,0.2); }
+.contact-submit {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.2em;
+  color: var(--dark);
+  background: var(--pink);
+  border: none;
+  padding: 18px 52px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.contact-submit:hover { background: var(--rose); transform: translateY(-2px); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 80px 48px 60px;
+  background: var(--black);
+  border-top: 1px solid rgba(216,90,163,0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: end;
+  gap: 40px;
+}
+.footer-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 5vw, 64px);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+}
+.footer-name span { color: var(--pink); }
+.footer-tagline {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: rgba(245,230,211,0.3);
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+.footer-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.footer-nav a {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(245,230,211,0.35);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  transition: color 0.3s;
+}
+.footer-nav a:hover { color: var(--pink); }
+.footer-right {
+  text-align: right;
+}
+.footer-copy {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(245,230,211,0.2);
+  letter-spacing: 0.1em;
+}
+
+/* ── MARQUEE ── */
+.marquee-wrap {
+  overflow: hidden;
+  padding: 32px 0;
+  border-top: 1px solid rgba(216,90,163,0.1);
+  border-bottom: 1px solid rgba(216,90,163,0.1);
+  margin: 80px 0;
+}
+.marquee-track {
+  display: flex;
+  gap: 0;
+  width: max-content;
+  animation: marquee 20s linear infinite;
+}
+.marquee-item {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(18px, 2.5vw, 32px);
+  letter-spacing: 0.15em;
+  color: rgba(245,230,211,0.15);
+  padding: 0 48px;
+  white-space: nowrap;
+}
+.marquee-item span { color: var(--pink); }
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── REVEAL ANIMATIONS ── */
+.reveal { opacity: 0; transform: translateY(60px); }
+
+/* ── HALFTONE ACCENT ── */
+.halftone-accent {
+  position: absolute;
+  width: 200px; height: 200px;
+  opacity: 0.06;
+  background-image: radial-gradient(circle, var(--pink) 1px, transparent 1px);
+  background-size: 10px 10px;
+  pointer-events: none;
+}
+
+/* ── SECTION DIVIDER ── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(216,90,163,0.08);
+}
+
+
+/* ── HERO IMAGE ── */
+.hero-image-frame {
+  position: absolute;
+  top: 0; right: 0;
+  width: 42%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+.hero-image-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, var(--dark) 8%, rgba(8,5,8,0.4) 55%, transparent 100%);
+  z-index: 1;
+}
+.hero-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: grayscale(15%) contrast(1.06);
+  opacity: 0.7;
+}
+
+/* ── ABOUT IMAGE ── */
+.about-image-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4/5;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.about-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: grayscale(12%) contrast(1.08);
+  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1);
+}
+.about-image-wrap:hover img { transform: scale(1.04); }
+.about-image-credit {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: rgba(245,230,211,0.3);
+  letter-spacing: 0.1em;
+  margin-top: 10px;
+  text-transform: uppercase;
+}
+.about-image-border {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(216,90,163,0.2);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── GALLERY SECTION ── */
+#gallery {
+  padding: 120px 48px;
+}
+.gallery-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 80px;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: 440px 280px;
+  gap: 3px;
+}
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  background: rgba(216,90,163,0.04);
+}
+.gallery-item.tall { grid-row: span 2; }
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(25%) contrast(1.05);
+  transition: transform 0.9s cubic-bezier(0.16,1,0.3,1), filter 0.6s;
+}
+.gallery-item:hover img { transform: scale(1.07); filter: grayscale(0%) contrast(1.08); }
+.gallery-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(8,5,8,0.9) 0%, rgba(8,5,8,0.2) 45%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.45s;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 28px;
+}
+.gallery-item:hover .gallery-item-overlay { opacity: 1; }
+.gallery-item-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: var(--pink);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.gallery-item-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(20px, 2.2vw, 30px);
+  color: var(--ivory);
+  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+/* ── SOCIAL LINKS ── */
+.social-links {
+  display: flex;
+  gap: 24px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+.social-link {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: rgba(245,230,211,0.4);
+  text-decoration: none;
+  text-transform: uppercase;
+  border-bottom: 1px solid rgba(216,90,163,0.2);
+  padding-bottom: 5px;
+  transition: color 0.3s, border-color 0.3s;
+}
+.social-link:hover { color: var(--pink); border-color: var(--pink); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  nav { padding: 20px 24px; }
+  #gallery { padding: 80px 24px; }
+  .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+  .gallery-item.tall { grid-row: span 1; }
+  .hero-image-frame { display: none; }
+  .about-left { order: 2; }
+  .about-image-col { order: 1; }
+  .nav-links { display: none; }
+  #about { grid-template-columns: 1fr; gap: 40px; padding: 100px 24px 80px; }
+  #research, #performance, #choreographic, #exhibitions, #education, #contact { padding: 80px 24px; }
+  .research-grid { grid-template-columns: 1fr; }
+  .perf-item { grid-template-columns: 60px 1fr; gap: 16px; padding: 28px 24px; }
+  .perf-location, .perf-type { display: none; }
+  .choreo-grid { grid-template-columns: 1fr; }
+  .exhibitions-row { grid-template-columns: 1fr; }
+  .edu-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  footer { grid-template-columns: 1fr; }
+  .footer-right { text-align: left; }
+  .hero-main-text { padding: 0 24px; }
+  .hero-subtitle-row { flex-direction: column; gap: 16px; align-items: flex-start; padding: 24px 24px 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- Grain -->
+<div id="grain"></div>
+
+<!-- Background Canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ═══ LOADER ═══ -->
+<div id="loader">
+  <canvas id="loader-canvas"></canvas>
+  <div id="loader-name">JASKARAN ANAND</div>
+  <div id="loader-bar"><div id="loader-progress"></div></div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav id="main-nav" style="opacity:0">
+  <div id="nav-progress"></div>
+  <a href="#" class="nav-logo">JA</a>
+
+  <div class="nav-center">
+    <a href="#about">About</a>
+    <div class="nav-sep"></div>
+    <a href="#research">Research</a>
+    <div class="nav-sep"></div>
+    <a href="#performance">Archive</a>
+    <div class="nav-sep"></div>
+    <a href="#exhibitions">Exhibitions</a>
+    <div class="nav-sep"></div>
+    <a href="#contact">Contact</a>
+  </div>
+
+  <div class="nav-right">
+    <span class="nav-location">Vienna · AT</span>
+    <div class="nav-dot"></div>
+    <div class="nav-burger" id="nav-burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="nav-drawer" id="nav-drawer">
+  <a href="#about" class="drawer-link">About</a>
+  <div class="nav-drawer-line"></div>
+  <a href="#research" class="drawer-link">Research</a>
+  <a href="#performance" class="drawer-link">Archive</a>
+  <a href="#exhibitions" class="drawer-link">Exhibitions</a>
+  <a href="#contact" class="drawer-link">Contact</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="hero-image-frame">
+    <img src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg" alt="Jaskaran Anand" loading="eager">
+  </div>
+  <div class="hero-decorative"></div>
+  <div class="hero-number">001 / ARTIST · RESEARCHER · EDUCATOR</div>
+  <div class="hero-overtitle">Vienna · Performative Practice</div>
+  <div class="hero-main-text">
+    <div class="hero-line"><span>JASKARAN</span></div>
+    <div class="hero-line indent pink"><span>ANAND</span></div>
+    <div class="hero-line"><span style="font-size:0.42em;letter-spacing:0.08em;color:rgba(245,230,211,0.25)">ARTIST · RESEARCHER</span></div>
+  </div>
+  <div class="hero-subtitle-row">
+    <div class="hero-discipline">Trans-disciplinary Performance · Choreography · Research</div>
+    <div class="hero-scroll-indicator">
+      <div class="hero-scroll-line"></div>
+      Scroll to explore
+    </div>
+  </div>
+  <div class="halftone-accent" style="top:20%;right:12%;border-radius:50%;"></div>
+</section>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marquee">
+    <span class="marquee-item">PERFORMATIVE <span>●</span></span>
+    <span class="marquee-item">RESEARCH <span>●</span></span>
+    <span class="marquee-item">BODY <span>●</span></span>
+    <span class="marquee-item">RITUAL <span>●</span></span>
+    <span class="marquee-item">CHOREOGRAPHY <span>●</span></span>
+    <span class="marquee-item">SPACE <span>●</span></span>
+    <span class="marquee-item">MEMORY <span>●</span></span>
+    <span class="marquee-item">INTERVENTION <span>●</span></span>
+    <span class="marquee-item">PARTICIPATORY <span>●</span></span>
+    <span class="marquee-item">PERFORMATIVE <span>●</span></span>
+    <span class="marquee-item">RESEARCH <span>●</span></span>
+    <span class="marquee-item">BODY <span>●</span></span>
+    <span class="marquee-item">RITUAL <span>●</span></span>
+    <span class="marquee-item">CHOREOGRAPHY <span>●</span></span>
+    <span class="marquee-item">SPACE <span>●</span></span>
+    <span class="marquee-item">MEMORY <span>●</span></span>
+    <span class="marquee-item">INTERVENTION <span>●</span></span>
+    <span class="marquee-item">PARTICIPATORY <span>●</span></span>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="about-left reveal">
+    <div class="section-label">00 — About</div>
+    <div class="about-title">
+      <div class="line">TRANS—</div>
+      <div class="line"><span class="accent">DISCIPLI</span></div>
+      <div class="line">NARY</div>
+    </div>
+    <p class="about-body">
+      His works are <em>trans-disciplinary interventions</em> based on intersections between performative-art, scientific & art-based research, and <em>participatory-collaborative artistic practices</em>: using choreography & dance as a method of communication in- & beyond the traditional art and public spaces.
+    </p>
+  </div>
+  <div class="about-right reveal">
+    <div class="about-image-wrap">
+      <img src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg" alt="Jaskaran Anand — Artist · Researcher" loading="lazy">
+      <div class="about-image-border"></div>
+    </div>
+    <div class="about-image-credit">Photo — Flora Löffelmann · brut Wien</div>
+    <div class="about-tags" style="margin-top:32px">
+      <span class="tag">Performance Art</span>
+      <span class="tag">Choreography</span>
+      <span class="tag">Research</span>
+      <span class="tag">Participatory</span>
+      <span class="tag">Education</span>
+      <span class="tag">Body</span>
+      <span class="tag">Ritual</span>
+      <span class="tag">Space</span>
+    </div>
+    <div class="about-quote">"THE BODY IS THE FIRST POLITICAL SITE"</div>
+    <div class="about-number-row">
+      <div class="stat-cell">
+        <div class="stat-num">12+</div>
+        <div class="stat-label">Years Active</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">30+</div>
+        <div class="stat-label">Performances</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">18+</div>
+        <div class="stat-label">Countries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ RESEARCH ═══ -->
+<section id="research">
+  <div class="research-header reveal">
+    <div class="section-title-xl">
+      <div>RESEARCH</div>
+      <div class="stroke">PRACTICE</div>
+    </div>
+    <div class="research-desc">
+      Investigating the intersections of body, space, and collective memory through speculative methodologies and participatory systems.
+    </div>
+  </div>
+  <div class="research-grid">
+    <div class="research-card reveal">
+      <div class="card-index">01 — METHODOLOGY</div>
+      <div class="card-title">SOMATIC RESEARCH SYSTEMS</div>
+      <div class="card-body">Exploring how the body functions as a site of knowledge production, memory storage, and political inscription across cultures and borders.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+    <div class="research-card reveal">
+      <div class="card-index">02 — PRACTICE</div>
+      <div class="card-title">CHOREOGRAPHIC INTERVENTIONS</div>
+      <div class="card-body">Site-specific works that transform public and institutional spaces into arenas of collective reflection and embodied dialogue.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+    <div class="research-card reveal">
+      <div class="card-index">03 — COLLABORATION</div>
+      <div class="card-title">PARTICIPATORY ART SYSTEMS</div>
+      <div class="card-body">Co-creating with communities to develop artistic frameworks that dissolve the boundary between artist, researcher, and participant.</div>
+      <div class="card-arrow">↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PERFORMANCE ARCHIVE ═══ -->
+<section id="performance">
+  <div class="performance-intro reveal">
+    <div>
+      <div class="section-label">02 — Archive</div>
+      <div class="section-title-xl">
+        <div>PERFORMANCE</div>
+        <div class="stroke">ARCHIVE</div>
+      </div>
+    </div>
+    <div style="max-width:280px;font-family:'Space Mono',monospace;font-size:11px;color:rgba(245,230,211,0.4);line-height:1.7">
+      A living record of performances, interventions, and collaborative works spanning trans-disciplinary practices.
+    </div>
+  </div>
+  <div class="performance-items">
+    <div class="perf-item reveal">
+      <div class="perf-year">2024</div>
+      <div class="perf-title">WHAT HAPPENS WHEN GODDESS KALI MEETS KAISERIN SISI</div>
+      <div class="perf-location">Vienna, Austria</div>
+      <div class="perf-type">Performance</div>
+    </div>
+    <div class="perf-item reveal">
+      <div class="perf-year">2024</div>
+      <div class="perf-title">CITY VOICES STADT AUSTAUSCH</div>
+      <div class="perf-location">Kurdirektion, Vienna</div>
+      <div class="perf-type">Live Event</div>
+    </div>
+    <div class="perf-item reveal">
+      <div class="perf-year">2023</div>
+      <div class="perf-title">TRANS(T*).DISCITY — EMBRACE THE CONNECTIONS</div>
+      <div class="perf-location">City Voices Initiative</div>
+      <div class="perf-type">Installation</div>
+    </div>
+    <div class="perf-item reveal">
+      <div class="perf-year">2023</div>
+      <div class="perf-title">EMOTIONAL LANDSCAPE / NON-PERFORMATIVE</div>
+      <div class="perf-location">Festival Circuit</div>
+      <div class="perf-type">Research</div>
+    </div>
+    <div class="perf-item reveal">
+      <div class="perf-year">2022</div>
+      <div class="perf-title">SENSORY AFTERLIFE</div>
+      <div class="perf-location">International Venues</div>
+      <div class="perf-type">Dance</div>
+    </div>
+    <div class="perf-item reveal">
+      <div class="perf-year">2022</div>
+      <div class="perf-title">THE EMBODIED — URBAN PSYCHOLOGY</div>
+      <div class="perf-location">Museum Context</div>
+      <div class="perf-type">Performance</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CHOREOGRAPHIC INTERVENTIONS ═══ -->
+<section id="choreographic">
+  <div class="section-label reveal">03 — Choreographic Interventions</div>
+  <div class="choreo-grid">
+    <div class="choreo-visual reveal">
+      <canvas id="choreo-canvas" style="width:100%;height:100%;display:block;"></canvas>
+      <div class="choreo-label">BODY</div>
+    </div>
+    <div class="choreo-content reveal">
+      <div class="choreo-text-block">
+        <h3>SPATIAL CHOREOGRAPHY</h3>
+        <p>Designing movement scores that operate beyond the stage — infiltrating galleries, streets, institutions, and digital space as sites of performative potential.</p>
+      </div>
+      <div class="choreo-text-block">
+        <h3>BODY AS ARCHIVE</h3>
+        <p>The body retains collective histories, traumas, and possibilities. Jaskaran's practice excavates these somatic archives through durational and participatory methodologies.</p>
+      </div>
+      <div class="choreo-text-block">
+        <h3>RITUAL SYSTEMS</h3>
+        <p>Drawing from trans-cultural performance traditions to construct new ritual frameworks that honor complexity, contradiction, and communal becoming.</p>
+      </div>
+      <div class="choreo-tags-vertical">
+        <div class="choreo-tag-v">Somatic Practices</div>
+        <div class="choreo-tag-v">Site-Specific Work</div>
+        <div class="choreo-tag-v">Community Engagement</div>
+        <div class="choreo-tag-v">Trans-cultural Exchange</div>
+        <div class="choreo-tag-v">Participatory Scores</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXHIBITIONS ═══ -->
+<section id="exhibitions">
+  <div class="section-label reveal">04 — Publications / Exhibitions</div>
+  <div class="section-title-xl reveal" style="margin-bottom:0">
+    <div>EXHIBI-</div>
+    <div class="stroke">TIONS</div>
+  </div>
+  <div class="exhibitions-row">
+    <div class="exhib-card reveal">
+      <div class="exhib-card-top">
+        <span class="exhib-year-tag">2024</span>
+        <span class="exhib-type-tag">Solo Exhibition</span>
+      </div>
+      <div class="exhib-title">ECHOES OF THE BODY</div>
+      <div class="exhib-subtitle">A multi-media installation exploring memory, displacement, and the body as a site of cultural negotiation across South Asian and European contexts.</div>
+      <div class="exhib-card-bg"></div>
+    </div>
+    <div class="exhib-card reveal">
+      <div class="exhib-card-top">
+        <span class="exhib-year-tag">2023</span>
+        <span class="exhib-type-tag">Group Show</span>
+      </div>
+      <div class="exhib-title">SENSORY CARTOGRAPHIES</div>
+      <div class="exhib-subtitle">Collaborative exhibition mapping emotional and somatic territories through performance documentation, video, and participatory archives.</div>
+      <div class="exhib-card-bg"></div>
+    </div>
+    <div class="exhib-card reveal">
+      <div class="exhib-card-top">
+        <span class="exhib-year-tag">2023</span>
+        <span class="exhib-type-tag">Publication</span>
+      </div>
+      <div class="exhib-title">CHOREOGRAPHIC NOTES</div>
+      <div class="exhib-subtitle">Research publication examining the intersections of choreographic practice and sociological inquiry in post-migrant urban contexts.</div>
+      <div class="exhib-card-bg"></div>
+    </div>
+    <div class="exhib-card reveal">
+      <div class="exhib-card-top">
+        <span class="exhib-year-tag">2022</span>
+        <span class="exhib-type-tag">Festival</span>
+      </div>
+      <div class="exhib-title">DISCORDANT BODIES</div>
+      <div class="exhib-subtitle">International festival presentation of durational performance work interrogating borders, belonging, and the politics of presence.</div>
+      <div class="exhib-card-bg"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══ GALLERY ═══ -->
+<section id="gallery" class="reveal">
+  <div class="gallery-header">
+    <div>
+      <div class="section-label">05 — Visual Archive</div>
+      <div class="section-title-xl">
+        <div>IMAGE</div>
+        <div class="stroke">ARCHIVE</div>
+      </div>
+    </div>
+    <div style="max-width:260px;font-family:'Space Mono',monospace;font-size:11px;color:rgba(245,230,211,0.4);line-height:1.7">
+      Documentation of performances, interventions, and collaborative works across Vienna and beyond.
+    </div>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-item tall">
+      <img src="https://www.jaskarananand.com/img/out-of-life/Out-of-Life-2.jpg" alt="Out of Life — Performance" loading="lazy">
+      <div class="gallery-item-overlay">
+        <div class="gallery-item-label">2023 · Performance</div>
+        <div class="gallery-item-title">OUT OF LIFE</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg" alt="Jaskaran Anand" loading="lazy">
+      <div class="gallery-item-overlay">
+        <div class="gallery-item-label">2022 · imagetanz</div>
+        <div class="gallery-item-title">L-INKED / THE SOLO</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://www.jaskarananand.com/img/out-of-life/Out-of-Life-2.jpg" alt="City Voices" loading="lazy" style="object-position: center bottom;">
+      <div class="gallery-item-overlay">
+        <div class="gallery-item-label">2024 · Intervention</div>
+        <div class="gallery-item-title">CITY VOICES</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg" alt="L-Inked" loading="lazy" style="object-position: center 30%;">
+      <div class="gallery-item-overlay">
+        <div class="gallery-item-label">2021 · imagetanz</div>
+        <div class="gallery-item-title">AROUND L-INKED</div>
+      </div>
+    </div>
+    <div class="gallery-item">
+      <img src="https://www.jaskarananand.com/img/out-of-life/Out-of-Life-2.jpg" alt="Trans.DiscCity" loading="lazy" style="object-position: 40% center;">
+      <div class="gallery-item-overlay">
+        <div class="gallery-item-label">2023 · Installation</div>
+        <div class="gallery-item-title">TRANS(T*)DISCITY</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ═══ EDUCATION ═══ -->
+<section id="education">
+  <div class="edu-header reveal">
+    <div class="section-label">06 — Education & Workshops</div>
+    <div class="section-title-xl">
+      <div>PEDAGOGY</div>
+      <div class="stroke">+ PRAXIS</div>
+    </div>
+  </div>
+  <div class="edu-grid">
+    <div class="edu-card reveal">
+      <div class="edu-card-num">01</div>
+      <div class="edu-card-title">SOMATIC WORKSHOPS</div>
+      <div class="edu-card-body">Intensive sessions exploring body awareness, movement research, and embodied inquiry methodologies for artists and non-artists alike.</div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-card-num">02</div>
+      <div class="edu-card-title">PERFORMANCE PEDAGOGY</div>
+      <div class="edu-card-body">Curriculum development for performance studies integrating trans-disciplinary approaches to practice-led research in educational settings.</div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-card-num">03</div>
+      <div class="edu-card-title">COMMUNITY LABS</div>
+      <div class="edu-card-body">Participatory laboratory formats that bring together diverse communities to co-create artistic and research frameworks around shared concerns.</div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-card-num">04</div>
+      <div class="edu-card-title">MOVEMENT SCORES</div>
+      <div class="edu-card-body">Developing choreographic scores as pedagogical tools for exploring social, cultural, and political questions through the language of the body.</div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-card-num">05</div>
+      <div class="edu-card-title">RESEARCH MENTORSHIP</div>
+      <div class="edu-card-body">One-on-one mentoring for emerging artists and researchers developing practice-based methodologies at the intersection of art and academia.</div>
+    </div>
+    <div class="edu-card reveal">
+      <div class="edu-card-num">06</div>
+      <div class="edu-card-title">INTERNATIONAL EXCHANGES</div>
+      <div class="edu-card-body">Cross-cultural residency and exchange programs fostering dialogue between artistic communities across Europe, Asia, and beyond.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="contact-bg-text">CONNECT</div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <div class="contact-title">
+        LET'S<br>
+        <span>CREATE</span>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-label">Studio Address</div>
+        <a class="contact-info-value">123 Creative Lane<br>Vienna, Austria</a>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-label">Mobile</div>
+        <a class="contact-info-value" href="tel:+43600123456">+43 600 123456</a>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-label">Email</div>
+        <a class="contact-info-value" href="mailto:contact@jaskarananand.com">contact@jaskarananand.com</a>
+      </div>
+      <div class="social-links">
+        <a class="social-link" href="https://www.facebook.com/harmonical.self" target="_blank">Facebook</a>
+        <a class="social-link" href="https://www.instagram.com/jaskaran_anand/" target="_blank">Instagram</a>
+        <a class="social-link" href="https://vimeo.com/jaskaran" target="_blank">Vimeo</a>
+        <a class="social-link" href="https://www.jaskarananand.com" target="_blank">Website</a>
+      </div>
+    </div>
+    <div class="contact-right reveal">
+      <div class="section-label">07 — Contact</div>
+      <label class="contact-form-label">Name</label>
+      <input type="text" class="contact-input" placeholder="Your name">
+      <label class="contact-form-label">Email</label>
+      <input type="email" class="contact-input" placeholder="your@email.com">
+      <label class="contact-form-label">Message</label>
+      <textarea class="contact-textarea" placeholder="Tell me about your project..."></textarea>
+      <button class="contact-submit">SEND MESSAGE →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div>
+    <div class="footer-name">JASKARAN<br><span>ANAND</span></div>
+    <div class="footer-tagline">Artist · Researcher · Educator</div>
+  </div>
+  <nav class="footer-nav">
+    <a href="#about">About</a>
+    <a href="#research">Research & Practice</a>
+    <a href="#performance">Performance Archive</a>
+    <a href="#choreographic">Choreographic Interventions</a>
+    <a href="#exhibitions">Publications / Exhibitions</a>
+    <a href="#education">Education & Workshops</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="footer-right">
+    <div class="footer-copy">© 2024 Jaskaran Anand<br>Vienna, Austria</div>
+  </div>
+</footer>
+
+<script>
+/* ═══ CURSOR ═══ */
+const cursor = document.getElementById('cursor');
+const cursorRing = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+function updateCursor() {
+  cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+  rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1;
+  cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
+  requestAnimationFrame(updateCursor);
+}
+updateCursor();
+document.querySelectorAll('a, button, .research-card, .perf-item, .edu-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.width = '6px'; cursor.style.height = '6px';
+    cursorRing.style.width = '64px'; cursorRing.style.height = '64px';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.width = '12px'; cursor.style.height = '12px';
+    cursorRing.style.width = '40px'; cursorRing.style.height = '40px';
+  });
+});
+
+/* ═══ LOADER ═══ */
+const loaderCanvas = document.getElementById('loader-canvas');
+const lCtx = loaderCanvas.getContext('2d');
+function resizeLoader() {
+  loaderCanvas.width = window.innerWidth;
+  loaderCanvas.height = window.innerHeight;
+}
+resizeLoader();
+window.addEventListener('resize', resizeLoader);
+
+const words = ['PERFORMATIVE','RESEARCH','BODY','RITUAL','SPACE','MEMORY','INTERVENTION','PRESENCE'];
+const loaderWordEls = [];
+const loader = document.getElementById('loader');
+words.forEach((w, i) => {
+  const el = document.createElement('div');
+  el.className = 'loader-word';
+  el.textContent = w;
+  el.style.fontSize = Math.random() * 40 + 16 + 'px';
+  el.style.top = (10 + Math.random() * 75) + '%';
+  el.style.left = (5 + Math.random() * 80) + '%';
+  loader.appendChild(el);
+  loaderWordEls.push(el);
+});
+
+// Maze lines for loader
+const mazeLines = [];
+function initMazeLines() {
+  const W = loaderCanvas.width, H = loaderCanvas.height;
+  for (let i = 0; i < 30; i++) {
+    mazeLines.push({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random()-0.5)*1.2, vy: (Math.random()-0.5)*1.2,
+      life: 0, maxLife: 80 + Math.random()*120,
+      size: Math.random()*1.5+0.5,
+      path: [],
+      color: Math.random() > 0.5 ? '#D85AA3' : '#8D5B8F'
+    });
+  }
+}
+initMazeLines();
+
+// Spiral symbols
+const symbols = [];
+function initSymbols() {
+  const W = loaderCanvas.width, H = loaderCanvas.height;
+  for (let s = 0; s < 6; s++) {
+    symbols.push({
+      x: W * (0.1 + s * 0.16), y: H * (0.3 + Math.sin(s)*0.2),
+      r: 40 + Math.random()*40, angle: 0, speed: 0.008 + Math.random()*0.01,
+      rings: Math.floor(2+Math.random()*3),
+      opacity: 0
+    });
+  }
+}
+initSymbols();
+
+let loaderProgress = 0;
+let loaderActive = true;
+
+function drawLoaderFrame() {
+  if (!loaderActive) return;
+  const W = loaderCanvas.width, H = loaderCanvas.height;
+  lCtx.fillStyle = 'rgba(0,0,0,0.12)';
+  lCtx.fillRect(0,0,W,H);
+
+  // Symbols
+  symbols.forEach((sym, si) => {
+    sym.angle += sym.speed;
+    sym.opacity = Math.min(1, sym.opacity + 0.005);
+    for (let r = 0; r < sym.rings; r++) {
+      const rad = sym.r * (r+1) / sym.rings;
+      lCtx.beginPath();
+      lCtx.arc(sym.x, sym.y, rad, 0, Math.PI*2);
+      lCtx.strokeStyle = `rgba(216,90,163,${sym.opacity * 0.3 / (r+1)})`;
+      lCtx.lineWidth = 0.8;
+      lCtx.stroke();
+      // Rotating dot
+      const dotX = sym.x + Math.cos(sym.angle + r) * rad;
+      const dotY = sym.y + Math.sin(sym.angle + r) * rad;
+      lCtx.beginPath();
+      lCtx.arc(dotX, dotY, 2, 0, Math.PI*2);
+      lCtx.fillStyle = `rgba(216,90,163,${sym.opacity * 0.7})`;
+      lCtx.fill();
+    }
+  });
+
+  // Maze lines
+  mazeLines.forEach(l => {
+    l.life++;
+    if (l.life > l.maxLife) {
+      l.x = Math.random()*W; l.y = Math.random()*H;
+      l.vx = (Math.random()-0.5)*1.2; l.vy = (Math.random()-0.5)*1.2;
+      l.life = 0; l.path = [];
+    }
+    l.path.push({x:l.x, y:l.y});
+    if (l.path.length > 30) l.path.shift();
+    l.x += l.vx; l.y += l.vy;
+    if (Math.random()<0.04) { l.vx *= -1; }
+    if (Math.random()<0.04) { l.vy *= -1; }
+    if (l.path.length > 2) {
+      lCtx.beginPath();
+      lCtx.moveTo(l.path[0].x, l.path[0].y);
+      l.path.forEach(p => lCtx.lineTo(p.x, p.y));
+      lCtx.strokeStyle = l.color;
+      lCtx.globalAlpha = (l.life / l.maxLife) * 0.35;
+      lCtx.lineWidth = l.size;
+      lCtx.stroke();
+      lCtx.globalAlpha = 1;
+    }
+  });
+
+  requestAnimationFrame(drawLoaderFrame);
+}
+drawLoaderFrame();
+
+// Loader sequence
+const progressBar = document.getElementById('loader-progress');
+let prog = 0;
+const progInterval = setInterval(() => {
+  prog += Math.random()*3 + 1;
+  if (prog > 100) prog = 100;
+  progressBar.style.width = prog + '%';
+  if (prog >= 100) clearInterval(progInterval);
+}, 40);
+
+// Animate loader words
+loaderWordEls.forEach((el, i) => {
+  setTimeout(() => {
+    el.style.opacity = '1';
+    el.style.transition = 'opacity 0.5s';
+    setTimeout(() => { el.style.opacity = '0'; }, 600 + Math.random()*400);
+  }, 200 + i * 280);
+});
+
+// Show loader name
+setTimeout(() => {
+  const nameEl = document.getElementById('loader-name');
+  nameEl.style.opacity = '0';
+  nameEl.style.transition = 'opacity 0.8s';
+  setTimeout(() => { nameEl.style.opacity = '1'; }, 50);
+}, 2000);
+
+// Dismiss loader
+setTimeout(() => {
+  loaderActive = false;
+  loader.style.transition = 'opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1)';
+  loader.style.opacity = '0';
+  loader.style.transform = 'scale(1.04)';
+  setTimeout(() => {
+    loader.style.display = 'none';
+    document.getElementById('main-nav').style.opacity = '1';
+    document.getElementById('main-nav').style.transition = 'opacity 0.8s';
+    // Animate hero
+    document.querySelectorAll('.hero-line span').forEach((el, i) => {
+      setTimeout(() => {
+        el.style.transition = 'transform 1s cubic-bezier(0.16,1,0.3,1)';
+        el.style.transform = 'translateY(0)';
+      }, i * 120);
+    });
+    document.querySelector('.hero-overtitle').style.opacity = '1';
+    document.querySelector('.hero-overtitle').style.transition = 'opacity 1s 0.6s';
+  }, 900);
+}, 3400);
+
+/* ═══ BACKGROUND CANVAS ═══ */
+const bgCanvas = document.getElementById('bg-canvas');
+const bgCtx = bgCanvas.getContext('2d');
+let bgW, bgH;
+function resizeBg() {
+  bgW = bgCanvas.width = window.innerWidth;
+  bgH = bgCanvas.height = window.innerHeight;
+}
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+let mouseX = 0.5, mouseY = 0.5;
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX / window.innerWidth;
+  mouseY = e.clientY / window.innerHeight;
+});
+
+// Particles / nodes
+const nodes = [];
+const NODE_COUNT = 80;
+for (let i = 0; i < NODE_COUNT; i++) {
+  nodes.push({
+    x: Math.random(), y: Math.random(),
+    vx: (Math.random()-0.5)*0.0008, vy: (Math.random()-0.5)*0.0008,
+    size: Math.random()*2+0.5,
+    opacity: Math.random()*0.5+0.1
+  });
+}
+
+// Static maze lines (decorative choreography notation)
+const choreoPaths = [];
+for (let p = 0; p < 8; p++) {
+  const pts = [];
+  let cx = Math.random(), cy = Math.random();
+  for (let s = 0; s < 20; s++) {
+    cx += (Math.random()-0.5)*0.08;
+    cy += (Math.random()-0.5)*0.08;
+    cx = Math.max(0,Math.min(1,cx)); cy = Math.max(0,Math.min(1,cy));
+    pts.push({x:cx, y:cy});
+  }
+  choreoPaths.push(pts);
+}
+
+let bgFrame = 0;
+function drawBg() {
+  bgCtx.clearRect(0,0,bgW,bgH);
+  bgFrame++;
+
+  const offsetX = (mouseX-0.5)*0.02;
+  const offsetY = (mouseY-0.5)*0.02;
+
+  // Choreography path lines
+  choreoPaths.forEach((path, pi) => {
+    bgCtx.beginPath();
+    path.forEach((pt, i) => {
+      const x = (pt.x + offsetX * (pi%3+1) * 0.3) * bgW;
+      const y = (pt.y + offsetY * (pi%3+1) * 0.3) * bgH;
+      if (i===0) bgCtx.moveTo(x,y); else bgCtx.lineTo(x,y);
+    });
+    bgCtx.strokeStyle = `rgba(141,91,143,0.12)`;
+    bgCtx.lineWidth = 0.8;
+    bgCtx.stroke();
+  });
+
+  // Nodes
+  nodes.forEach(n => {
+    n.x += n.vx; n.y += n.vy;
+    if (n.x<0||n.x>1) n.vx*=-1;
+    if (n.y<0||n.y>1) n.vy*=-1;
+
+    const px = (n.x + offsetX*0.5) * bgW;
+    const py = (n.y + offsetY*0.5) * bgH;
+
+    bgCtx.beginPath();
+    bgCtx.arc(px, py, n.size, 0, Math.PI*2);
+    bgCtx.fillStyle = `rgba(216,90,163,${n.opacity})`;
+    bgCtx.fill();
+  });
+
+  // Connection lines
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i+1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 0.12) {
+        const px1 = (nodes[i].x + offsetX*0.5)*bgW;
+        const py1 = (nodes[i].y + offsetY*0.5)*bgH;
+        const px2 = (nodes[j].x + offsetX*0.5)*bgW;
+        const py2 = (nodes[j].y + offsetY*0.5)*bgH;
+        bgCtx.beginPath();
+        bgCtx.moveTo(px1,py1); bgCtx.lineTo(px2,py2);
+        bgCtx.strokeStyle = `rgba(216,90,163,${(0.12-dist)*1.5})`;
+        bgCtx.lineWidth = 0.5;
+        bgCtx.stroke();
+      }
+    }
+  }
+
+  // Circular spiral overlay (bottom-right, inspired by reference 1 & 5)
+  const cx = bgW*0.85 + offsetX*bgW*0.05;
+  const cy = bgH*0.75 + offsetY*bgH*0.05;
+  for (let r = 1; r < 5; r++) {
+    bgCtx.beginPath();
+    bgCtx.arc(cx, cy, r * 28 + bgFrame*0.02 % 28, 0, Math.PI*2);
+    bgCtx.strokeStyle = `rgba(212,162,76,${0.05/r})`;
+    bgCtx.lineWidth = 0.5;
+    bgCtx.stroke();
+  }
+
+  requestAnimationFrame(drawBg);
+}
+drawBg();
+
+/* ═══ CHOREOGRAPHIC CANVAS ═══ */
+const choreoCanvas = document.getElementById('choreo-canvas');
+if (choreoCanvas) {
+  choreoCanvas.width = choreoCanvas.offsetWidth;
+  choreoCanvas.height = choreoCanvas.offsetHeight;
+  const cCtx = choreoCanvas.getContext('2d');
+  const cW = choreoCanvas.width, cH = choreoCanvas.height;
+
+  // Body movement trails
+  const trails = [];
+  for (let t = 0; t < 12; t++) {
+    const pts = [];
+    let bx = cW*0.1 + Math.random()*cW*0.8;
+    let by = cH*0.1 + Math.random()*cH*0.8;
+    const steps = 30 + Math.floor(Math.random()*40);
+    const angle0 = Math.random()*Math.PI*2;
+    let ang = angle0;
+    for (let s = 0; s < steps; s++) {
+      ang += (Math.random()-0.5)*0.6;
+      bx += Math.cos(ang)*12; by += Math.sin(ang)*8;
+      bx = Math.max(10,Math.min(cW-10,bx)); by = Math.max(10,Math.min(cH-10,by));
+      pts.push({x:bx,y:by});
+    }
+    trails.push({ pts, color: t%3===0 ? '#D85AA3' : t%3===1 ? '#8D5B8F' : '#D4A24C', opacity: 0.25+Math.random()*0.3, width: Math.random()*1.5+0.3 });
+  }
+
+  let cFrame = 0;
+  function drawChoreo() {
+    cCtx.clearRect(0,0,cW,cH);
+    cFrame++;
+
+    // Dark bg
+    cCtx.fillStyle = 'rgba(8,5,8,0.97)';
+    cCtx.fillRect(0,0,cW,cH);
+
+    // Grid
+    cCtx.strokeStyle = 'rgba(216,90,163,0.06)';
+    cCtx.lineWidth = 0.5;
+    for (let x=0;x<cW;x+=32) { cCtx.beginPath(); cCtx.moveTo(x,0); cCtx.lineTo(x,cH); cCtx.stroke(); }
+    for (let y=0;y<cH;y+=32) { cCtx.beginPath(); cCtx.moveTo(0,y); cCtx.lineTo(cW,y); cCtx.stroke(); }
+
+    // Trails
+    trails.forEach(tr => {
+      const len = tr.pts.length;
+      const progress = (cFrame*0.4) % (len*3);
+      const visibleUntil = Math.min(len, Math.floor(progress/3)+1);
+      if (visibleUntil < 2) return;
+      cCtx.beginPath();
+      cCtx.moveTo(tr.pts[0].x, tr.pts[0].y);
+      for (let i=1;i<visibleUntil;i++) cCtx.lineTo(tr.pts[i].x, tr.pts[i].y);
+      cCtx.strokeStyle = tr.color;
+      cCtx.globalAlpha = tr.opacity;
+      cCtx.lineWidth = tr.width;
+      cCtx.lineCap = 'round';
+      cCtx.stroke();
+      cCtx.globalAlpha = 1;
+
+      // Current point indicator
+      if (visibleUntil > 0 && visibleUntil <= len) {
+        const pt = tr.pts[visibleUntil-1];
+        cCtx.beginPath();
+        cCtx.arc(pt.x, pt.y, 3, 0, Math.PI*2);
+        cCtx.fillStyle = tr.color;
+        cCtx.globalAlpha = tr.opacity * 2;
+        cCtx.fill();
+        cCtx.globalAlpha = 1;
+      }
+    });
+
+    // Concentric circles overlay
+    cCtx.beginPath();
+    cCtx.arc(cW*0.5, cH*0.5, 60 + Math.sin(cFrame*0.02)*10, 0, Math.PI*2);
+    cCtx.strokeStyle = 'rgba(212,162,76,0.1)';
+    cCtx.lineWidth = 0.8;
+    cCtx.stroke();
+    cCtx.beginPath();
+    cCtx.arc(cW*0.5, cH*0.5, 100 + Math.sin(cFrame*0.015)*15, 0, Math.PI*2);
+    cCtx.strokeStyle = 'rgba(216,90,163,0.07)';
+    cCtx.lineWidth = 0.5;
+    cCtx.stroke();
+
+    requestAnimationFrame(drawChoreo);
+  }
+  drawChoreo();
+}
+
+/* ═══ SCROLL REVEALS ═══ */
+if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.fromTo(el, { opacity:0, y:60 }, {
+      opacity:1, y:0, duration:1, ease:'power3.out',
+      scrollTrigger: { trigger:el, start:'top 85%', toggleActions:'play none none none' }
+    });
+  });
+} else {
+  // Fallback: simple IntersectionObserver
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.transition = 'opacity 0.9s ease, transform 0.9s ease';
+        e.target.style.opacity = '1';
+        e.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+}
+
+/* ═══ SMOOTH SCROLL ═══ */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (target) target.scrollIntoView({ behavior:'smooth' });
+  });
+});
+
+/* ═══ NAV SCROLL + PROGRESS + ACTIVE ═══ */
+const mainNav = document.getElementById('main-nav');
+const navProgress = document.getElementById('nav-progress');
+const navLinks = document.querySelectorAll('.nav-center a');
+const sections = ['about','research','performance','exhibitions','contact'];
+
+window.addEventListener('scroll', () => {
+  const scrollY = window.scrollY;
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+
+  // scrolled class
+  if (scrollY > 60) mainNav.classList.add('scrolled');
+  else mainNav.classList.remove('scrolled');
+
+  // progress bar
+  const pct = docH > 0 ? (scrollY / docH) * 100 : 0;
+  navProgress.style.width = pct + '%';
+
+  // active link highlight
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && scrollY >= el.offsetTop - 120) current = id;
+  });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+/* ═══ MOBILE BURGER ═══ */
+const burger = document.getElementById('nav-burger');
+const drawer = document.getElementById('nav-drawer');
+burger.addEventListener('click', () => {
+  burger.classList.toggle('open');
+  drawer.classList.toggle('open');
+});
+document.querySelectorAll('.drawer-link').forEach(a => {
+  a.addEventListener('click', () => {
+    burger.classList.remove('open');
+    drawer.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>

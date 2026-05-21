@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jaskaran Anand - Artist</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#e6469b;
+  --hot:#ff2f84;
+  --red:#c91935;
+  --orange:#e65322;
+  --cream:#e8d8bf;
+  --black:#080808;
+  --dark:#14050d;
+  --white:#fff7ed;
+  --muted:#c9b9a3;
+  --border:rgba(255,255,255,.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:"Space Grotesk",sans-serif;
+  background:
+    radial-gradient(circle at 10% 10%, rgba(255,47,132,.35), transparent 32%),
+    radial-gradient(circle at 90% 20%, rgba(230,83,34,.25), transparent 30%),
+    linear-gradient(135deg,var(--dark),var(--black) 55%,#250010);
+  color:var(--white);
+  overflow-x:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:-100px;
+  pointer-events:none;
+  z-index:999;
+  opacity:.10;
+  background-image:radial-gradient(circle, rgba(255,255,255,.7) 1px, transparent 1px);
+  background-size:8px 8px;
+  animation:grainMove 8s linear infinite;
+}
+
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(transparent 50%,rgba(255,255,255,.03) 50%);
+  background-size:100% 5px;
+  z-index:998;
+  opacity:.35;
+}
+
+a{text-decoration:none;color:inherit}
+
+.nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  z-index:50;
+  padding:18px 7%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(8,8,8,.55);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  animation:fadeDown .8s ease forwards;
+}
+
+.logo{
+  font-family:"JetBrains Mono",monospace;
+  color:var(--orange);
+  letter-spacing:3px;
+  font-weight:700;
+}
+
+.nav-links{
+  display:flex;
+  gap:28px;
+  font-size:14px;
+  color:var(--cream);
+}
+
+.nav-links a{
+  position:relative;
+}
+
+.nav-links a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-5px;
+  width:0;
+  height:2px;
+  background:var(--hot);
+  transition:.35s;
+}
+
+.nav-links a:hover::after{width:100%}
+.nav-links a:hover{color:var(--hot)}
+
+.hero{
+  min-height:100vh;
+  padding:130px 7% 70px;
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:60px;
+  align-items:center;
+}
+
+.tag{
+  font-family:"JetBrains Mono",monospace;
+  color:var(--orange);
+  letter-spacing:4px;
+  margin-bottom:20px;
+  animation:fadeUp .8s ease forwards;
+}
+
+.hero h1{
+  font-size:clamp(58px,9vw,130px);
+  line-height:.82;
+  text-transform:uppercase;
+  letter-spacing:-5px;
+  color:var(--cream);
+  animation:fadeUp .9s ease .15s both;
+}
+
+.hero h1 span{
+  color:var(--hot);
+  display:inline-block;
+  animation:textGlow 3s ease-in-out infinite;
+  text-shadow:8px 8px 0 var(--black);
+}
+
+.hero p{
+  max-width:560px;
+  margin-top:28px;
+  color:#e4d3c0;
+  font-size:18px;
+  line-height:1.7;
+  animation:fadeUp .9s ease .3s both;
+}
+
+.btns{
+  margin-top:36px;
+  display:flex;
+  gap:16px;
+  flex-wrap:wrap;
+  animation:fadeUp .9s ease .45s both;
+}
+
+.btn{
+  padding:14px 24px;
+  border-radius:999px;
+  font-weight:800;
+  border:1px solid var(--border);
+  transition:.35s;
+  position:relative;
+  overflow:hidden;
+}
+
+.btn::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);
+  transform:translateX(-120%);
+  transition:.6s;
+}
+
+.btn:hover::after{transform:translateX(120%)}
+.btn:hover{transform:translateY(-5px)}
+
+.btn-main{
+  background:var(--hot);
+  color:white;
+  box-shadow:0 15px 40px rgba(255,47,132,.35);
+}
+
+.btn-ghost{background:rgba(255,255,255,.06)}
+
+.hero-card{
+  position:relative;
+  background:var(--cream);
+  padding:18px;
+  border-radius:34px;
+  transform:rotate(2deg);
+  box-shadow:25px 25px 0 rgba(230,70,155,.25);
+  animation:floatPoster 5s ease-in-out infinite;
+}
+
+.hero-card img{
+  width:100%;
+  height:560px;
+  object-fit:cover;
+  object-position:42% center;
+  border-radius:26px;
+  filter:contrast(1.08) saturate(1.08);
+}
+
+.frame-line{
+  position:absolute;
+  inset:28px;
+  border:4px solid var(--black);
+  border-radius:28px;
+  pointer-events:none;
+}
+
+.artist-name{
+  position:absolute;
+  bottom:-32px;
+  left:35px;
+  color:var(--orange);
+  font-family:"JetBrains Mono",monospace;
+  font-size:30px;
+  letter-spacing:4px;
+}
+
+.photo-credit{
+  position:absolute;
+  right:34px;
+  bottom:20px;
+  color:var(--cream);
+  font-family:"JetBrains Mono",monospace;
+  font-size:11px;
+  letter-spacing:1px;
+  background:rgba(8,8,8,.62);
+  padding:8px 10px;
+  border-radius:999px;
+}
+
+.section{
+  padding:95px 7%;
+}
+
+.section-title{
+  font-size:clamp(42px,6vw,86px);
+  text-transform:uppercase;
+  letter-spacing:-3px;
+  margin-bottom:24px;
+}
+
+.section-title span{color:var(--hot)}
+
+.reveal{
+  opacity:0;
+  transform:translateY(60px) scale(.96);
+  filter:blur(8px);
+  transition:1s cubic-bezier(.22,1,.36,1);
+}
+
+.reveal.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  filter:blur(0);
+}
+
+.about{
+  display:grid;
+  grid-template-columns:.85fr 1.15fr;
+  gap:50px;
+  align-items:center;
+}
+
+.about-box{
+  background:linear-gradient(135deg,var(--pink),var(--red));
+  padding:40px;
+  border-radius:30px;
+  border:1px solid var(--border);
+  box-shadow:0 30px 80px rgba(255,47,132,.22);
+}
+
+.about-box p{
+  font-size:18px;
+  line-height:1.8;
+}
+
+.honey-section{
+  overflow:hidden;
+  background:
+    linear-gradient(135deg,rgba(20,5,13,.92),rgba(8,8,8,.9) 58%,rgba(37,0,16,.86)),
+    url("https://brut-wien.at/var/brut/storage/images/media/bilder-presse/2022-pressebilder/maerz-2022/jaskaran-anand/web_jaskaran-anand_052_c_christine-miess/252374-2-eng-GB/web_Jaskaran-Anand_052_c_Christine-Miess.jpg") center/cover;
+  padding-top:95px;
+  padding-bottom:95px;
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+
+.honey-section::before{
+  content:none;
+  position:absolute;
+  inset:70px 0 30px;
+  z-index:-1;
+  opacity:.16;
+  background:
+    linear-gradient(rgba(255,247,237,.65),rgba(255,247,237,.35)),
+    url("https://brut-wien.at/var/brut/storage/images/media/bilder-presse/2022-pressebilder/maerz-2022/jaskaran-anand/web_jaskaran-anand_052_c_christine-miess/252374-2-eng-GB/web_Jaskaran-Anand_052_c_Christine-Miess.jpg") center/cover;
+  filter:grayscale(1) blur(2px);
+}
+
+.honey-grid{
+  display:grid;
+  grid-template-columns:repeat(8,minmax(0,1fr));
+  gap:24px 20px;
+  align-items:start;
+  margin-top:0;
+  padding:0;
+  max-width:980px;
+  margin-inline:auto;
+}
+
+.honey-tile{
+  aspect-ratio:1.12;
+  position:relative;
+  overflow:hidden;
+  clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%);
+  background:#444;
+  isolation:isolate;
+  transition:.45s cubic-bezier(.22,1,.36,1);
+  box-shadow:none;
+}
+
+.honey-tile:nth-child(1){grid-column:2 / span 2}
+.honey-tile:nth-child(2){grid-column:4 / span 2}
+.honey-tile:nth-child(3){grid-column:6 / span 2}
+.honey-tile:nth-child(4){grid-column:3 / span 2}
+.honey-tile:nth-child(5){grid-column:5 / span 2}
+
+.honey-tile img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transition:.55s cubic-bezier(.22,1,.36,1);
+}
+
+.honey-tile:hover{
+  transform:translateY(-8px) scale(1.03);
+  z-index:3;
+}
+
+.honey-tile:hover img{
+  transform:scale(1.12);
+  filter:contrast(1.1) saturate(1.16);
+}
+
+.honey-tile::after{
+  content:none;
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(180deg,rgba(8,8,8,.08),rgba(8,8,8,.68));
+  pointer-events:none;
+}
+
+.honey-project{
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,var(--cream),#fff7ed);
+  color:var(--black);
+  font-family:"JetBrains Mono",monospace;
+  font-size:clamp(18px,2vw,32px);
+  font-weight:800;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  text-align:center;
+  white-space:nowrap;
+  box-shadow:0 24px 70px rgba(255,47,132,.22);
+}
+
+.honey-project img{
+  position:absolute;
+  inset:0;
+  opacity:.12;
+  filter:grayscale(1);
+}
+
+.honey-project span{
+  position:relative;
+  z-index:2;
+}
+
+.honey-filler{
+  background:linear-gradient(135deg,rgba(255,47,132,.28),rgba(230,83,34,.18));
+  border:1px solid rgba(255,247,237,.16);
+}
+
+.honey-soft img{
+  opacity:.5;
+  filter:saturate(.8) contrast(.9);
+}
+
+.honey-pos-face img{object-position:50% 40%}
+.honey-pos-dance img{object-position:44% center}
+.honey-pos-stage img{object-position:42% center}
+.honey-pos-plastic img{object-position:center center}
+
+/* old caption style kept harmless if a browser caches older markup */
+.honey-label{
+  position:absolute;
+  left:18%;
+  right:18%;
+  bottom:22%;
+  z-index:2;
+  color:var(--white);
+  text-transform:uppercase;
+  font-size:clamp(16px,1.55vw,25px);
+  line-height:1;
+  overflow-wrap:anywhere;
+  text-shadow:0 3px 16px rgba(0,0,0,.65);
+}
+
+.honey-label small{
+  display:block;
+  margin-top:7px;
+  color:var(--cream);
+  font-family:"JetBrains Mono",monospace;
+  font-size:clamp(9px,.85vw,12px);
+  line-height:1.28;
+  text-transform:none;
+}
+
+.event{
+  background:var(--cream);
+  color:var(--black);
+  border-radius:36px;
+  padding:42px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:30px;
+  align-items:center;
+  position:relative;
+  overflow:hidden;
+}
+
+.event::before{
+  content:"";
+  position:absolute;
+  inset:-80px;
+  background:radial-gradient(circle,var(--hot),transparent 55%);
+  opacity:.18;
+  animation:pulse 4s ease-in-out infinite;
+}
+
+.event > *{
+  position:relative;
+  z-index:2;
+}
+
+.event small{
+  font-family:"JetBrains Mono",monospace;
+  color:var(--orange);
+  font-weight:700;
+}
+
+.event h3{
+  font-size:46px;
+  margin:10px 0;
+}
+
+.event-date{
+  font-size:42px;
+  color:var(--orange);
+  font-family:"JetBrains Mono",monospace;
+}
+
+.gallery{
+  display:grid;
+  grid-template-columns:1.3fr .7fr;
+  gap:22px;
+}
+
+.gallery img{
+  width:100%;
+  height:420px;
+  object-fit:cover;
+  border-radius:30px;
+  border:1px solid var(--border);
+  transition:.5s ease;
+  filter:grayscale(.3) contrast(1.05);
+}
+
+.gallery img:first-child{
+  height:620px;
+  object-position:38% center;
+}
+
+.gallery img:hover{
+  transform:scale(1.035) rotate(.8deg);
+  filter:contrast(1.15) saturate(1.15);
+}
+
+.contact{
+  text-align:center;
+  background:
+    linear-gradient(rgba(8,8,8,.5),rgba(8,8,8,.88)),
+    linear-gradient(135deg,var(--pink),var(--red));
+  border-top:1px solid var(--border);
+}
+
+.contact h2{
+  font-size:clamp(46px,7vw,100px);
+  text-transform:uppercase;
+  letter-spacing:-4px;
+}
+
+.contact p{
+  color:var(--cream);
+  margin:18px auto 30px;
+  max-width:600px;
+  line-height:1.7;
+}
+
+.footer{
+  padding:25px 7%;
+  display:flex;
+  justify-content:space-between;
+  color:var(--muted);
+  font-family:"JetBrains Mono",monospace;
+  font-size:13px;
+  border-top:1px solid var(--border);
+}
+
+/* ===== PROFESSIONAL MOTION WAVE ===== */
+
+.motion-wave{
+  position:absolute;
+  top:630px;
+  left:0;
+  width:100%;
+  height:260px;
+  pointer-events:none;
+  z-index:1;
+  opacity:.72;
+}
+
+.motion-wave path{
+  fill:none;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.motion-wave .wave-main{
+  stroke:rgba(255,247,237,.72);
+  stroke-width:2.5;
+  stroke-dasharray:18 16;
+  animation:waveDrift 8s linear infinite;
+}
+
+.motion-wave .wave-accent{
+  stroke:rgba(255,47,132,.42);
+  stroke-width:1.5;
+  stroke-dasharray:6 18;
+  animation:waveDrift 6s linear infinite reverse;
+}
+
+.motion-wave .wave-glow{
+  stroke:rgba(255,247,237,.22);
+  stroke-width:12;
+  filter:blur(8px);
+}
+
+.hero,
+.section,
+.footer{
+  position:relative;
+  z-index:2;
+}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(55px) scale(.96);filter:blur(8px)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
+
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes floatPoster{
+  0%,100%{transform:translateY(0) rotate(2deg)}
+  50%{transform:translateY(-18px) rotate(-1deg)}
+}
+
+@keyframes textGlow{
+  0%,100%{text-shadow:8px 8px 0 #080808}
+  50%{text-shadow:12px 12px 0 #c91935}
+}
+
+@keyframes grainMove{
+  0%{transform:translate(0,0)}
+  100%{transform:translate(-80px,-80px)}
+}
+
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:.14}
+  50%{transform:scale(1.15);opacity:.28}
+}
+
+@keyframes waveDrift{
+  to{stroke-dashoffset:-170}
+}
+
+@media(max-width:900px){
+  .hero,.about,.event,.gallery{
+    grid-template-columns:1fr;
+  }
+
+  .honey-grid{
+    display:grid;
+    grid-template-columns:repeat(6,minmax(0,1fr));
+    gap:18px 12px;
+    padding-bottom:28px;
+  }
+
+  .honey-tile,
+  .honey-tile:nth-child(n){
+    grid-column:span 2;
+    width:auto;
+    margin-top:0;
+  }
+
+  .honey-tile:nth-child(4){
+    grid-column:2 / span 2;
+  }
+
+  .honey-tile:nth-child(5){
+    grid-column:4 / span 2;
+  }
+
+  .honey-label{
+    left:16%;
+    right:16%;
+    bottom:20%;
+  }
+
+  .nav-links{display:none}
+
+  .hero-card img{
+    height:420px;
+  }
+
+  .artist-name{
+    font-size:22px;
+  }
+
+  .footer{
+    flex-direction:column;
+    gap:10px;
+  }
+
+  .motion-wave{
+    display:none;
+  }
+}
+
+@media(max-width:560px){
+  .honey-grid{
+    grid-template-columns:1fr;
+    max-width:320px;
+    margin-inline:auto;
+    gap:14px;
+  }
+
+  .honey-tile:nth-child(n){
+    grid-column:auto;
+    margin-top:0;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<svg class="motion-wave" viewBox="0 0 1440 260" preserveAspectRatio="none" aria-hidden="true">
+  <path class="wave-glow" d="M120 138 C285 92 420 84 570 136 C744 196 918 194 1090 130 C1210 86 1320 98 1420 142" />
+  <path class="wave-main" d="M120 138 C285 92 420 84 570 136 C744 196 918 194 1090 130 C1210 86 1320 98 1420 142" />
+  <path class="wave-accent" d="M40 180 C210 128 386 132 544 176 C730 228 900 220 1068 166 C1218 118 1345 122 1440 170" />
+</svg>
+
+<nav class="nav">
+  <div class="logo">jaskaran:anand</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#works">Works</a>
+    <a href="#events">Archive</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div>
+    <div class="tag">PERFORMANCE-MAKER / RESEARCHER / PEDAGOGUE</div>
+    <h1>Jaskaran <span>Anand</span></h1>
+    <p>
+      Born in New Delhi and based in Linz, Jaskaran Anand works as a
+      performer, choreographer, researcher and educator. His trans-disciplinary
+      practice uses choreography, dance and the human body as living interfaces
+      for questions of self, reality, culture and public space.
+    </p>
+
+    <div class="btns">
+      <a class="btn btn-main" href="#works">View Works</a>
+      <a class="btn btn-ghost" href="#about">Artist Profile</a>
+    </div>
+  </div>
+
+  <div class="hero-card">
+    <img
+      src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg"
+      alt="Jaskaran Anand portrait"
+      referrerpolicy="no-referrer">
+    <div class="frame-line"></div>
+    <div class="artist-name">Jaskaran Anand</div>
+    <div class="photo-credit">Photo: Flora Loeffelmann</div>
+  </div>
+</section>
+
+<section class="section about" id="about">
+  <div class="reveal">
+    <h2 class="section-title">Artist <span>Profile</span></h2>
+  </div>
+
+  <div class="about-box reveal">
+    <p>
+      Jaskaran Anand has lived in Linz since 2015. His work combines
+      performative art, scientific and art-based research, and participatory
+      collaborative practice. He has presented work across Austria, New Zealand
+      and India, and has appeared in contexts including imagetanz / brut Wien,
+      ImPulsTanz, Ars Electronica, Oriente Occidente, Tanztage Wien and
+      Romaeuropa Festival.
+    </p>
+  </div>
+</section>
+
+<section class="section honey-section" id="works">
+
+  <div class="honey-grid">
+    <figure class="honey-tile honey-pos-face reveal">
+      <img
+        src="https://www.jaskarananand.com/img/jaskaran-anand_1.jpg"
+        alt="Jaskaran Anand portrait"
+        referrerpolicy="no-referrer">
+    </figure>
+
+    <figure class="honey-tile honey-project reveal">
+      <img
+        src="https://brut-wien.at/var/brut/storage/images/media/bilder-presse/2022-pressebilder/maerz-2022/jaskaran-anand/web_jaskaran-anand_052_c_christine-miess/252374-2-eng-GB/web_Jaskaran-Anand_052_c_Christine-Miess.jpg"
+        alt=""
+        referrerpolicy="no-referrer">
+      <span>Project(s)</span>
+    </figure>
+
+    <figure class="honey-tile honey-pos-dance reveal">
+      <img
+        src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg"
+        alt="Jaskaran Anand moving outdoors"
+        referrerpolicy="no-referrer">
+    </figure>
+
+    <figure class="honey-tile honey-soft honey-pos-face reveal">
+      <img
+        src="https://www.jaskarananand.com/img/jaskaran-anand_1.jpg"
+        alt="Jaskaran Anand translucent portrait"
+        referrerpolicy="no-referrer">
+    </figure>
+
+    <figure class="honey-tile honey-pos-stage reveal">
+      <img
+        src="https://brut-wien.at/var/brut/storage/images/media/bilder-presse/2022-pressebilder/maerz-2022/jaskaran-anand/web_jaskaran-anand_052_c_christine-miess/252374-2-eng-GB/web_Jaskaran-Anand_052_c_Christine-Miess.jpg"
+        alt="Jaskaran Anand stage performance"
+        referrerpolicy="no-referrer">
+    </figure>
+  </div>
+</section>
+
+<section class="section" id="events">
+  <h2 class="section-title reveal">Performance <span>Archive</span></h2>
+
+  <div class="event reveal">
+    <div>
+      <small>WORKS AT BRUT WIEN / SELECTED ARCHIVE</small>
+      <h3>L-INKED / THE SOLO</h3>
+      <p>Presented at imagetanz 2022, following Around L-INKED at imagetanz 2021 and Time Capsule: Dis.City with City Voices in 2024.</p>
+    </div>
+
+    <div class="event-date">brut<br>Wien</div>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <h2 class="section-title reveal">Visual <span>Archive</span></h2>
+
+  <div class="gallery">
+    <img
+      class="reveal"
+      src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg"
+      alt="Jaskaran Anand smiling portrait"
+      referrerpolicy="no-referrer">
+    <img
+      class="reveal"
+      src="https://brut-wien.at/var/brut/storage/images/media/bilder-presse/2022-pressebilder/maerz-2022/jaskaran-anand/web_jaskaran-anand_052_c_christine-miess/252374-2-eng-GB/web_Jaskaran-Anand_052_c_Christine-Miess.jpg"
+      alt="Jaskaran Anand performance image"
+      referrerpolicy="no-referrer">
+  </div>
+</section>
+
+<section class="section contact" id="contact">
+  <h2 class="reveal">Bodies Think Aloud</h2>
+  <p class="reveal">
+    For performances, choreography, body-brain oriented workshops, research
+    formats and interdisciplinary collaborations, connect with the artist.
+  </p>
+  <a class="btn btn-main reveal" href="https://www.jaskarananand.com/contact.php">Contact Artist</a>
+</section>
+
+<footer class="footer">
+  <span>&copy; 2026 Jaskaran Anand</span>
+  <span>Artist / Researcher / Choreographer</span>
+</footer>
+
+<script>
+const revealItems = document.querySelectorAll(".reveal");
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+},{threshold:.15});
+
+revealItems.forEach(item=>{
+  observer.observe(item);
+});
+</script>
+
+</body>
+</html>

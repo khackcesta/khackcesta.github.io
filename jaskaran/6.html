@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JASKARAN ANAND — ARTIST · PERFORMER · CITY VOICES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Anton&family=Barlow+Condensed:wght@300;400;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --hp: #E84DB5; --bp: #F271C5; --dm: #C4236F; --ar: #FF2D9B;
+  --bk: #070707; --nb: #0E0E0E; --ch: #1A1A1A;
+  --wr: #D43850; --dr: #9B1A2C; --gd: #C8A84B;
+  --cr: #F5ECD7; --ow: #F0EBE1; --pk: #EC6DBF; --ros: #6B1030;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{background:var(--bk);color:var(--ow);font-family:'Space Mono',monospace;overflow-x:hidden;cursor:none}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bk)}::-webkit-scrollbar-thumb{background:var(--hp)}
+
+/* ── CURSOR ── */
+#cdot{position:fixed;width:10px;height:10px;background:var(--hp);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:width .15s,height .15s}
+#cring{position:fixed;width:38px;height:38px;border:1.5px solid var(--hp);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);opacity:.5;transition:width .2s,height .2s,opacity .2s}
+body.ch #cdot{width:22px;height:22px}body.ch #cring{width:56px;height:56px;opacity:.25}
+
+/* ── GRAIN ── */
+#grain{position:fixed;inset:0;pointer-events:none;z-index:8900;opacity:.042;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+animation:gr .2s steps(3) infinite}
+@keyframes gr{0%{transform:translate(0,0)}33%{transform:translate(-3px,2px)}66%{transform:translate(3px,-2px)}100%{transform:translate(0,0)}}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:var(--bk);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:clip-path 1.4s cubic-bezier(.77,0,.18,1),opacity .4s ease 1.3s;clip-path:inset(0 0 0 0)}
+#loader.out{clip-path:inset(0 0 100% 0);opacity:0;pointer-events:none}
+.laura{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 50%,#C4236F55 0%,transparent 55%),radial-gradient(ellipse at 80% 20%,#E84DB540 0%,transparent 45%),radial-gradient(ellipse at 60% 85%,#6B103030 0%,transparent 40%);animation:ap 4s ease-in-out infinite alternate}
+@keyframes ap{from{opacity:.6;transform:scale(1)}to{opacity:1;transform:scale(1.12)}}
+.lrings{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.lr{position:absolute;border:1px solid var(--hp);border-radius:50%;opacity:0;animation:re 2.5s cubic-bezier(.2,.8,.4,1) infinite}
+.lr:nth-child(1){width:200px;height:200px;animation-delay:0s}
+.lr:nth-child(2){width:340px;height:340px;animation-delay:.5s}
+.lr:nth-child(3){width:500px;height:500px;animation-delay:1s}
+.lr:nth-child(4){width:700px;height:700px;animation-delay:1.5s}
+@keyframes re{0%{opacity:.5;transform:scale(.3)}100%{opacity:0;transform:scale(1)}}
+.lcontent{position:relative;z-index:2;text-align:center;display:flex;flex-direction:column;align-items:center}
+.lw{font-family:'Black Ops One',cursive;font-size:clamp(56px,12vw,148px);line-height:.82;opacity:0;transform:translateY(80px) skewY(4deg);animation:wr 1s cubic-bezier(.16,1,.3,1) forwards;text-shadow:0 0 100px #E84DB555}
+.lw1{color:var(--bp);animation-delay:.15s}.lw2{color:var(--ow);animation-delay:.38s}
+@keyframes wr{to{opacity:1;transform:translateY(0) skewY(0deg)}}
+.lrule{width:0;height:1px;background:linear-gradient(90deg,transparent,var(--hp),transparent);animation:lre .7s ease-out 1s forwards;margin:22px 0}
+@keyframes lre{to{width:320px}}
+.lsub{font-family:'Barlow Condensed',sans-serif;font-size:clamp(13px,1.8vw,20px);letter-spacing:.45em;color:var(--wr);font-weight:300;text-transform:uppercase;opacity:0;animation:wr .8s ease .65s forwards}
+.lpct{margin-top:36px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.45em;color:var(--hp);opacity:0;animation:fi .5s ease .9s forwards}
+@keyframes fi{to{opacity:1}}
+.lgeo{position:absolute;border:1px solid #E84DB520;animation:lgs 14s linear infinite}
+.lgeo:nth-child(1){width:460px;height:460px;border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.lgeo:nth-child(2){width:220px;height:220px;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);animation-direction:reverse;animation-duration:9s}
+@keyframes lgs{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:22px 48px;display:flex;justify-content:space-between;align-items:center;transition:backdrop-filter .4s,background .4s}
+nav.stuck{backdrop-filter:blur(24px) saturate(1.4);background:rgba(7,7,7,.75);border-bottom:1px solid rgba(232,77,181,.08)}
+.nlogo{font-family:'Black Ops One',cursive;font-size:15px;letter-spacing:.12em;color:var(--bp);text-decoration:none;cursor:none}
+.nlinks{list-style:none;display:flex;gap:36px}
+.nlinks a{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--ow);text-decoration:none;text-transform:uppercase;cursor:none;position:relative;transition:color .25s}
+.nlinks a::after{content:'';position:absolute;bottom:-5px;left:0;right:0;height:1px;background:var(--hp);transform:scaleX(0);transition:transform .3s;transform-origin:left}
+.nlinks a:hover{color:var(--bp)}.nlinks a:hover::after{transform:scaleX(1)}
+
+/* ── HERO ── */
+#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 48px 72px;overflow:hidden}
+#heroCanvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+.hambient{position:absolute;inset:0;background:radial-gradient(ellipse at 18% 65%,#C4236F28 0%,transparent 48%),radial-gradient(ellipse at 88% 15%,#E84DB518 0%,transparent 44%),radial-gradient(ellipse at 55% 92%,#6B103035 0%,transparent 38%);pointer-events:none;z-index:1;animation:hb 12s ease-in-out infinite alternate}
+@keyframes hb{from{opacity:.7;transform:scale(1)}to{opacity:1;transform:scale(1.06)}}
+
+/* ── HERO PHOTO ── */
+.hphoto{position:absolute;right:0;top:0;bottom:0;width:42%;z-index:2;pointer-events:none;overflow:hidden}
+.hphoto::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--bk) 0%,rgba(7,7,7,.4) 30%,transparent 60%),linear-gradient(180deg,rgba(7,7,7,.5) 0%,transparent 25%,transparent 75%,var(--bk) 100%);z-index:2}
+.hphoto::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,77,181,.12) 0%,transparent 55%);z-index:3;mix-blend-mode:screen}
+.hphoto img{width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.78;filter:contrast(1.05) saturate(0.9);transition:transform 14s ease-in-out;animation:hpz 14s ease-in-out infinite alternate}
+@keyframes hpz{from{transform:scale(1.04) translateY(0)}to{transform:scale(1) translateY(-12px)}}
+.hphoto-credit{position:absolute;bottom:80px;right:22px;z-index:5;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.38em;color:rgba(240,235,225,.25);writing-mode:vertical-rl;text-transform:uppercase}
+
+/* floating shapes */
+.hs{position:absolute;pointer-events:none;z-index:2}
+.hsorbit{width:320px;height:320px;border-radius:50%;border:1px solid rgba(232,77,181,.18);top:12%;right:6%;animation:hso 18s linear infinite}
+@keyframes hso{to{transform:rotate(360deg)}}
+.hsorbit::after{content:'';position:absolute;width:10px;height:10px;background:var(--hp);border-radius:50%;top:-5px;left:50%;transform:translateX(-50%);box-shadow:0 0 20px var(--hp)}
+.hsdiamond{width:70px;height:70px;background:var(--hp);opacity:.85;clip-path:polygon(50% 0%,100% 50%,50% 100%,0 50%);top:28%;right:22%;animation:hsd 7s ease-in-out infinite}
+@keyframes hsd{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}50%{transform:translateY(-22px) rotate(45deg) scale(1.1)}}
+.hsstar{width:44px;height:44px;background:var(--bp);opacity:.7;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);top:58%;left:4%;animation:hss 5.5s ease-in-out infinite}
+@keyframes hss{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-16px) rotate(72deg)}}
+.hscross{top:18%;left:10%;color:var(--hp);font-size:52px;opacity:.4;animation:hsc 9s ease-in-out infinite}
+@keyframes hsc{0%,100%{transform:translateY(0) scale(1);opacity:.35}50%{transform:translateY(-20px) scale(1.2);opacity:.7}}
+.hsplus{top:70%;right:12%;color:var(--bp);font-size:28px;opacity:.3;animation:hsp 7s ease-in-out infinite}
+@keyframes hsp{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(90deg)}}
+.hsidel{position:absolute;left:18px;top:50%;transform:translateY(-50%) rotate(-90deg);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.55em;color:var(--hp);opacity:.45;white-space:nowrap;z-index:3}
+.hsider{position:absolute;right:18px;top:50%;transform:translateY(-50%) rotate(90deg);font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.55em;color:var(--ow);opacity:.25;white-space:nowrap;z-index:3}
+
+.hbody{position:relative;z-index:4}
+.heyebrow{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.55em;color:var(--hp);text-transform:uppercase;margin-bottom:18px;opacity:0;animation:fu .7s ease 2.2s forwards}
+@keyframes fu{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.htclip{overflow:hidden;line-height:.84}
+.ht1{font-family:'Black Ops One',cursive;font-size:clamp(72px,14.5vw,210px);color:var(--bp);display:block;opacity:0;transform:translateY(105%);animation:cu 1.1s cubic-bezier(.16,1,.3,1) 1.9s forwards;text-shadow:5px 5px 0 #0A0A0A,0 0 140px rgba(232,77,181,.3)}
+.ht2{font-family:'Anton',sans-serif;font-size:clamp(60px,12.5vw,182px);color:var(--ow);letter-spacing:-.02em;display:block;opacity:0;transform:translateY(105%);animation:cu 1.1s cubic-bezier(.16,1,.3,1) 2.1s forwards;text-shadow:5px 5px 0 #0A0A0A}
+.ht3{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,5.5vw,84px);color:var(--wr);font-weight:900;letter-spacing:.12em;text-transform:uppercase;display:block;opacity:0;transform:translateY(105%);animation:cu 1.1s cubic-bezier(.16,1,.3,1) 2.3s forwards}
+@keyframes cu{to{opacity:1;transform:translateY(0)}}
+
+.hbottom{display:flex;align-items:center;gap:48px;margin-top:44px;opacity:0;animation:fu .8s ease 2.7s forwards}
+.htagline{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(240,235,225,.45);line-height:2;max-width:280px}
+.hcta{display:inline-flex;align-items:center;gap:14px;padding:15px 32px;border:1px solid var(--hp);color:var(--hp);text-decoration:none;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.32em;text-transform:uppercase;cursor:none;position:relative;overflow:hidden;transition:color .3s}
+.hcta::before{content:'';position:absolute;inset:0;background:var(--hp);transform:translateX(-101%);transition:transform .35s cubic-bezier(.4,0,.2,1);z-index:-1}
+.hcta:hover{color:var(--bk)}.hcta:hover::before{transform:translateX(0)}
+.hscrl{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:4;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;animation:fu .7s ease 3.1s forwards}
+.hscrlline{width:1px;height:64px;background:linear-gradient(180deg,var(--hp),transparent);animation:sb 2.2s ease-in-out infinite;transform-origin:top}
+@keyframes sb{0%,100%{transform:scaleY(1);opacity:1}50%{transform:scaleY(.6);opacity:.4}}
+.hscrllabel{font-size:8px;letter-spacing:.5em;color:var(--hp);writing-mode:vertical-rl;font-family:'Space Mono',monospace}
+
+/* ── GLITCH ── */
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.glitch::before{color:var(--hp);clip-path:polygon(0 20%,100% 20%,100% 35%,0 35%);transform:translateX(-3px);animation:ga 5s infinite 2s}
+.glitch::after{color:var(--wr);clip-path:polygon(0 65%,100% 65%,100% 78%,0 78%);transform:translateX(3px);animation:gb 5s infinite 2s}
+@keyframes ga{0%,94%,100%{transform:translateX(-3px);opacity:0}95%{transform:translateX(4px);opacity:1}97%{transform:translateX(-4px);opacity:1}99%{transform:translateX(0);opacity:0}}
+@keyframes gb{0%,94%,100%{transform:translateX(3px);opacity:0}95%{transform:translateX(-4px);opacity:1}97%{transform:translateX(4px);opacity:1}99%{transform:translateX(0);opacity:0}}
+
+/* ── REVEAL ── */
+.rv{opacity:0;transform:translateY(44px);transition:opacity .95s ease,transform .95s cubic-bezier(.16,1,.3,1);will-change:transform,opacity}
+.rv.in{opacity:1;transform:translateY(0)}
+.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.22s}.rv.d3{transition-delay:.34s}.rv.d4{transition-delay:.46s}
+
+/* ── TICKER ── */
+.ticker{position:relative;overflow:hidden;padding:16px 0;border-top:1px solid rgba(232,77,181,.15);border-bottom:1px solid rgba(232,77,181,.15);background:var(--nb)}
+.tinner{display:flex;white-space:nowrap;animation:tr 22s linear infinite}
+.tinner.rev{animation-direction:reverse}
+@keyframes tr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ti{font-family:'Bebas Neue',cursive;font-size:15px;letter-spacing:.3em;color:var(--hp);padding:0 32px;opacity:.7}
+.ti.sep{color:var(--wr);opacity:1}
+
+/* ── MANIFESTO ── */
+#manifesto{position:relative;background:var(--pk);padding:120px 48px;overflow:hidden;min-height:100vh;display:flex;align-items:center}
+.mfbg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.mfc1{position:absolute;border-radius:50%;background:rgba(10,10,10,.06);width:700px;height:700px;right:-200px;top:-200px}
+.mfc2{position:absolute;border-radius:50%;background:rgba(10,10,10,.06);width:300px;height:300px;left:-80px;bottom:-80px}
+.mfarr{position:absolute;right:48px;top:60px;font-size:180px;color:var(--bk);opacity:.07;font-family:'Anton',sans-serif;line-height:1;transform:rotate(-8deg);pointer-events:none}
+.mfinner{position:relative;z-index:2;width:100%}
+.mflabel{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.55em;color:var(--bk);opacity:.4;text-transform:uppercase;margin-bottom:44px}
+.mfhead{font-family:'Black Ops One',cursive;font-size:clamp(56px,11.5vw,155px);color:var(--bk);line-height:.83;margin-bottom:70px}
+.mfhead .ol{-webkit-text-stroke:2.5px var(--bk);color:transparent;display:block}
+.mfhead .fi{color:var(--bk);display:block}
+.mfgrid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start}
+.mfquote{font-family:'Anton',sans-serif;font-size:clamp(22px,3.8vw,46px);color:var(--bk);line-height:1.1;letter-spacing:.02em}
+.mfbody{font-family:'Space Mono',monospace;font-size:11px;line-height:2;color:rgba(10,10,10,.62);letter-spacing:.04em}
+.mftags{display:flex;flex-wrap:wrap;gap:12px;margin-top:56px}
+.mftag{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.35em;padding:6px 16px;border:1.5px solid rgba(10,10,10,.25);color:var(--bk);text-transform:uppercase}
+/* Portrait in manifesto */
+.mfportrait{position:absolute;right:0;top:0;bottom:0;width:28%;overflow:hidden;pointer-events:none}
+.mfportrait::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--pk) 0%,rgba(236,109,191,.25) 35%,transparent 70%),linear-gradient(180deg,var(--pk) 0%,transparent 20%,transparent 80%,var(--pk) 100%);z-index:2}
+.mfportrait img{width:100%;height:100%;object-fit:cover;object-position:top center;opacity:.55;filter:saturate(0.3) contrast(1.1) sepia(0.2);mix-blend-mode:multiply}
+
+/* ── ARCHIVE ── */
+#archive{position:relative;background:var(--nb);padding:120px 48px;overflow:hidden}
+.sechdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:72px}
+.secnum{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.45em;color:var(--hp);opacity:.55;margin-bottom:10px}
+.sectitle{font-family:'Anton',sans-serif;font-size:clamp(46px,9.5vw,128px);color:var(--ow);line-height:.88;text-transform:uppercase}
+.sectitle .ol{-webkit-text-stroke:2px var(--ow);color:transparent}
+.secaside{max-width:240px;font-family:'Space Mono',monospace;font-size:10px;line-height:1.9;color:rgba(240,235,225,.3);letter-spacing:.04em;padding-top:16px}
+.arcgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.arccell{aspect-ratio:3/4;position:relative;overflow:hidden;cursor:none;display:flex;align-items:flex-end;padding:24px;transition:transform .4s ease}
+.arccell:hover{transform:scale(.98)}
+.arccell::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,7,7,.25) 0%,rgba(7,7,7,.6) 60%,rgba(7,7,7,.92) 100%);z-index:1;transition:opacity .4s}
+.arccell:hover::before{opacity:.7}
+.arccell img.acbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .7s cubic-bezier(.16,1,.3,1);z-index:0}
+.arccell:hover img.acbg{transform:scale(1.07)}
+.acov{position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(10,10,10,.9) 100%);opacity:0;transition:opacity .4s;z-index:1}
+.arccell:hover .acov{opacity:1}
+.acontent{position:relative;z-index:2}
+.actitle{font-family:'Black Ops One',cursive;font-size:clamp(22px,2.8vw,44px);line-height:.9;text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.acsub{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.3em;opacity:.6;margin-top:6px}
+.ac1::after{content:'';position:absolute;inset:0;background:rgba(236,109,191,.35);mix-blend-mode:multiply;z-index:0;pointer-events:none}.ac1 .actitle{color:#fff}.ac1 .acsub{color:rgba(255,255,255,.6)}
+.ac2::after{content:'';position:absolute;inset:0;background:rgba(14,14,14,.5);z-index:0;pointer-events:none}.ac2 .actitle{color:var(--bp)}
+.ac3::after{content:'';position:absolute;inset:0;background:rgba(212,56,80,.45);mix-blend-mode:multiply;z-index:0;pointer-events:none}.ac3 .actitle{color:var(--ow)}
+.ac4::after{content:'';position:absolute;inset:0;background:rgba(196,35,111,.5);mix-blend-mode:multiply;z-index:0;pointer-events:none}.ac4 .actitle{color:var(--bp)}
+.ac5::after{content:'';position:absolute;inset:0;background:rgba(200,168,75,.4);mix-blend-mode:multiply;z-index:0;pointer-events:none}.ac5 .actitle{color:#fff}
+.ac6::after{content:'';position:absolute;inset:0;background:rgba(7,7,7,.55);z-index:0;pointer-events:none}.ac6 .actitle{color:var(--hp)}
+
+/* ── PERFORMANCE ── */
+#performance{position:relative;background:var(--bk);padding:120px 48px;overflow:hidden}
+.pffeat{display:grid;grid-template-columns:1fr 1fr;gap:90px;align-items:center;margin-top:72px}
+.pfimgw{position:relative;aspect-ratio:4/5;overflow:hidden}
+.pfimgb{position:absolute;inset:14px;border:1px solid rgba(232,77,181,.35);pointer-events:none;z-index:3}
+.pfimgi{width:100%;height:100%;overflow:hidden;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.pfimgi img{width:100%;height:100%;object-fit:cover;object-position:center top;transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.pfimgw:hover .pfimgi img{transform:scale(1.04)}
+.pfimgtxt{font-family:'Black Ops One',cursive;font-size:clamp(22px,3.5vw,52px);color:var(--bp);opacity:.35;text-align:center;line-height:1.2}
+.pfwm{position:absolute;bottom:-12px;right:-16px;z-index:4;font-family:'Black Ops One',cursive;font-size:clamp(70px,11vw,148px);color:var(--bp);opacity:.1;line-height:1;pointer-events:none;white-space:nowrap}
+.pflabel{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.55em;color:var(--hp);text-transform:uppercase;margin-bottom:18px}
+.pftitle{font-family:'Black Ops One',cursive;font-size:clamp(34px,5.5vw,72px);color:var(--bp);line-height:.88;margin-bottom:28px}
+.pfbody{font-family:'Space Mono',monospace;font-size:11px;line-height:2;color:rgba(240,235,225,.42);margin-bottom:40px;letter-spacing:.04em}
+.pfstats{display:flex;gap:44px;flex-wrap:wrap}
+.pfstat{border-top:1px solid rgba(232,77,181,.22);padding-top:14px}
+.pfstatk{font-size:8px;letter-spacing:.5em;color:var(--hp);text-transform:uppercase;font-family:'Space Mono',monospace;margin-bottom:5px}
+.pfstatv{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--ow);letter-spacing:.05em}
+
+/* ── LANDSCAPES ── */
+#landscapes{background:var(--pk);padding:120px 48px;position:relative;overflow:hidden}
+.lsmarq{overflow:hidden}
+.lstk{display:flex;white-space:nowrap;animation:lsr 16s linear infinite}
+@keyframes lsr{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.lsw{font-family:'Black Ops One',cursive;font-size:clamp(78px,14vw,200px);color:var(--bk);padding:0 36px;line-height:.82}
+.lsw.ol{-webkit-text-stroke:3px var(--bk);color:transparent}
+.lsgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:80px}
+.lscell{aspect-ratio:1;position:relative;overflow:hidden;cursor:none}
+.lsci{width:100%;height:100%;transition:transform .6s cubic-bezier(.16,1,.3,1);background-size:cover;background-position:center}
+.lscell:hover .lsci{transform:scale(1.1)}
+.lsclabel{position:absolute;bottom:0;left:0;right:0;padding:12px 14px;background:linear-gradient(to top,rgba(10,10,10,.8),transparent);font-family:'Bebas Neue',cursive;font-size:16px;color:var(--bp);letter-spacing:.18em;opacity:0;transition:opacity .3s}
+.lscell:hover .lsclabel{opacity:1}
+
+/* ── GALLERY ── */
+#gallery{background:var(--nb);padding:120px 48px;position:relative;overflow:hidden}
+.galintro{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:80px}
+.galtitle{font-family:'Anton',sans-serif;font-size:clamp(46px,8.5vw,115px);color:var(--ow);line-height:.85;text-transform:uppercase;max-width:55%}
+.galtitle .ol{-webkit-text-stroke:2px var(--ow);color:transparent;display:block}
+.galaside{max-width:260px;padding-top:16px;font-family:'Space Mono',monospace;font-size:10px;line-height:2;color:rgba(240,235,225,.35);letter-spacing:.04em}
+.galcols{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.galcol{display:flex;flex-direction:column;gap:3px}
+.gc{position:relative;overflow:hidden;cursor:none;display:flex;align-items:flex-end;padding:22px;transition:transform .4s ease;background-size:cover!important;background-position:center!important}
+.gc::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,7,7,.3) 0%,rgba(7,7,7,.55) 60%,rgba(7,7,7,.88) 100%);z-index:0;transition:opacity .4s}
+.gc:hover{transform:scale(.98);z-index:2}
+.gc:hover::before{opacity:.65}
+.gclabel{font-family:'Black Ops One',cursive;font-size:clamp(20px,2.5vw,40px);line-height:.88;position:relative;z-index:1}
+.gpink{min-height:220px}.gpink::after{content:'';position:absolute;inset:0;background:rgba(236,109,191,.35);mix-blend-mode:multiply;z-index:0;pointer-events:none}.gpink .gclabel{color:#fff}
+.gred{min-height:160px}.gred::after{content:'';position:absolute;inset:0;background:rgba(212,56,80,.4);mix-blend-mode:multiply;z-index:0;pointer-events:none}.gred .gclabel{color:var(--ow)}
+.gdark{min-height:240px}.gdark::after{content:'';position:absolute;inset:0;background:rgba(26,26,26,.55);z-index:0;pointer-events:none}.gdark .gclabel{color:var(--bp)}
+.gmag{min-height:180px}.gmag::after{content:'';position:absolute;inset:0;background:rgba(196,35,111,.45);mix-blend-mode:multiply;z-index:0;pointer-events:none}.gmag .gclabel{color:var(--bp)}
+.ggold{min-height:200px}.ggold::after{content:'';position:absolute;inset:0;background:rgba(200,168,75,.35);mix-blend-mode:multiply;z-index:0;pointer-events:none}.ggold .gclabel{color:#fff}
+.gblack{min-height:220px}.gblack::after{content:'';position:absolute;inset:0;background:rgba(7,7,7,.55);z-index:0;pointer-events:none}.gblack .gclabel{color:var(--hp)}
+.gdpink{min-height:160px}.gdpink::after{content:'';position:absolute;inset:0;background:rgba(107,16,48,.45);mix-blend-mode:multiply;z-index:0;pointer-events:none}.gdpink .gclabel{color:var(--bp)}
+.gdred{min-height:200px}.gdred::after{content:'';position:absolute;inset:0;background:rgba(155,26,44,.45);mix-blend-mode:multiply;z-index:0;pointer-events:none}.gdred .gclabel{color:var(--ow)}
+.gol .gclabel{-webkit-text-stroke:2px;color:transparent!important;font-size:clamp(36px,5vw,80px)}
+.gblack.gol .gclabel{-webkit-text-stroke-color:var(--hp)}
+
+/* ── SENSORY ── */
+#sensory{position:relative;padding:140px 48px;background:var(--bk);overflow:hidden;text-align:center}
+.saaura{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,#E84DB520 0%,transparent 48%),radial-gradient(ellipse at 0% 100%,#C4236F28 0%,transparent 48%),radial-gradient(ellipse at 100% 50%,#6B103018 0%,transparent 42%);animation:sab 9s ease-in-out infinite alternate;pointer-events:none}
+@keyframes sab{from{opacity:.7;transform:scale(1)}to{opacity:1;transform:scale(1.08)}}
+.sainner{position:relative;z-index:2}
+.saeye{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.6em;color:var(--hp);text-transform:uppercase;margin-bottom:44px}
+.sahead{font-family:'Black Ops One',cursive;font-size:clamp(48px,10.5vw,148px);line-height:.82;margin-bottom:72px}
+.sahead .w1{color:var(--bp);display:block}.sahead .w2{color:var(--ow);display:block}.sahead .w3{color:var(--wr);display:block}
+.sacards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;text-align:left;margin-top:80px}
+.sacard{padding:44px 32px;border:1px solid rgba(232,77,181,.08);position:relative;overflow:hidden;cursor:none;transition:border-color .3s}
+.sacard:hover{border-color:rgba(232,77,181,.4)}
+.sacard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--hp),transparent);transform:scaleX(0);transition:transform .4s;transform-origin:left}
+.sacard:hover::before{transform:scaleX(1)}
+.sacn{font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.5em;color:var(--hp);margin-bottom:20px}
+.sact{font-family:'Bebas Neue',cursive;font-size:30px;letter-spacing:.1em;color:var(--bp);margin-bottom:14px}
+.sacd{font-family:'Space Mono',monospace;font-size:10px;color:rgba(240,235,225,.38);line-height:1.9;letter-spacing:.04em}
+
+/* ── CONTACT ── */
+#contact{position:relative;background:var(--pk);padding:140px 48px;overflow:hidden}
+.ctgeo{position:absolute;border:2px solid var(--bk);opacity:.06;border-radius:50%}
+.ctg1{width:900px;height:900px;top:-250px;right:-250px;animation:gsp 24s linear infinite}
+.ctg2{width:440px;height:440px;bottom:-120px;left:-120px;animation:gsp 18s linear infinite reverse}
+@keyframes gsp{to{transform:rotate(360deg)}}
+.ctinner{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr 1fr;gap:100px;align-items:center}
+.cttitle{font-family:'Black Ops One',cursive;font-size:clamp(60px,11vw,152px);color:var(--bk);line-height:.84;margin-bottom:40px}
+.cttitle .ol{-webkit-text-stroke:3px var(--bk);color:transparent;display:block}
+.ctnote{font-family:'Space Mono',monospace;font-size:11px;line-height:2;color:rgba(10,10,10,.55);letter-spacing:.04em;max-width:360px}
+.ctlinks{display:flex;flex-direction:column}
+.ctlink{display:flex;justify-content:space-between;align-items:center;padding:22px 0;border-bottom:1px solid rgba(10,10,10,.18);text-decoration:none;color:var(--bk);cursor:none;position:relative;transition:padding-left .3s,background .3s}
+.ctlink:hover{padding-left:14px}
+.ctlink::before{content:'';position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(10,10,10,.06);transition:width .3s}
+.ctlink:hover::before{width:100%}
+.ctln{font-family:'Bebas Neue',cursive;font-size:26px;letter-spacing:.2em;position:relative;z-index:1}
+.ctlarr{font-size:18px;transition:transform .3s;position:relative;z-index:1}
+.ctlink:hover .ctlarr{transform:translate(6px,-6px)}
+
+/* ── FOOTER ── */
+footer{background:var(--bk);padding:36px 48px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(232,77,181,.08);flex-wrap:wrap;gap:16px}
+.ftlogo{font-family:'Black Ops One',cursive;font-size:18px;letter-spacing:.12em;color:var(--bp)}
+.ftcopy{font-family:'Space Mono',monospace;font-size:9px;color:rgba(240,235,225,.25);letter-spacing:.3em;text-transform:uppercase}
+.ftlink{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.25em;color:rgba(240,235,225,.3);text-decoration:none;text-transform:uppercase;cursor:none;transition:color .2s}
+.ftlink:hover{color:var(--hp)}
+
+/* ── PHOTO STRIP ── */
+.photostrip{display:grid;grid-template-columns:1fr 1fr 1.4fr 1fr 1fr;gap:3px;height:44vw;max-height:520px;background:var(--bk)}
+.ps-item{position:relative;overflow:hidden}
+.ps-item img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:contrast(1.04);transition:transform .8s cubic-bezier(.16,1,.3,1)}
+.ps-item:hover img{transform:scale(1.06)}
+.ps-main{position:relative}
+.ps-main::before{content:'';position:absolute;inset:0;background:linear-gradient(0deg,rgba(7,7,7,.55) 0%,transparent 45%);z-index:1;pointer-events:none}
+.ps-caption{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:2;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.38em;color:rgba(240,235,225,.4);white-space:nowrap;text-transform:uppercase}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  nav{padding:18px 20px}.nlinks{display:none}
+  #hero,#manifesto,#archive,#performance,#landscapes,#gallery,#sensory,#contact{padding-left:20px;padding-right:20px}
+  .mfgrid,.pffeat,.ctinner,.sacards{grid-template-columns:1fr;gap:40px}
+  .arcgrid{grid-template-columns:1fr 1fr}.lsgrid{grid-template-columns:repeat(2,1fr)}
+  .galintro{flex-direction:column;gap:20px}.galtitle{max-width:100%}
+  .galcols{grid-template-columns:1fr 1fr}
+  footer{flex-direction:column;text-align:center}
+  .sechdr{flex-direction:column;gap:16px;align-items:flex-start}
+  .photostrip{grid-template-columns:1fr 1fr 1fr;height:60vw;max-height:none}
+  .ps-item:nth-child(4),.ps-item:nth-child(5){display:none}
+  .hphoto{width:50%}
+  .mfportrait{display:none}
+}
+</style>
+</head>
+<body>
+<div id="grain"></div>
+<div id="cdot"></div>
+<div id="cring"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="laura"></div>
+  <div class="lrings"><div class="lr"></div><div class="lr"></div><div class="lr"></div><div class="lr"></div></div>
+  <div class="lgeo"></div><div class="lgeo"></div>
+  <div class="lcontent">
+    <div class="lw lw1">JASKARAN</div>
+    <div class="lw lw2">ANAND</div>
+    <div class="lrule"></div>
+    <div class="lsub">Artist · Performer · City Voices</div>
+    <div class="lpct" id="lpct">LOADING EXHIBITION — 000%</div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nlogo">JA</a>
+  <ul class="nlinks">
+    <li><a href="#manifesto">Manifesto</a></li>
+    <li><a href="#archive">Archive</a></li>
+    <li><a href="#performance">Performance</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#sensory">Sensory</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="heroCanvas"></canvas>
+  <div class="hambient"></div>
+  <div class="hphoto">
+    <img src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg" alt="Jaskaran Anand" loading="eager">
+    <span class="hphoto-credit">© Flora Löffelmann</span>
+  </div>
+  <div class="hs hsorbit"></div>
+  <div class="hs hsdiamond"></div>
+  <div class="hs hsstar"></div>
+  <div class="hs hscross">✦</div>
+  <div class="hs hsplus">+</div>
+  <span class="hsidel">TRANS(T*).DISCITY / CITY VOICES — 2025</span>
+  <span class="hsider">CONTEMPORARY ART · PERFORMANCE · IDENTITY</span>
+  <div class="hbody">
+    <p class="heyebrow">↳ Contemporary Art Exhibition — Berlin / Vienna</p>
+    <div class="htclip"><span class="ht1 glitch" data-text="EMBRACE">EMBRACE</span></div>
+    <div class="htclip"><span class="ht2">THE CONNECTIONS</span></div>
+    <div class="htclip"><span class="ht3">↗ Learn Your Ghosts</span></div>
+    <div class="hbottom">
+      <p class="htagline">ARTIST / PERFORMER / CULTURAL DISRUPTOR<br>URBAN PSYCHOLOGY · SENSORY AFTERLIFE<br>ECHOES OF IDENTITY · CITY VOICES</p>
+      <a href="#manifesto" class="hcta mbtn">Enter Exhibition ↗</a>
+    </div>
+  </div>
+  <div class="hscrl"><span class="hscrllabel">SCROLL</span><div class="hscrlline"></div></div>
+</section>
+
+<!-- TICKER 1 -->
+<div class="ticker">
+  <div class="tinner">
+    <span class="ti">CITY VOICES</span><span class="ti sep">★</span>
+    <span class="ti">SENSORY AFTERLIFE</span><span class="ti sep">★</span>
+    <span class="ti">EMOTIONAL LANDSCAPE</span><span class="ti sep">★</span>
+    <span class="ti">NON-PERFORMATIVE</span><span class="ti sep">★</span>
+    <span class="ti">URBAN PSYCHOLOGY</span><span class="ti sep">★</span>
+    <span class="ti">ECHOES OF IDENTITY</span><span class="ti sep">★</span>
+    <span class="ti">CITY VOICES</span><span class="ti sep">★</span>
+    <span class="ti">SENSORY AFTERLIFE</span><span class="ti sep">★</span>
+    <span class="ti">EMOTIONAL LANDSCAPE</span><span class="ti sep">★</span>
+    <span class="ti">NON-PERFORMATIVE</span><span class="ti sep">★</span>
+    <span class="ti">URBAN PSYCHOLOGY</span><span class="ti sep">★</span>
+    <span class="ti">ECHOES OF IDENTITY</span><span class="ti sep">★</span>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section id="manifesto">
+  <div class="mfbg"><div class="mfc1"></div><div class="mfc2"></div><div class="mfarr">↗</div></div>
+  <div class="mfportrait"><img src="https://www.jaskarananand.com/img/jaskaran-anand_1.jpg" alt="Jaskaran Anand portrait"></div>
+  <div class="mfinner">
+    <p class="mflabel rv">§ 001 — ARTISTIC MANIFESTO</p>
+    <div class="mfhead rv">
+      <span class="fi">THE</span><span class="ol">EMBODIED</span><span class="fi">CITY</span>
+    </div>
+    <div class="mfgrid">
+      <div class="mfquote rv d1">"What happens when Goddess Kali meets Kaiserin Sisi? When the body becomes the city, and the city becomes the body?"</div>
+      <div class="mfbody rv d2">Jaskaran Anand is a trans* artist, performer, and cultural disruptor working at the intersection of identity, urban space, and collective memory. Through performance, installation, and living archive, their practice investigates how bodies navigate systems — institutional, urban, emotional.<br><br>Trans(T*).DisCity / City Voices is a socio-cultural initiative reimagining what it means to exist in public space — to be seen, heard, and felt.<br><br>The work refuses categorization. It is non-performative in its politics and deeply visceral in its aesthetics. It belongs to the street, the stage, the body, the void.</div>
+    </div>
+    <div class="mftags rv d3">
+      <span class="mftag">Urban Psychology</span>
+      <span class="mftag">Emotional Landscape</span>
+      <span class="mftag">Sensory Afterlife</span>
+      <span class="mftag">Non-Performative</span>
+      <span class="mftag">Trans* Aesthetics</span>
+      <span class="mftag">City Voices</span>
+    </div>
+  </div>
+</section>
+
+<!-- PHOTO STRIP -->
+<div class="photostrip">
+  <div class="ps-item"><img src="https://www.jaskarananand.com/img/projects/Excelsior.jpg" alt="Excelsior"></div>
+  <div class="ps-item"><img src="https://www.jaskarananand.com/img/orfeo_rave/orfeo-rave.jpg" alt="Orfeo Rave"></div>
+  <div class="ps-item ps-main"><img src="https://www.jaskarananand.com/img/jaskaran-anand_1.jpg" alt="Jaskaran Anand"><span class="ps-caption">Photo: Max Biskup</span></div>
+  <div class="ps-item"><img src="https://www.jaskarananand.com/img/projects/Out-of-Life.jpg" alt="Out of Life"></div>
+  <div class="ps-item"><img src="https://www.jaskarananand.com/img/sculptures/sculptures1.jpg" alt="Sculptures"></div>
+</div>
+
+<!-- ARCHIVE -->
+<section id="archive">
+  <div class="sechdr rv">
+    <div>
+      <p class="secnum">§ 002</p>
+      <div class="sectitle">EXPERI<br><span class="ol">MENTAL</span><br>ARCHIVE</div>
+    </div>
+    <p class="secaside">A living documentation of works, performances, and interventions across cities, bodies, and time.</p>
+  </div>
+  <div class="arcgrid rv">
+    <div class="arccell ac1" style="background-image:url('https://www.jaskarananand.com/img/projects/A-NEW-DAY.jpg');background-size:cover;background-position:center"><div class="acov"></div><div class="acontent"><div class="actitle">CITY VOICES<br>STADT<br>AUSTAUSCH</div><p class="acsub">BERLIN / VIENNA — 2025</p></div></div>
+    <div class="arccell ac2" style="background-image:url('https://www.jaskarananand.com/img/opacity/Opacity-la-triennale-di-milano-foto-gianluca-di-ioia.jpg');background-size:cover;background-position:center"><div class="acov"></div><div class="acontent"><div class="actitle">GODDESS KALI<br>MEETS<br>KAISERIN SISI</div><p class="acsub" style="color:rgba(240,235,225,.4)">PERFORMANCE — APR 2024</p></div></div>
+    <div class="arccell ac3" style="background-image:url('https://www.jaskarananand.com/img/l-orfeo/lorfeo.jpg');background-size:cover;background-position:center"><div class="acov"></div><div class="acontent"><div class="actitle">LERNE DEINE<br>GEISTER<br>KENNEN</div><p class="acsub" style="color:rgba(240,235,225,.5)">LEARN YOUR GHOSTS</p></div></div>
+    <div class="arccell ac4" style="background-image:url('https://www.jaskarananand.com/img/projects/Trans-Reality.jpg');background-size:cover;background-position:center"><div class="acov"></div><div class="acontent"><div class="actitle">TRANS(T*)<br>DISCITY</div><p class="acsub" style="color:rgba(240,235,225,.4)">ONGOING INITIATIVE</p></div></div>
+    <div class="arccell ac5" style="background-image:url('https://www.jaskarananand.com/img/machinedhuman/1.jpg');background-size:cover;background-position:center"><div class="acov"></div><div class="acontent"><div class="actitle">EMBRACE<br>THE<br>CONNECTIONS</div><p class="acsub">SOCIAL-CULTURAL INIT.</p></div></div>
+    <div class="arccell ac6" style="background-image:url('https://www.jaskarananand.com/img/projects/L-INKED.jpg');background-size:cover;background-position:center"><div class="acov"></div><div class="acontent"><div class="actitle">URBAN<br>PSYCHOLOGY<br>↗</div><p class="acsub">THE EMBODIED CITY</p></div></div>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section id="performance">
+  <div class="ticker" style="background:transparent;border-color:rgba(232,77,181,.08)">
+    <div class="tinner rev">
+      <span class="ti" style="color:var(--ow);opacity:.25">PERFORMANCE DOCUMENTATION</span><span class="ti sep" style="opacity:.3">·</span>
+      <span class="ti" style="color:var(--ow);opacity:.25">LIVE ART</span><span class="ti sep" style="opacity:.3">·</span>
+      <span class="ti" style="color:var(--ow);opacity:.25">INSTALLATION</span><span class="ti sep" style="opacity:.3">·</span>
+      <span class="ti" style="color:var(--ow);opacity:.25">INTERVENTION</span><span class="ti sep" style="opacity:.3">·</span>
+      <span class="ti" style="color:var(--ow);opacity:.25">PERFORMANCE DOCUMENTATION</span><span class="ti sep" style="opacity:.3">·</span>
+      <span class="ti" style="color:var(--ow);opacity:.25">LIVE ART</span><span class="ti sep" style="opacity:.3">·</span>
+      <span class="ti" style="color:var(--ow);opacity:.25">INSTALLATION</span><span class="ti sep" style="opacity:.3">·</span>
+      <span class="ti" style="color:var(--ow);opacity:.25">INTERVENTION</span><span class="ti sep" style="opacity:.3">·</span>
+    </div>
+  </div>
+  <div class="sechdr rv" style="margin-top:60px">
+    <div><p class="secnum">§ 003</p><div class="sectitle">PERFOR<br><span class="ol">MANCE</span></div></div>
+  </div>
+  <div class="pffeat">
+    <div class="pfimgw rv">
+      <div class="pfimgb"></div>
+      <div class="pfimgi" style="background:none;padding:0;overflow:hidden">
+        <img src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg" alt="Jaskaran Anand at brut Wien" style="width:100%;height:100%;object-fit:cover;object-position:center top;filter:contrast(1.05);transition:transform .8s cubic-bezier(.16,1,.3,1)">
+      </div>
+      <div class="pfwm">KALI</div>
+    </div>
+    <div class="rv d2">
+      <p class="pflabel">↳ Featured Work — April 2024</p>
+      <h2 class="pftitle">WHAT HAPPENS WHEN GODDESS KALI MEETS KAISERIN SISI</h2>
+      <p class="pfbody">A performance intervention exploring the collision of mythologies — the Hindu goddess of destruction and transformation meeting the melancholic Austrian empress. Bodies as contested sites of colonial memory, feminine power, and cultural hybridity.<br><br>Performed at Kurdirektion Buchhandlung as part of Trans(T*).DisCity / City Voices — a socio-cultural initiative reimagining queer urban space in Vienna and Berlin.</p>
+      <div class="pfstats">
+        <div class="pfstat"><p class="pfstatk">Location</p><p class="pfstatv">Vienna / Berlin</p></div>
+        <div class="pfstat"><p class="pfstatk">Year</p><p class="pfstatv">2024–2025</p></div>
+        <div class="pfstat"><p class="pfstatk">Medium</p><p class="pfstatv">Live Performance</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMOTIONAL LANDSCAPES -->
+<section id="landscapes">
+  <div class="lsmarq">
+    <div class="lstk">
+      <span class="lsw">EMOTIONAL</span><span class="lsw ol">LANDSCAPE</span>
+      <span class="lsw">SENSORY</span><span class="lsw ol">AFTERLIFE</span>
+      <span class="lsw">EMOTIONAL</span><span class="lsw ol">LANDSCAPE</span>
+      <span class="lsw">SENSORY</span><span class="lsw ol">AFTERLIFE</span>
+    </div>
+  </div>
+  <div class="lsgrid rv">
+    <div class="lscell"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/out-of-life/Out-of-Life-2.jpg');background-size:cover;background-position:center"></div><div class="lsclabel">BODY AS CITY</div></div>
+    <div class="lscell"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/earthquake/earthquake-performance-still-1.jpg');background-size:cover;background-position:center;filter:brightness(.7) contrast(1.1)"></div><div class="lsclabel">URBAN GHOST</div></div>
+    <div class="lscell"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/hibernating_further/2.jpg');background-size:cover;background-position:center"></div><div class="lsclabel">FEMININE RAGE</div></div>
+    <div class="lscell" style="background:var(--ch)"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/sculptures/sculptures1.jpg');background-size:cover;background-position:center;filter:brightness(.65)"></div><div class="lsclabel">ECHO CHAMBER</div></div>
+    <div class="lscell"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/mudrasonata/mudrasonata2.JPG');background-size:cover;background-position:center"></div><div class="lsclabel">GOLDEN WOUND</div></div>
+    <div class="lscell"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/orfeo_rave/orfeo-rave.jpg');background-size:cover;background-position:center"></div><div class="lsclabel">TRANS MEMBRANE</div></div>
+    <div class="lscell" style="background:var(--nb)"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/projects/Excelsior.jpg');background-size:cover;background-position:center;filter:brightness(.55) contrast(1.2)"></div><div class="lsclabel">VOID ARCHIVE</div></div>
+    <div class="lscell"><div class="lsci" style="background-image:url('https://www.jaskarananand.com/img/projects/Out-of-Life.jpg');background-size:cover;background-position:center"></div><div class="lsclabel">HYBRIDITY</div></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="galintro rv">
+    <div class="galtitle">INTER<br>ACTIVE<br><span class="ol">EXHIBI<br>TION</span></div>
+    <p class="galaside">A curated visual archive of Jaskaran Anand's practice — performances, interventions, and collaborative works navigating identity, the city, and collective transformation.</p>
+  </div>
+  <div class="galcols rv">
+    <div class="galcol">
+      <div class="gc gpink" style="background-image:url('https://www.jaskarananand.com/img/projects/A-NEW-DAY.jpg');background-size:cover;background-position:center"><div class="gclabel">CITY<br>VOICES<br>↗</div></div>
+      <div class="gc gdark gol" style="min-height:280px;background-image:url('https://www.jaskarananand.com/img/opacity/Opacity-la-triennale-di-milano-foto-gianluca-di-ioia.jpg');background-size:cover;background-position:center"><div class="gclabel" style="-webkit-text-stroke-color:var(--bp)">URBAN<br>PSY<br>CHO<br>LOGY</div></div>
+      <div class="gc gred" style="background-image:url('https://www.jaskarananand.com/img/l-orfeo/lorfeo.jpg');background-size:cover;background-position:center"><div class="gclabel">LERNE<br>DEINE<br>GEISTER</div></div>
+    </div>
+    <div class="galcol">
+      <div class="gc gdark" style="min-height:180px;background-image:url('https://www.jaskarananand.com/img/projects/Trans-Reality.jpg');background-size:cover;background-position:center"><div class="gclabel">TRANS(T*)<br>DISCITY</div></div>
+      <div class="gc ggold" style="background-image:url('https://www.jaskarananand.com/img/machinedhuman/1.jpg');background-size:cover;background-position:center"><div class="gclabel">EMBRACE<br>THE<br>CONNECTIONS</div></div>
+      <div class="gc gmag" style="background-image:url('https://www.jaskarananand.com/img/mudrasonata/mudrasonata2.JPG');background-size:cover;background-position:center"><div class="gclabel">GODDESS<br>KALI ×<br>KAISERIN<br>SISI</div></div>
+    </div>
+    <div class="galcol">
+      <div class="gc gdpink" style="min-height:240px;background-image:url('https://www.jaskarananand.com/img/hibernating_further/2.jpg');background-size:cover;background-position:center"><div class="gclabel">SENSORY<br>AFTERLIFE</div></div>
+      <div class="gc gblack gol" style="background-image:url('https://www.jaskarananand.com/img/projects/L-INKED.jpg');background-size:cover;background-position:center"><div class="gclabel">ECHOES<br>OF THE<br>EMBODIED</div></div>
+      <div class="gc gdred" style="background-image:url('https://www.jaskarananand.com/img/earthquake/earthquake-performance-still-1.jpg');background-size:cover;background-position:center"><div class="gclabel">NON-PERFOR<br>MATIVE<br>POLITICS ↗</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SENSORY -->
+<section id="sensory">
+  <div class="saaura"></div>
+  <div class="sainner">
+    <p class="saeye rv">§ 005 — SENSORY AFTERLIFE</p>
+    <div class="sahead rv"><span class="w1">ECHOES</span><span class="w2">OF</span><span class="w3">IDENTITY</span></div>
+    <div class="sacards">
+      <div class="sacard rv"><p class="sacn">001</p><h3 class="sact">Body as Archive</h3><p class="sacd">The body holds what the city forgets. Performance as memory, flesh as document, breath as resistance against erasure.</p></div>
+      <div class="sacard rv d1"><p class="sacn">002</p><h3 class="sact">Urban Mythology</h3><p class="sacd">Ancient goddesses walking through contemporary cities. The sacred and the urban in collision — producing new mythologies of survival.</p></div>
+      <div class="sacard rv d2"><p class="sacn">003</p><h3 class="sact">Trans*formation</h3><p class="sacd">Transition as an ongoing artistic practice. The self as medium. The community as canvas. Collective transformation as the highest art form.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="ctgeo ctg1"></div><div class="ctgeo ctg2"></div>
+  <div class="ctinner">
+    <div>
+      <div class="cttitle rv">GET<br>IN<br><span class="ol">TOUCH</span></div>
+      <p class="ctnote rv d1">For collaborations, residencies, performances, commissions, and radical conversations about what bodies can do in public space.</p>
+    </div>
+    <div class="ctlinks rv d2">
+      <a class="ctlink mbtn" href="mailto:hello@jaskarananand.com"><span class="ctln">Email</span><span class="ctlarr">↗</span></a>
+      <a class="ctlink mbtn" href="https://www.instagram.com/" target="_blank"><span class="ctln">Instagram</span><span class="ctlarr">↗</span></a>
+      <a class="ctlink mbtn" href="https://www.facebook.com/" target="_blank"><span class="ctln">Facebook</span><span class="ctlarr">↗</span></a>
+      <a class="ctlink mbtn" href="#"><span class="ctln">City Voices</span><span class="ctlarr">↗</span></a>
+      <a class="ctlink mbtn" href="#"><span class="ctln">DisCity</span><span class="ctlarr">↗</span></a>
+      <a class="ctlink mbtn" href="https://www.jaskarananand.com" target="_blank"><span class="ctln">jaskarananand.com</span><span class="ctlarr">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="ftlogo">JASKARAN ANAND</div>
+  <p class="ftcopy">© 2025 — TRANS(T*).DISCITY / CITY VOICES</p>
+  <div style="display:flex;gap:24px;align-items:center">
+    <a href="https://www.facebook.com/harmonical.self" target="_blank" class="ftlink">Facebook</a>
+    <a href="https://www.instagram.com/jaskaran_anand/" target="_blank" class="ftlink">Instagram</a>
+    <a href="https://vimeo.com/jaskaran" target="_blank" class="ftlink">Vimeo</a>
+    <a href="https://www.jaskarananand.com" target="_blank" class="ftlink">jaskarananand.com</a>
+  </div>
+</footer>
+
+<script>
+/* ═══ CURSOR ═══ */
+const cdot=document.getElementById('cdot'),cring=document.getElementById('cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px'});
+(function ar(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;cring.style.left=rx+'px';cring.style.top=ry+'px';requestAnimationFrame(ar)})();
+document.querySelectorAll('a,button,.arccell,.gc,.sacard,.lscell,.hcta').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('ch'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('ch'));
+});
+
+/* ═══ LOADER ═══ */
+const loader=document.getElementById('loader'),lpct=document.getElementById('lpct');
+let n=0;
+const iv=setInterval(()=>{
+  n+=Math.floor(Math.random()*7)+2;
+  if(n>=100){n=100;clearInterval(iv);lpct.textContent='LOADING EXHIBITION — 100%';setTimeout(()=>loader.classList.add('out'),500);}
+  else lpct.textContent=`LOADING EXHIBITION — ${String(n).padStart(3,'0')}%`;
+},55);
+
+/* ═══ NAV ═══ */
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>nav.classList.toggle('stuck',scrollY>60));
+
+/* ═══ SCROLL REVEAL ═══ */
+const rvEls=document.querySelectorAll('.rv');
+const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')}),{threshold:.08});
+rvEls.forEach(el=>io.observe(el));
+
+/* ═══ HERO CANVAS ═══ */
+(()=>{
+  const canvas=document.getElementById('heroCanvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,pts=[];
+  const resize=()=>{W=canvas.width=canvas.offsetWidth;H=canvas.height=canvas.offsetHeight};
+  resize();
+  window.addEventListener('resize',()=>{resize();init()});
+
+  const COLS=['#E84DB5','#F271C5','#C4236F','#D43850','#C8A84B','#F0EBE1'];
+
+  class Dot{
+    constructor(){this.reset()}
+    reset(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.8+.3;this.vx=(Math.random()-.5)*.32;this.vy=(Math.random()-.5)*.32;this.a=Math.random()*.5+.1;this.col=COLS[Math.floor(Math.random()*COLS.length)];this.ph=Math.random()*Math.PI*2}
+    tick(){
+      this.x+=this.vx;this.y+=this.vy;this.ph+=.018;this.a=.22+Math.sin(this.ph)*.18;
+      if(this.x<-10||this.x>W+10||this.y<-10||this.y>H+10)this.reset();
+    }
+    draw(){ctx.save();ctx.globalAlpha=this.a;ctx.fillStyle=this.col;ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fill();ctx.restore()}
+  }
+
+  class Seg{
+    constructor(){this.reset()}
+    reset(){this.x1=Math.random()*W;this.y1=Math.random()*H;const ang=Math.random()*Math.PI*2,len=Math.random()*110+40;this.x2=this.x1+Math.cos(ang)*len;this.y2=this.y1+Math.sin(ang)*len;this.life=0;this.max=140+Math.random()*180;this.col=Math.random()>.5?'#E84DB5':'#F0EBE1'}
+    tick(){this.life++;if(this.life>this.max)this.reset()}
+    get a(){const p=this.life/this.max;return p<.3?p/.3*.07:p>.7?(1-p)/.3*.07:.07}
+    draw(){ctx.save();ctx.globalAlpha=this.a;ctx.strokeStyle=this.col;ctx.lineWidth=.4;ctx.beginPath();ctx.moveTo(this.x1,this.y1);ctx.lineTo(this.x2,this.y2);ctx.stroke();ctx.restore()}
+  }
+
+  let mouseX=0,mouseY=0;
+  document.getElementById('hero').addEventListener('mousemove',e=>{
+    const r=e.currentTarget.getBoundingClientRect();mouseX=e.clientX-r.left;mouseY=e.clientY-r.top;
+  });
+
+  function init(){
+    pts=[];
+    const cnt=Math.floor(W*H/12000);
+    for(let i=0;i<cnt;i++)pts.push(new Dot());
+    for(let i=0;i<14;i++)pts.push(new Seg());
+  }
+  init();
+
+  function loop(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      if(p instanceof Dot){
+        const dx=p.x-mouseX,dy=p.y-mouseY,d=Math.sqrt(dx*dx+dy*dy);
+        if(d<100){p.vx+=dx/d*.07;p.vy+=dy/d*.07}
+        const sp=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+        if(sp>1.1){p.vx*=.95;p.vy*=.95}
+      }
+      p.tick();p.draw();
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ═══ SCROLL PARALLAX ═══ */
+window.addEventListener('scroll',()=>{
+  const y=scrollY;
+  document.querySelectorAll('.hs').forEach((s,i)=>{s.style.transform=`translateY(${y*(0.08+i*.04)}px)`});
+  const ha=document.querySelector('.hambient');
+  if(ha)ha.style.transform=`translateY(${y*.12}px)`;
+});
+
+/* ═══ MOUSE PARALLAX HERO ═══ */
+document.getElementById('hero').addEventListener('mousemove',e=>{
+  const {width,height,left,top}=e.currentTarget.getBoundingClientRect();
+  const cx=(e.clientX-left)/width-.5,cy=(e.clientY-top)/height-.5;
+  document.querySelector('.hambient').style.transform=`translate(${cx*16}px,${cy*14}px)`;
+  document.querySelectorAll('.hs').forEach((s,i)=>{s.style.transform=`translate(${cx*(10+i*5)}px,${cy*(8+i*3)}px)`});
+});
+
+/* ═══ MAGNETIC BUTTONS ═══ */
+document.querySelectorAll('.mbtn').forEach(btn=>{
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect(),dx=e.clientX-r.left-r.width/2,dy=e.clientY-r.top-r.height/2;
+    btn.style.transition='transform .08s ease';
+    btn.style.transform=`translate(${dx*.22}px,${dy*.26}px)`;
+  });
+  btn.addEventListener('mouseleave',()=>{btn.style.transition='transform .5s cubic-bezier(.16,1,.3,1)';btn.style.transform='translate(0,0)'});
+});
+
+/* ═══ ARCHIVE CELL HOVER PUSH ═══ */
+document.querySelectorAll('.arccell').forEach(cell=>{
+  cell.addEventListener('mouseenter',()=>{cell.style.filter='brightness(1.08)'});
+  cell.addEventListener('mouseleave',()=>{cell.style.filter='brightness(1)'});
+});
+</script>
+</body>
+</html>

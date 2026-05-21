@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaskaran Anand — Performance-Maker · Researcher · Choreographer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   DESIGN TOKENS
+============================================ */
+:root {
+  --neon-orange:  #FF5E1A;
+  --electric-lime:#C8FF00;
+  --hot-magenta:  #FF2D78;
+  --acid-teal:    #00FFD1;
+  --royal-violet: #6C0AFF;
+  --sun-yellow:   #FFD600;
+  --deep-bg:      #080410;
+  --panel-bg:     #0F0720;
+  --off-white:    #F5EEF8;
+  --mid-grey:     rgba(245,238,248,0.4);
+  --border:       rgba(200,255,0,0.12);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--deep-bg);
+  color:var(--off-white);
+  font-family:'Cormorant Garamond',serif;
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ============================================
+   LOADER
+============================================ */
+#loader{
+  position:fixed;inset:0;z-index:99999;
+  background:var(--deep-bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.loader-bg-strips{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+}
+.strip{
+  flex:1;
+  transform-origin:left;
+  transform:scaleX(0);
+  animation:stripIn 0.6s cubic-bezier(0.77,0,0.18,1) forwards;
+}
+.strip:nth-child(1){background:var(--hot-magenta);   animation-delay:0s;}
+.strip:nth-child(2){background:var(--royal-violet);  animation-delay:0.05s;}
+.strip:nth-child(3){background:var(--neon-orange);   animation-delay:0.10s;}
+.strip:nth-child(4){background:var(--electric-lime); animation-delay:0.15s;}
+.strip:nth-child(5){background:var(--acid-teal);     animation-delay:0.20s;}
+.strip:nth-child(6){background:var(--hot-magenta);   animation-delay:0.25s;}
+.strip:nth-child(7){background:var(--royal-violet);  animation-delay:0.30s;}
+.strip:nth-child(8){background:var(--neon-orange);   animation-delay:0.35s;}
+
+@keyframes stripIn{
+  from{transform:scaleX(0)} to{transform:scaleX(1)}
+}
+
+.loader-content{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;gap:1.5rem;
+  opacity:0;animation:loaderContentIn 0.4s 0.8s forwards;
+}
+@keyframes loaderContentIn{to{opacity:1}}
+
+.loader-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,10vw,8rem);
+  line-height:1;letter-spacing:0.06em;
+  color:var(--deep-bg);
+  text-shadow:
+    3px 3px 0 var(--hot-magenta),
+    6px 6px 0 var(--royal-violet);
+  animation:loaderNameShake 0.3s 1.2s ease both;
+}
+@keyframes loaderNameShake{
+  0%,100%{transform:translate(0)}
+  25%{transform:translate(-4px,2px)}
+  75%{transform:translate(4px,-2px)}
+}
+
+.loader-bar-wrap{
+  width:260px;height:3px;
+  background:rgba(8,4,16,0.3);
+  overflow:hidden;
+}
+.loader-bar{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--hot-magenta),var(--electric-lime),var(--acid-teal));
+  animation:loaderBar 1.4s 0.9s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+@keyframes loaderBar{to{width:100%}}
+
+.loader-counter{
+  font-family:'Space Mono',monospace;
+  font-size:0.65rem;letter-spacing:0.3em;
+  color:var(--deep-bg);
+}
+
+/* Loader EXIT — strips slide out */
+#loader.exit .strip{
+  transform-origin:right;
+  animation:stripOut 0.5s cubic-bezier(0.77,0,0.18,1) forwards !important;
+}
+#loader.exit .strip:nth-child(1){animation-delay:0s !important;}
+#loader.exit .strip:nth-child(2){animation-delay:0.04s !important;}
+#loader.exit .strip:nth-child(3){animation-delay:0.08s !important;}
+#loader.exit .strip:nth-child(4){animation-delay:0.12s !important;}
+#loader.exit .strip:nth-child(5){animation-delay:0.16s !important;}
+#loader.exit .strip:nth-child(6){animation-delay:0.20s !important;}
+#loader.exit .strip:nth-child(7){animation-delay:0.24s !important;}
+#loader.exit .strip:nth-child(8){animation-delay:0.28s !important;}
+#loader.exit .loader-content{animation:loaderContentOut 0.2s forwards !important;}
+@keyframes loaderContentOut{to{opacity:0;transform:scale(0.9)}}
+@keyframes stripOut{to{transform:scaleX(0)}}
+#loader.gone{display:none}
+
+/* ============================================
+   CURSOR
+============================================ */
+.cursor{
+  position:fixed;width:14px;height:14px;
+  background:var(--electric-lime);
+  border-radius:50%;pointer-events:none;
+  z-index:9999;mix-blend-mode:difference;
+  transition:transform 0.12s ease,background 0.2s;
+}
+.cursor-ring{
+  position:fixed;width:40px;height:40px;
+  border:1.5px solid var(--hot-magenta);
+  border-radius:50%;pointer-events:none;
+  z-index:9998;transition:all 0.25s ease;
+}
+
+/* ============================================
+   PAGE TRANSITION WIPE
+============================================ */
+#page-wipe{
+  position:fixed;inset:0;z-index:9000;
+  pointer-events:none;
+  display:grid;grid-template-columns:repeat(5,1fr);
+}
+.wipe-col{
+  height:100%;
+  background:var(--royal-violet);
+  transform:scaleY(0);
+  transform-origin:bottom;
+  transition:transform 0.35s cubic-bezier(0.77,0,0.18,1);
+}
+.wipe-col:nth-child(2){background:var(--hot-magenta);transition-delay:0.04s}
+.wipe-col:nth-child(3){background:var(--neon-orange);transition-delay:0.08s}
+.wipe-col:nth-child(4){background:var(--electric-lime);transition-delay:0.12s}
+.wipe-col:nth-child(5){background:var(--acid-teal);transition-delay:0.16s}
+
+#page-wipe.wipe-in .wipe-col{transform:scaleY(1)}
+#page-wipe.wipe-out .wipe-col{
+  transform:scaleY(0);
+  transform-origin:top;
+}
+
+/* ============================================
+   NAV
+============================================ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.2rem 3rem;
+  background:rgba(8,4,16,0.88);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  transition:border-color 0.4s;
+}
+nav.coloured{border-bottom-color:rgba(255,45,120,0.4)}
+
+.nav-logo{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1.5rem;letter-spacing:0.18em;
+  color:var(--off-white);text-decoration:none;
+  position:relative;
+}
+.nav-logo .dot{color:var(--electric-lime)}
+
+.nav-links{display:flex;gap:0.25rem;list-style:none}
+
+.nav-links a{
+  font-family:'Space Mono',monospace;
+  font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--mid-grey);text-decoration:none;
+  padding:0.55rem 1rem;
+  position:relative;overflow:hidden;
+  border:1px solid transparent;
+  transition:color 0.3s,border-color 0.3s;
+}
+.nav-links a .ink{
+  position:absolute;inset:0;
+  background:var(--hot-magenta);
+  transform:translateY(101%);
+  transition:transform 0.35s cubic-bezier(0.77,0,0.18,1);
+  z-index:-1;
+}
+.nav-links a:hover{color:var(--deep-bg);border-color:var(--hot-magenta)}
+.nav-links a:hover .ink{transform:translateY(0)}
+.nav-links a.active{
+  color:var(--deep-bg);
+  background:var(--electric-lime);
+  border-color:var(--electric-lime);
+}
+
+/* ============================================
+   SECTIONS — tab panel system
+============================================ */
+.page{
+  display:none;
+  min-height:100vh;
+  padding-top:80px;
+  position:relative;
+  z-index:1;
+}
+.page.active{display:block}
+
+/* ============================================
+   GRAIN + SCANLINE
+============================================ */
+.grain{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px;
+}
+.scanline{
+  position:fixed;left:0;right:0;height:2px;z-index:3;pointer-events:none;
+  background:linear-gradient(to right,transparent,rgba(255,45,120,0.08),transparent);
+  animation:scan 9s linear infinite;
+}
+@keyframes scan{0%{top:-2%}100%{top:102%}}
+
+/* ============================================
+   HERO PAGE
+============================================ */
+#home{
+  display:grid;grid-template-columns:1fr 1fr;
+  overflow:hidden;
+}
+
+/* Animated mesh background */
+.hero-mesh{
+  position:absolute;inset:0;z-index:0;overflow:hidden;
+}
+.mesh-orb{
+  position:absolute;border-radius:50%;
+  filter:blur(90px);opacity:0.18;
+  animation:orbFloat 8s ease-in-out infinite;
+}
+.mesh-orb:nth-child(1){
+  width:600px;height:600px;
+  background:var(--royal-violet);
+  top:-10%;left:-10%;animation-delay:0s;
+}
+.mesh-orb:nth-child(2){
+  width:500px;height:500px;
+  background:var(--hot-magenta);
+  bottom:-15%;right:5%;animation-delay:-3s;
+}
+.mesh-orb:nth-child(3){
+  width:400px;height:400px;
+  background:var(--neon-orange);
+  top:30%;left:40%;animation-delay:-5s;
+}
+@keyframes orbFloat{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-40px) scale(1.05)}
+  66%{transform:translate(-20px,30px) scale(0.95)}
+}
+
+/* Animated grid lines */
+.hero-grid{
+  position:absolute;inset:0;z-index:0;
+  background-image:
+    linear-gradient(rgba(200,255,0,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(200,255,0,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridShift 20s linear infinite;
+}
+@keyframes gridShift{
+  from{background-position:0 0}
+  to{background-position:60px 60px}
+}
+
+.hero-left{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:5rem 3rem;position:relative;z-index:2;
+}
+
+.hero-eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:0.58rem;letter-spacing:0.4em;text-transform:uppercase;
+  color:var(--electric-lime);margin-bottom:1.5rem;
+  opacity:0;animation:fadeUp 0.7s 0.2s forwards;
+}
+
+.hero-name{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3.5rem,8.5vw,8.5rem);
+  line-height:0.88;position:relative;
+  opacity:0;animation:fadeUp 0.7s 0.4s forwards;
+}
+.hero-name .line-solid{
+  display:block;color:var(--off-white);
+  text-shadow:4px 4px 0 var(--royal-violet);
+}
+.hero-name .line-outline{
+  display:block;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--hot-magenta);
+  padding-left:3rem;
+  position:relative;
+}
+/* Glitch layers */
+.glitch-wrap{position:relative;display:inline-block}
+.glitch-wrap::before,.glitch-wrap::after{
+  content:attr(data-text);
+  position:absolute;top:0;left:0;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:inherit;line-height:inherit;
+}
+.glitch-wrap::before{
+  color:var(--acid-teal);
+  animation:g1 5s infinite;
+  clip-path:polygon(0 15%,100% 15%,100% 45%,0 45%);
+}
+.glitch-wrap::after{
+  color:var(--sun-yellow);
+  animation:g2 5s infinite;
+  clip-path:polygon(0 60%,100% 60%,100% 80%,0 80%);
+}
+@keyframes g1{
+  0%,92%,100%{transform:translate(0);opacity:0}
+  93%{transform:translate(-5px,2px);opacity:0.7}
+  96%{transform:translate(5px,-2px);opacity:0.7}
+}
+@keyframes g2{
+  0%,92%,100%{transform:translate(0);opacity:0}
+  94%{transform:translate(4px,3px);opacity:0.6}
+  97%{transform:translate(-3px,-3px);opacity:0.6}
+}
+
+.hero-roles{
+  display:flex;flex-direction:column;gap:0.2rem;
+  margin-top:2rem;
+  opacity:0;animation:fadeUp 0.7s 0.6s forwards;
+}
+.role-item{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.1rem;
+  color:rgba(245,238,248,0.5);
+  display:flex;align-items:center;gap:0.8rem;
+}
+.role-item::before{
+  content:'—';
+  color:var(--neon-orange);
+  font-style:normal;font-family:'Space Mono',monospace;font-size:0.65rem;
+}
+
+.hero-cta{
+  margin-top:3rem;display:flex;gap:1rem;flex-wrap:wrap;
+  opacity:0;animation:fadeUp 0.7s 0.8s forwards;
+}
+.btn-funky{
+  font-family:'Space Mono',monospace;
+  font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;
+  text-decoration:none;padding:1rem 2rem;display:inline-block;
+  position:relative;overflow:hidden;border:none;cursor:none;
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.btn-funky::before{
+  content:'';position:absolute;inset:0;
+  transform:translateX(-105%);
+  transition:transform 0.35s cubic-bezier(0.77,0,0.18,1);
+  z-index:-1;
+}
+.btn-funky:hover::before{transform:translateX(0)}
+.btn-funky:hover{transform:translate(-3px,-3px)}
+.btn-f1{
+  background:var(--hot-magenta);color:var(--deep-bg);
+  box-shadow:4px 4px 0 var(--royal-violet);
+}
+.btn-f1::before{background:var(--electric-lime)}
+.btn-f1:hover{box-shadow:6px 6px 0 var(--royal-violet);color:var(--deep-bg)}
+.btn-f2{
+  background:transparent;color:var(--off-white);
+  border:1.5px solid rgba(245,238,248,0.25);
+  box-shadow:4px 4px 0 var(--neon-orange);
+}
+.btn-f2::before{background:var(--neon-orange)}
+.btn-f2:hover{box-shadow:6px 6px 0 var(--neon-orange);color:var(--deep-bg)}
+
+/* Hero right — artist portrait with real photo */
+.hero-right{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  padding:5rem 2rem;
+  opacity:0;animation:fadeIn 1s 0.7s forwards;
+}
+.portrait-wrap{
+  position:relative;width:360px;max-width:100%;
+}
+.portrait-box{
+  width:100%;aspect-ratio:3/4;
+  border:1.5px solid rgba(200,255,0,0.2);
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,rgba(108,10,255,0.2),rgba(255,45,120,0.1));
+}
+.portrait-real-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+  z-index:1;
+  mix-blend-mode:luminosity;
+  opacity:0.82;
+  transition:opacity 0.6s ease, mix-blend-mode 0.6s ease, transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94);
+  filter:contrast(1.08) saturate(0.6);
+}
+.portrait-box:hover .portrait-real-img{
+  opacity:0.95;
+  mix-blend-mode:normal;
+  transform:scale(1.04);
+  filter:contrast(1.02) saturate(1);
+}
+.portrait-color-wash{
+  position:absolute;inset:0;z-index:2;
+  background:linear-gradient(135deg,rgba(108,10,255,0.35) 0%,rgba(255,45,120,0.2) 50%,transparent 100%);
+  mix-blend-mode:multiply;
+  pointer-events:none;
+  transition:opacity 0.6s;
+}
+.portrait-box:hover .portrait-color-wash{opacity:0.3}
+
+/* Animated collage tiles */
+.tile-grid{
+  position:absolute;inset:0;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  grid-template-rows:repeat(5,1fr);
+  gap:2px;padding:2px;
+}
+.tile{
+  background:rgba(108,10,255,0.07);
+  transition:background 0.8s ease;
+}
+.tile.hot {background:rgba(255,45,120,0.18)}
+.tile.lime{background:rgba(200,255,0,0.12)}
+.tile.teal{background:rgba(0,255,209,0.10)}
+.tile.orng{background:rgba(255,94,26,0.15)}
+
+.portrait-center{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:1rem;
+}
+.portrait-initials{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:6rem;line-height:1;
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--electric-lime);
+  text-shadow:0 0 40px rgba(200,255,0,0.3);
+  animation:initPulse 3s ease-in-out infinite;
+}
+@keyframes initPulse{
+  0%,100%{text-shadow:0 0 40px rgba(200,255,0,0.3)}
+  50%{text-shadow:0 0 80px rgba(200,255,0,0.6),0 0 120px rgba(108,10,255,0.3)}
+}
+
+/* Spinning ring around portrait */
+.portrait-ring{
+  position:absolute;
+  width:140px;height:140px;
+  border:1px solid rgba(255,45,120,0.3);
+  border-top:2px solid var(--hot-magenta);
+  border-radius:50%;
+  animation:spin 6s linear infinite;
+}
+.portrait-ring-2{
+  position:absolute;
+  width:180px;height:180px;
+  border:1px dashed rgba(200,255,0,0.2);
+  border-bottom:1px solid var(--electric-lime);
+  border-radius:50%;
+  animation:spin 10s linear infinite reverse;
+}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.corner{
+  position:absolute;width:18px;height:18px;
+  border-color:var(--hot-magenta);border-style:solid;
+}
+.corner.tl{top:-1px;left:-1px;border-width:2px 0 0 2px}
+.corner.tr{top:-1px;right:-1px;border-width:2px 2px 0 0}
+.corner.bl{bottom:-1px;left:-1px;border-width:0 0 2px 2px}
+.corner.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+
+.portrait-label{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:1rem;
+  background:linear-gradient(transparent,rgba(8,4,16,0.95));
+  font-family:'Space Mono',monospace;font-size:0.5rem;
+  letter-spacing:0.3em;color:var(--electric-lime);
+  text-transform:uppercase;z-index:3;
+}
+
+/* Floating side tags */
+.side-tag{
+  position:absolute;
+  font-family:'Space Mono',monospace;font-size:0.5rem;
+  letter-spacing:0.2em;text-transform:uppercase;
+  writing-mode:vertical-rl;color:rgba(200,255,0,0.35);
+}
+.side-tag.l{left:-3.5rem;top:50%;transform:translateY(-50%) rotate(180deg)}
+.side-tag.r{right:-3.5rem;top:50%;transform:translateY(-50%);color:rgba(255,45,120,0.4)}
+
+/* Scroll indicator */
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+  z-index:3;opacity:0;animation:fadeIn 1s 1.8s forwards;
+}
+.scroll-line{
+  width:1px;height:50px;
+  background:linear-gradient(to bottom,var(--hot-magenta),transparent);
+  animation:pulse 2s infinite;
+}
+.scroll-txt{
+  font-family:'Space Mono',monospace;font-size:0.48rem;
+  letter-spacing:0.3em;color:rgba(245,238,248,0.25);
+  writing-mode:vertical-rl;transform:rotate(180deg);
+}
+@keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
+
+/* ============================================
+   MARQUEE
+============================================ */
+.marquee-strip{
+  overflow:hidden;
+  border-top:1px solid rgba(200,255,0,0.1);
+  border-bottom:1px solid rgba(200,255,0,0.1);
+  background:rgba(255,45,120,0.04);
+  padding:0.75rem 0;
+  position:relative;z-index:4;
+}
+.marquee-track{
+  display:flex;white-space:nowrap;
+  animation:marquee 22s linear infinite;
+}
+.marquee-track:hover{animation-play-state:paused}
+.m-item{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:1rem;letter-spacing:0.3em;
+  color:rgba(245,238,248,0.18);padding:0 2rem;
+}
+.m-accent{color:var(--hot-magenta) !important}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ============================================
+   SHARED SECTION STYLES
+============================================ */
+.section{padding:7rem 0;position:relative}
+.container{max-width:1260px;margin:0 auto;padding:0 3rem}
+
+.sec-label{
+  font-family:'Space Mono',monospace;
+  font-size:0.55rem;letter-spacing:0.38em;text-transform:uppercase;
+  color:var(--neon-orange);margin-bottom:0.75rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.sec-label::after{
+  content:'';flex:0 0 50px;height:1px;
+  background:var(--neon-orange);opacity:0.4;
+}
+
+.sec-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.8rem,5.5vw,5.5rem);
+  line-height:0.9;margin-bottom:3rem;
+}
+.sec-title .hi{color:var(--hot-magenta)}
+.sec-title .lo{
+  color:transparent;
+  -webkit-text-stroke:1px rgba(200,255,0,0.4);
+}
+
+/* ============================================
+   ABOUT PAGE
+============================================ */
+#about .about-grid{
+  display:grid;grid-template-columns:1fr 1.6fr;
+  gap:5rem;align-items:start;
+}
+.stat-col{
+  display:flex;flex-direction:column;gap:2rem;
+  position:sticky;top:110px;
+}
+.stat-block{
+  border-left:3px solid var(--hot-magenta);
+  padding-left:1.5rem;
+  transition:border-color 0.3s;
+}
+.stat-block:hover{border-color:var(--electric-lime)}
+.stat-n{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:3.8rem;line-height:1;
+  background:linear-gradient(135deg,var(--hot-magenta),var(--royal-violet));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-l{
+  font-family:'Space Mono',monospace;font-size:0.58rem;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--mid-grey);margin-top:0.2rem;
+}
+.keywords{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1.5rem}
+.kw{
+  font-family:'Space Mono',monospace;font-size:0.52rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:0.4rem 0.8rem;
+  border:1px solid rgba(200,255,0,0.18);
+  color:rgba(200,255,0,0.55);
+  transition:all 0.25s;
+}
+.kw:hover{
+  background:var(--electric-lime);color:var(--deep-bg);
+  border-color:var(--electric-lime);
+  transform:translate(-2px,-2px);
+  box-shadow:3px 3px 0 var(--royal-violet);
+}
+
+.about-body p{
+  font-size:1.15rem;line-height:1.85;
+  color:rgba(245,238,248,0.65);margin-bottom:1.5rem;font-weight:300;
+}
+.about-body p strong{color:var(--off-white);font-weight:600;font-style:italic}
+.pull-quote{
+  font-size:1.5rem;font-style:italic;
+  color:var(--acid-teal);
+  border-left:3px solid var(--hot-magenta);
+  padding-left:1.5rem;
+  margin:2.5rem 0;line-height:1.5;
+}
+
+/* ============================================
+   PROJECTS PAGE
+============================================ */
+.proj-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:3px;margin-top:3rem;
+}
+.proj-card{
+  position:relative;overflow:hidden;
+  cursor:none;
+}
+.proj-card:first-child{grid-column:1/-1;aspect-ratio:16/6}
+.proj-card:not(:first-child){aspect-ratio:4/3}
+
+.proj-bg{
+  position:absolute;inset:0;
+  transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.proj-card:hover .proj-bg{transform:scale(1.06)}
+
+/* Each unique bg — with real project images */
+.pb1{
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(255,45,120,0.45) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 20%,rgba(108,10,255,0.35) 0%,transparent 55%),
+    linear-gradient(135deg,#080410,#1a0535);
+}
+.pb1::after{
+  content:'';position:absolute;inset:0;
+  background-image:repeating-linear-gradient(
+    0deg,transparent,transparent 49px,rgba(255,45,120,0.06) 50px),
+    repeating-linear-gradient(
+    90deg,transparent,transparent 49px,rgba(200,255,0,0.04) 50px);
+}
+.pb2{
+  background:
+    radial-gradient(ellipse at 70% 60%,rgba(0,255,209,0.25) 0%,transparent 55%),
+    radial-gradient(ellipse at 15% 25%,rgba(255,45,120,0.3) 0%,transparent 50%),
+    linear-gradient(135deg,#080410,#061418);
+}
+.pb3{
+  background:
+    conic-gradient(from 30deg at 30% 60%,rgba(255,45,120,0.25) 0deg,transparent 90deg,rgba(108,10,255,0.2) 180deg,transparent 270deg),
+    linear-gradient(#080410,#120820);
+}
+.pb4{
+  background:
+    radial-gradient(ellipse at 50% 50%,rgba(255,214,0,0.12) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 80%,rgba(255,45,120,0.25) 0%,transparent 45%),
+    linear-gradient(135deg,#080410,#14100a);
+}
+.pb5{
+  background:
+    repeating-linear-gradient(45deg,rgba(108,10,255,0.06) 0px,transparent 2px,transparent 28px,rgba(108,10,255,0.06) 30px),
+    radial-gradient(ellipse at 40% 40%,rgba(255,94,26,0.22) 0%,transparent 55%),
+    linear-gradient(135deg,#060210,#1a0810);
+}
+
+/* Real image backgrounds for project cards */
+.proj-photo{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  z-index:0;
+  transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94), opacity 0.4s;
+  opacity:0.6;
+  mix-blend-mode:luminosity;
+  filter:contrast(1.1) saturate(0.5);
+}
+.proj-card:hover .proj-photo{
+  transform:scale(1.06);
+  opacity:0.75;
+  mix-blend-mode:normal;
+  filter:contrast(1.02) saturate(0.85);
+}
+.proj-gradient-overlay{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+}
+
+.proj-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(8,4,16,0.96) 0%,rgba(8,4,16,0.3) 60%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:2rem;
+  transition:background 0.4s;
+}
+.proj-card:hover .proj-overlay{
+  background:linear-gradient(to top,rgba(8,4,16,0.98) 0%,rgba(8,4,16,0.55) 65%,rgba(108,10,255,0.05) 100%);
+}
+.proj-tag{
+  font-family:'Space Mono',monospace;font-size:0.52rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--electric-lime);margin-bottom:0.6rem;
+}
+.proj-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.8rem,3vw,2.8rem);
+  color:var(--off-white);line-height:1;margin-bottom:0.6rem;
+  text-shadow:2px 2px 0 var(--royal-violet);
+}
+.proj-desc{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:0.95rem;
+  color:rgba(245,238,248,0.45);
+  max-height:0;overflow:hidden;
+  transition:max-height 0.4s ease,opacity 0.4s;opacity:0;
+  max-width:480px;line-height:1.6;
+}
+.proj-card:hover .proj-desc{max-height:120px;opacity:1}
+.proj-arrow{
+  position:absolute;top:1.5rem;right:1.5rem;
+  width:42px;height:42px;
+  border:1.5px solid rgba(245,238,248,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;color:rgba(245,238,248,0.25);
+  transform:rotate(-45deg);
+  transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.proj-card:hover .proj-arrow{
+  background:var(--hot-magenta);border-color:var(--hot-magenta);
+  color:var(--deep-bg);transform:rotate(0deg) scale(1.15);
+}
+
+/* ============================================
+   WORKSHOPS PAGE
+============================================ */
+.ws-list{display:flex;flex-direction:column;margin-top:3rem}
+.ws-item{
+  display:grid;grid-template-columns:90px 1fr auto;
+  align-items:center;gap:2rem;
+  padding:2rem 0;
+  border-bottom:1px solid rgba(200,255,0,0.08);
+  cursor:none;position:relative;
+  transition:padding-left 0.3s;
+  overflow:hidden;
+}
+.ws-item::before{
+  content:'';position:absolute;
+  left:-3rem;right:-3rem;top:0;bottom:0;
+  background:linear-gradient(135deg,rgba(255,45,120,0.04),rgba(108,10,255,0.04));
+  opacity:0;transition:opacity 0.3s;
+}
+.ws-item:hover::before{opacity:1}
+.ws-item:hover{padding-left:1rem}
+.ws-num{
+  font-family:'Bebas Neue',sans-serif;font-size:3rem;
+  color:rgba(245,238,248,0.07);
+  transition:color 0.3s;position:relative;z-index:1;
+}
+.ws-item:hover .ws-num{
+  color:var(--hot-magenta);
+}
+.ws-info{position:relative;z-index:1}
+.ws-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.5rem;font-weight:600;
+  color:var(--off-white);margin-bottom:0.25rem;
+}
+.ws-meta{
+  font-family:'Space Mono',monospace;font-size:0.58rem;
+  letter-spacing:0.14em;color:var(--mid-grey);text-transform:uppercase;
+}
+.ws-link{
+  font-family:'Space Mono',monospace;font-size:0.58rem;
+  letter-spacing:0.18em;text-transform:uppercase;
+  color:rgba(200,255,0,0.4);text-decoration:none;
+  position:relative;z-index:1;transition:color 0.3s;
+  padding:0.5rem 1rem;border:1px solid transparent;
+  transition:all 0.3s;
+}
+.ws-link:hover{
+  color:var(--deep-bg);
+  background:var(--electric-lime);
+  border-color:var(--electric-lime);
+}
+
+/* ============================================
+   RESEARCH PAGE
+============================================ */
+.res-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1.5px;margin-top:3rem;
+  border:1.5px solid rgba(200,255,0,0.08);
+}
+.res-card{
+  padding:2.5rem 2rem;
+  position:relative;overflow:hidden;
+  background:rgba(15,7,32,0.5);
+  border:1.5px solid rgba(200,255,0,0.08);
+  transition:background 0.4s,border-color 0.4s;
+  cursor:none;
+}
+.res-card::before{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--hot-magenta),var(--royal-violet));
+  transform:scaleX(0);transform-origin:left;
+  transition:transform 0.4s cubic-bezier(0.77,0,0.18,1);
+}
+.res-card:hover::before{transform:scaleX(1)}
+.res-card:hover{
+  background:rgba(108,10,255,0.08);
+  border-color:rgba(255,45,120,0.3);
+}
+.res-icon{
+  font-size:1.8rem;margin-bottom:1rem;
+  display:inline-block;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.res-card:hover .res-icon{transform:scale(1.3) rotate(15deg)}
+.res-t{
+  font-family:'Bebas Neue',sans-serif;font-size:1.5rem;
+  color:var(--acid-teal);margin-bottom:0.75rem;line-height:1.1;
+}
+.res-body{
+  font-size:0.9rem;font-style:italic;line-height:1.7;
+  color:rgba(245,238,248,0.4);
+}
+
+/* ============================================
+   CONTACT PAGE
+============================================ */
+#contact{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  min-height:100vh;text-align:center;
+  position:relative;overflow:hidden;
+}
+.contact-orbs{position:absolute;inset:0;pointer-events:none}
+.c-orb{
+  position:absolute;border-radius:50%;filter:blur(100px);opacity:0.12;
+}
+.c-orb1{width:500px;height:500px;background:var(--hot-magenta);top:-10%;left:-10%;animation:orbFloat 9s ease-in-out infinite}
+.c-orb2{width:400px;height:400px;background:var(--royal-violet);bottom:-15%;right:-5%;animation:orbFloat 7s ease-in-out infinite reverse}
+.c-orb3{width:350px;height:350px;background:var(--neon-orange);top:40%;left:40%;animation:orbFloat 11s ease-in-out infinite}
+
+.contact-inner{position:relative;z-index:2;padding:3rem}
+.contact-big{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,12vw,12rem);
+  line-height:0.85;margin:1.5rem 0 2rem;
+}
+.contact-big .c1{
+  display:block;color:var(--off-white);
+  text-shadow:5px 5px 0 var(--royal-violet);
+}
+.contact-big .c2{
+  display:block;color:transparent;
+  -webkit-text-stroke:2px var(--hot-magenta);
+}
+.contact-sub{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:1.2rem;color:var(--mid-grey);
+  max-width:500px;margin:0 auto 2.5rem;line-height:1.6;
+}
+.contact-email{
+  font-family:'Space Mono',monospace;font-size:0.85rem;
+  letter-spacing:0.12em;text-transform:lowercase;
+  text-decoration:none;
+  color:var(--deep-bg);
+  background:var(--electric-lime);
+  display:inline-block;padding:1.2rem 3rem;
+  position:relative;
+  box-shadow:6px 6px 0 var(--hot-magenta);
+  transition:all 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+.contact-email:hover{
+  transform:translate(-4px,-4px);
+  box-shadow:10px 10px 0 var(--hot-magenta);
+}
+
+.socials{
+  display:flex;justify-content:center;gap:1.5rem;
+  margin-top:3rem;flex-wrap:wrap;
+}
+.social-a{
+  font-family:'Space Mono',monospace;font-size:0.6rem;
+  letter-spacing:0.22em;text-transform:uppercase;
+  text-decoration:none;color:var(--mid-grey);
+  display:flex;align-items:center;gap:0.5rem;
+  padding:0.6rem 1.2rem;
+  border:1px solid rgba(245,238,248,0.1);
+  transition:all 0.3s;
+}
+.social-a:hover{
+  color:var(--deep-bg);
+  background:var(--acid-teal);
+  border-color:var(--acid-teal);
+  transform:translateY(-3px);
+}
+.social-a::before{content:'↗';color:var(--hot-magenta)}
+.social-a:hover::before{color:var(--deep-bg)}
+
+/* ============================================
+   FESTIVALS STRIP
+============================================ */
+.festivals-section{
+  border-top:1px solid rgba(200,255,0,0.07);
+  border-bottom:1px solid rgba(200,255,0,0.07);
+  background:rgba(255,45,120,0.02);
+}
+.fest-grid{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:2.5rem}
+.fest-chip{
+  font-family:'Space Mono',monospace;font-size:0.58rem;
+  letter-spacing:0.12em;text-transform:uppercase;
+  padding:0.55rem 1.1rem;
+  border:1px solid rgba(200,255,0,0.15);
+  color:rgba(245,238,248,0.35);
+  transition:all 0.25s;
+}
+.fest-chip:hover{
+  background:var(--hot-magenta);border-color:var(--hot-magenta);
+  color:var(--off-white);transform:translateY(-3px);
+  box-shadow:0 6px 20px rgba(255,45,120,0.3);
+}
+
+/* ============================================
+   FOOTER
+============================================ */
+footer{
+  border-top:1px solid rgba(200,255,0,0.08);
+  padding:2rem 3rem;
+  display:flex;justify-content:space-between;align-items:center;
+  position:relative;z-index:4;
+}
+.f-left{
+  font-family:'Space Mono',monospace;font-size:0.53rem;
+  letter-spacing:0.18em;color:rgba(245,238,248,0.18);text-transform:uppercase;
+}
+.f-right{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:0.85rem;color:rgba(245,238,248,0.18);
+}
+
+/* ============================================
+   REVEAL SYSTEM
+============================================ */
+.reveal{opacity:0;transform:translateY(36px);
+  transition:opacity 0.75s ease,transform 0.75s ease}
+.reveal.visible{opacity:1;transform:none}
+.rd1{transition-delay:0.1s}.rd2{transition-delay:0.2s}.rd3{transition-delay:0.3s}
+
+/* ============================================
+   ANIMATIONS
+============================================ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ============================================
+   RESPONSIVE
+============================================ */
+@media(max-width:900px){
+  #home{grid-template-columns:1fr}
+  .hero-right{display:none}
+  #about .about-grid{grid-template-columns:1fr;gap:3rem}
+  .stat-col{position:static;flex-direction:row;flex-wrap:wrap}
+  .proj-grid{grid-template-columns:1fr}
+  .proj-card:first-child{aspect-ratio:4/3}
+  .res-grid{grid-template-columns:1fr}
+  nav{padding:1rem 1.5rem}
+  .nav-links{gap:0}
+  .container{padding:0 1.5rem}
+  footer{flex-direction:column;gap:0.75rem;text-align:center}
+  .ws-item{grid-template-columns:60px 1fr;gap:1rem}
+  .ws-link{display:none}
+  .contact-big{font-size:clamp(3rem,15vw,8rem)}
+}
+</style>
+</head>
+<body>
+
+<!-- GRAIN + SCAN -->
+<div class="grain"></div>
+<div class="scanline"></div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- PAGE WIPE -->
+<div id="page-wipe">
+  <div class="wipe-col"></div>
+  <div class="wipe-col"></div>
+  <div class="wipe-col"></div>
+  <div class="wipe-col"></div>
+  <div class="wipe-col"></div>
+</div>
+
+<!-- ===================== LOADER ===================== -->
+<div id="loader">
+  <div class="loader-bg-strips">
+    <div class="strip"></div><div class="strip"></div>
+    <div class="strip"></div><div class="strip"></div>
+    <div class="strip"></div><div class="strip"></div>
+    <div class="strip"></div><div class="strip"></div>
+  </div>
+  <div class="loader-content">
+    <div class="loader-name">J·A</div>
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    <div class="loader-counter" id="loaderCounter">000</div>
+  </div>
+</div>
+
+<!-- ===================== NAV ===================== -->
+<nav>
+  <a href="#" class="nav-logo" data-page="home">J<span class="dot">·</span>A</a>
+  <ul class="nav-links">
+    <li><a href="#" data-page="home" class="nav-a active"><span class="ink"></span>Home</a></li>
+    <li><a href="#" data-page="about" class="nav-a"><span class="ink"></span>About</a></li>
+    <li><a href="#" data-page="projects" class="nav-a"><span class="ink"></span>Projects</a></li>
+    <li><a href="#" data-page="workshops" class="nav-a"><span class="ink"></span>Workshops</a></li>
+    <li><a href="#" data-page="research" class="nav-a"><span class="ink"></span>Research</a></li>
+    <li><a href="#" data-page="contact" class="nav-a"><span class="ink"></span>Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ===================== HOME ===================== -->
+<div id="home" class="page active">
+  <div class="hero-mesh">
+    <div class="mesh-orb"></div>
+    <div class="mesh-orb"></div>
+    <div class="mesh-orb"></div>
+  </div>
+  <div class="hero-grid"></div>
+
+  <div class="hero-left">
+    <div class="hero-eyebrow">Born 1992 · New Delhi → Linz · Active since 2009</div>
+    <h1 class="hero-name">
+      <span class="line-solid">
+        <span class="glitch-wrap" data-text="Jaskaran">Jaskaran</span>
+      </span>
+      <span class="line-outline">Anand</span>
+    </h1>
+    <div class="hero-roles">
+      <div class="role-item">Performance-Maker</div>
+      <div class="role-item">Choreographer · Dancer</div>
+      <div class="role-item">Researcher · Pedagogue</div>
+      <div class="role-item">Video Dramaturge</div>
+    </div>
+    <div class="hero-cta">
+      <a href="#" class="btn-funky btn-f1" data-page="projects">View Projects</a>
+      <a href="#" class="btn-funky btn-f2" data-page="contact">Get in Touch</a>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="portrait-wrap">
+      <div class="side-tag l">Performance · Body · Space</div>
+      <div class="side-tag r">Linz · Vienna · Rome</div>
+      <div class="portrait-box">
+        <!-- Real artist photo -->
+        <img class="portrait-real-img" src="https://www.jaskarananand.com/img/jaskaran-anand_1.jpg" alt="Jaskaran Anand — Performance-Maker · Linz" loading="eager" />
+        <div class="portrait-color-wash"></div>
+        <div class="portrait-center" style="z-index:3">
+          <div class="portrait-ring-2"></div>
+          <div class="portrait-ring"></div>
+        </div>
+        <div class="portrait-label" style="z-index:4">Photo: Max Biskup · jaskarananand.com</div>
+      </div>
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-txt">Scroll</div>
+    <div class="scroll-line"></div>
+  </div>
+</div><!-- #home -->
+
+<!-- ===================== ABOUT ===================== -->
+<div id="about" class="page">
+  <div class="section">
+    <div class="container">
+      <div class="sec-label reveal">01 — About</div>
+      <div class="about-grid">
+        <div class="stat-col reveal">
+          <!-- Press photo from brut Wien -->
+          <div class="about-press-photo reveal" style="margin-bottom:1rem;">
+            <div style="position:relative;overflow:hidden;border:1.5px solid rgba(200,255,0,0.15);">
+              <img src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg"
+                alt="Jaskaran Anand — © Flora Löffelmann, brut Wien"
+                loading="lazy"
+                style="width:100%;display:block;object-fit:cover;aspect-ratio:16/10;
+                       filter:saturate(0.4) contrast(1.1);
+                       transition:filter 0.6s ease,transform 0.6s ease;"
+                onmouseover="this.style.filter='saturate(1) contrast(1.02)';this.style.transform='scale(1.03)'"
+                onmouseout="this.style.filter='saturate(0.4) contrast(1.1)';this.style.transform='scale(1)'"
+              />
+              <div style="position:absolute;bottom:0;left:0;right:0;
+                           background:linear-gradient(transparent,rgba(8,4,16,0.9));
+                           padding:0.6rem 0.8rem;
+                           font-family:'Space Mono',monospace;font-size:0.42rem;
+                           letter-spacing:0.25em;color:rgba(200,255,0,0.5);
+                           text-transform:uppercase;">
+                © Flora Löffelmann · brut Wien
+              </div>
+            </div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-n">15+</div>
+            <div class="stat-l">Years of Practice</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-n">3</div>
+            <div class="stat-l">Continents</div>
+          </div>
+          <div class="stat-block">
+            <div class="stat-n">10+</div>
+            <div class="stat-l">Long-term Projects</div>
+          </div>
+          <div class="keywords">
+            <span class="kw">Choreography</span>
+            <span class="kw">Performance Art</span>
+            <span class="kw">Neuroscience</span>
+            <span class="kw">Identity</span>
+            <span class="kw">Body</span>
+            <span class="kw">Advaita Vedanta</span>
+            <span class="kw">Post-humanism</span>
+            <span class="kw">Participatory</span>
+            <span class="kw">Computer Science</span>
+            <span class="kw">Pedagogy</span>
+          </div>
+        </div>
+
+        <div class="about-body reveal rd1">
+          <h2 class="sec-title">The<br><span class="hi">Self</span> &amp;<br><span class="lo">Other</span></h2>
+          <p>Born in <strong>New Delhi (1992)</strong>, Jaskaran Anand has been based in Linz, Austria since 2015 — an internationally acclaimed artist working at the volatile intersection of performance, science, and participatory art.</p>
+          <div class="pull-quote">"The human body as an interface — between self and society, between knowing and not knowing."</div>
+          <p>Holding a Bachelor in <strong>Computer Science</strong> from University of Delhi and a combined degree in <strong>Dance Performance & Dance Pedagogy</strong> from Anton Bruckner University Linz, Jaskaran fuses both worlds: algorithmic thinking meets embodied knowledge.</p>
+          <p>He is co-founder and chairperson of <strong>trivium</strong> — a Linz-based art, cultural & research organization focused on unravelling the cultural intersectionality present in human bodies. His works span Austria, New Zealand, and India.</p>
+          <p>Currently touring as collaborator performer with Italian cultural association <strong>Chiasma/Salvo Lombardo</strong> and German choreographer <strong>Dr. Sandra Chatterjee</strong> on projects relating to identity, post-colonialism & racism.</p>
+          <!-- Out of Life performance image -->
+          <div style="margin:2.5rem 0;position:relative;overflow:hidden;">
+            <img src="https://www.jaskarananand.com/img/out-of-life/Out-of-Life-2.jpg"
+              alt="Out of Life — Jaskaran Anand in performance"
+              loading="lazy"
+              style="width:100%;display:block;aspect-ratio:16/9;object-fit:cover;
+                     filter:saturate(0.35) contrast(1.15);
+                     transition:filter 0.7s ease;"
+              onmouseover="this.style.filter='saturate(0.7) contrast(1.05)'"
+              onmouseout="this.style.filter='saturate(0.35) contrast(1.15)'"
+            />
+            <div style="position:absolute;bottom:0;left:0;right:0;height:60%;
+                         background:linear-gradient(transparent,rgba(8,4,16,0.7));
+                         pointer-events:none;"></div>
+            <div style="position:absolute;bottom:0.8rem;left:1rem;
+                         font-family:'Space Mono',monospace;font-size:0.45rem;
+                         letter-spacing:0.28em;color:rgba(0,255,209,0.6);
+                         text-transform:uppercase;">Out of Life · Liz King / D.ID Dance Identity</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Festivals strip inside about -->
+  <div class="section festivals-section" style="padding:4rem 0">
+    <div class="container">
+      <div class="sec-label reveal">Festivals &amp; Platforms</div>
+      <div class="fest-grid reveal rd1">
+        <div class="fest-chip">Imagetanz / brut Wien 2021</div>
+        <div class="fest-chip">ImPulsTanz Vienna</div>
+        <div class="fest-chip">ARS Electronica</div>
+        <div class="fest-chip">Oriente Occidente</div>
+        <div class="fest-chip">Roma Europa Festival</div>
+        <div class="fest-chip">Tanztage Vienna</div>
+        <div class="fest-chip">Furore Festival BW</div>
+        <div class="fest-chip">Nordico Stadt Museum Linz</div>
+        <div class="fest-chip">Dschungel Wien</div>
+        <div class="fest-chip">CHAKKARs Moving Interventions</div>
+        <div class="fest-chip">RedSapata Tanzfabrik</div>
+        <div class="fest-chip">Teatro della Tosse</div>
+        <div class="fest-chip">Opera de Lausanne</div>
+        <div class="fest-chip">Healing Hill Art Space India</div>
+      </div>
+    </div>
+  </div>
+</div><!-- #about -->
+
+<!-- ===================== PROJECTS ===================== -->
+<div id="projects" class="page">
+  <div class="section">
+    <div class="container">
+      <div class="sec-label reveal">02 — Projects</div>
+      <h2 class="sec-title reveal rd1">Works &amp;<br><span class="hi">Interventions</span></h2>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card reveal">
+        <div class="proj-bg pb1"></div>
+        <img class="proj-photo" src="https://brut-wien.at/var/brut/storage/images/media/bilder/bilder-kuenstlerinnen/jaskaran-anand/218083-4-eng-GB/Jaskaran-Anand_w850x560.jpg" alt="Jaskaran Anand · brut Wien — © Flora Löffelmann" loading="lazy" />
+        <div class="proj-gradient-overlay" style="background:linear-gradient(135deg,rgba(108,10,255,0.55) 0%,rgba(255,45,120,0.3) 100%)"></div>
+        <div class="proj-overlay">
+          <div class="proj-tag">Long-term Research · Since 2016</div>
+          <div class="proj-title">In-Between Privacy</div>
+          <div class="proj-desc">A philosophical investigation into the psychological workings of society in relation to private/public space definitions and the uncanny digital world.</div>
+        </div>
+        <div class="proj-arrow">↗</div>
+      </div>
+      <div class="proj-card reveal rd1">
+        <div class="proj-bg pb2"></div>
+        <img class="proj-photo" src="https://www.jaskarananand.com/img/projects/L-INKED.jpg" alt="L-INKED — Jaskaran Anand" loading="lazy" />
+        <div class="proj-gradient-overlay" style="background:linear-gradient(135deg,rgba(0,255,209,0.3) 0%,rgba(255,45,120,0.4) 100%)"></div>
+        <div class="proj-overlay">
+          <div class="proj-tag">Performance · Gender · Identity</div>
+          <div class="proj-title">L-INKED</div>
+          <div class="proj-desc">An intersectional perspective on gender, sexuality, culture & identity through embodied performance.</div>
+        </div>
+        <div class="proj-arrow">↗</div>
+      </div>
+      <div class="proj-card reveal rd2">
+        <div class="proj-bg pb3"></div>
+        <img class="proj-photo" src="https://www.jaskarananand.com/img/machinedhuman/1.jpg" alt="MachinedHuman! — Jaskaran Anand" loading="lazy" />
+        <div class="proj-gradient-overlay" style="background:linear-gradient(180deg,rgba(108,10,255,0.5) 0%,rgba(255,45,120,0.25) 100%)"></div>
+        <div class="proj-overlay">
+          <div class="proj-tag">Installation · Post-humanism</div>
+          <div class="proj-title">MachinedHuman!</div>
+          <div class="proj-desc">A durational installation-performance: a cyborg reflecting upon the philosophy of post-humanism.</div>
+        </div>
+        <div class="proj-arrow">↗</div>
+      </div>
+      <div class="proj-card reveal rd1">
+        <div class="proj-bg pb4"></div>
+        <img class="proj-photo" src="https://www.jaskarananand.com/img/hibernating_further/2.jpg" alt="Hibernating Further — Jaskaran Anand" loading="lazy" />
+        <div class="proj-gradient-overlay" style="background:linear-gradient(135deg,rgba(255,214,0,0.2) 0%,rgba(255,45,120,0.45) 100%)"></div>
+        <div class="proj-overlay">
+          <div class="proj-tag">Ecology · Psyche · Future</div>
+          <div class="proj-title">Hibernating Further</div>
+          <div class="proj-desc">Dealing with the future of ecology and the psychological aspect of society's relationship to the natural world.</div>
+        </div>
+        <div class="proj-arrow">↗</div>
+      </div>
+      <div class="proj-card reveal rd2">
+        <div class="proj-bg pb5"></div>
+        <img class="proj-photo" src="https://www.jaskarananand.com/img/projects/A-NEW-DAY.jpg" alt="A New Day — Jaskaran Anand" loading="lazy" />
+        <div class="proj-gradient-overlay" style="background:linear-gradient(135deg,rgba(108,10,255,0.4) 0%,rgba(255,94,26,0.35) 100%)"></div>
+        <div class="proj-overlay">
+          <div class="proj-tag">Participatory · Community</div>
+          <div class="proj-title">A New Day</div>
+          <div class="proj-desc">"Write what you feel and post it" — embodying intersectionality in gender, sexuality, and identity.</div>
+        </div>
+        <div class="proj-arrow">↗</div>
+      </div>
+    </div>
+  </div>
+</div><!-- #projects -->
+
+<!-- ===================== WORKSHOPS ===================== -->
+<div id="workshops" class="page">
+  <div class="section">
+    <div class="container">
+      <div class="sec-label reveal">03 — Pedagogy</div>
+      <h2 class="sec-title reveal rd1">Workshops &amp;<br><span class="hi">Teaching</span></h2>
+      <div class="ws-list">
+        <div class="ws-item reveal">
+          <div class="ws-num">01</div>
+          <div class="ws-info">
+            <div class="ws-name">Moving Energies / Transcending Ego(s)</div>
+            <div class="ws-meta">Public Moves · ImPulsTanz Vienna · Since 2019</div>
+          </div>
+          <a href="#" class="ws-link">Explore →</a>
+        </div>
+        <div class="ws-item reveal rd1">
+          <div class="ws-num">02</div>
+          <div class="ws-info">
+            <div class="ws-name">City Swarming: A Dance Marathon</div>
+            <div class="ws-meta">Streets of Linz · PANGEA Werkstatt der Kulturen</div>
+          </div>
+          <a href="#" class="ws-link">Explore →</a>
+        </div>
+        <div class="ws-item reveal rd2">
+          <div class="ws-num">03</div>
+          <div class="ws-info">
+            <div class="ws-name">Playful Bodies</div>
+            <div class="ws-meta">Anton Bruckner Private University Linz · Furore Festival BW</div>
+          </div>
+          <a href="#" class="ws-link">Explore →</a>
+        </div>
+        <div class="ws-item reveal rd3">
+          <div class="ws-num">04</div>
+          <div class="ws-info">
+            <div class="ws-name">City Voices — Mapping Event</div>
+            <div class="ws-meta">Nordico Stadt Museum Linz · Museums Totale</div>
+          </div>
+          <a href="#" class="ws-link">Explore →</a>
+        </div>
+        <div class="ws-item reveal">
+          <div class="ws-num">05</div>
+          <div class="ws-info">
+            <div class="ws-name">Trans(T*).DisCity / City Voices</div>
+            <div class="ws-meta">Embrace the Connections · Nordico Linz · 2024</div>
+          </div>
+          <a href="#" class="ws-link">Explore →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- #workshops -->
+
+<!-- ===================== RESEARCH ===================== -->
+<div id="research" class="page">
+  <div class="section">
+    <div class="container">
+      <div class="sec-label reveal">04 — Research</div>
+      <h2 class="sec-title reveal rd1">Philosophy<br><span class="hi">of the</span><br><span class="lo">Self</span></h2>
+      <div class="res-grid">
+        <div class="res-card reveal">
+          <div class="res-icon">◎</div>
+          <div class="res-t">Neuroscience &amp; Self</div>
+          <div class="res-body">Drawing on Antonio Damasio's neuroscientific hypothesis on the working of the Self — how consciousness forms reality in a space-time continuum.</div>
+        </div>
+        <div class="res-card reveal rd1">
+          <div class="res-icon">⊕</div>
+          <div class="res-t">Advaita Vedanta &amp; Identity</div>
+          <div class="res-body">Referencing Mead's True.Self & False.Self, linked to Advaita Vedanta, the concept of Avataar, and quantum mechanics theory into a unified philosophy.</div>
+        </div>
+        <div class="res-card reveal rd2">
+          <div class="res-icon">◈</div>
+          <div class="res-t">Body as Interface</div>
+          <div class="res-body">The human body as an interface for reality-formation: how sensation & perception with environmental objects shapes individual reality.</div>
+        </div>
+        <div class="res-card reveal rd1">
+          <div class="res-icon">⟳</div>
+          <div class="res-t">Collective Reunification</div>
+          <div class="res-body">Conscious re-unification of the collective.self — investigating factors that may segregate an individual into a solipsistic reality of its own.</div>
+        </div>
+        <div class="res-card reveal rd2">
+          <div class="res-icon">◻</div>
+          <div class="res-t">Socio-Political Dimensions</div>
+          <div class="res-body">Deconstructing reality-formation while investigating post-colonialism, racism, and the socio-political dimensions of cultural intersectionality.</div>
+        </div>
+        <div class="res-card reveal rd3">
+          <div class="res-icon">∞</div>
+          <div class="res-t">Trans-disciplinary Media</div>
+          <div class="res-body">Using dance, video, installation, and participatory practice — always centering the human body as both subject and medium of research.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- #research -->
+
+<!-- ===================== CONTACT ===================== -->
+<div id="contact" class="page">
+  <!-- Atmospheric performance image behind contact -->
+  <div style="position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;">
+    <img src="https://www.jaskarananand.com/img/projects/Excelsior.jpg"
+      alt=""
+      aria-hidden="true"
+      style="width:100%;height:100%;object-fit:cover;object-position:center;
+             opacity:0.08;filter:saturate(0) contrast(1.3);
+             transform:scale(1.05);"
+    />
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,transparent 30%,var(--deep-bg) 80%);"></div>
+  </div>
+  <div class="contact-orbs">
+    <div class="c-orb c-orb1"></div>
+    <div class="c-orb c-orb2"></div>
+    <div class="c-orb c-orb3"></div>
+  </div>
+  <div class="contact-inner">
+    <div class="sec-label" style="justify-content:center">06 — Contact</div>
+    <div class="contact-big">
+      <span class="c1">Let's</span>
+      <span class="c2">Connect</span>
+    </div>
+    <p class="contact-sub">Open to collaborations, residencies, performance commissions, and workshop invitations worldwide.</p>
+    <a href="mailto:contact@jaskarananand.com" class="contact-email">contact@jaskarananand.com</a>
+    <div class="socials">
+      <a href="https://www.instagram.com/jaskaran_anand/" target="_blank" class="social-a">Instagram</a>
+      <a href="https://vimeo.com/jaskaran" target="_blank" class="social-a">Vimeo</a>
+      <a href="https://www.facebook.com/harmonical.self" target="_blank" class="social-a">Facebook</a>
+    </div>
+  </div>
+</div><!-- #contact -->
+
+<!-- MARQUEE (always visible, sits between pages) -->
+<div class="marquee-strip" id="marqueeStrip">
+  <div class="marquee-track">
+    <span class="m-item">Imagetanz Festival</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">ImPulsTanz Vienna</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">ARS Electronica</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">Oriente Occidente</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">Roma Europa Festival</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">Tanztage Vienna</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">trivium · Linz</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">Imagetanz Festival</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">ImPulsTanz Vienna</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">ARS Electronica</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">Oriente Occidente</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">Roma Europa Festival</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">Tanztage Vienna</span><span class="m-item m-accent">✦</span>
+    <span class="m-item">trivium · Linz</span><span class="m-item m-accent">✦</span>
+  </div>
+</div>
+
+<footer>
+  <div class="f-left">© 2024 Jaskaran Anand · All Rights Reserved · Linz, Austria</div>
+  <div class="f-right">Performance-Maker · Researcher · Choreographer</div>
+</footer>
+
+<script>
+/* ============================================
+   LOADER
+============================================ */
+const loader = document.getElementById('loader');
+const counter = document.getElementById('loaderCounter');
+let count = 0;
+const countInterval = setInterval(() => {
+  count = Math.min(count + Math.floor(Math.random() * 12) + 3, 100);
+  counter.textContent = String(count).padStart(3, '0');
+  if (count >= 100) {
+    clearInterval(countInterval);
+    setTimeout(exitLoader, 300);
+  }
+}, 40);
+
+function exitLoader() {
+  loader.classList.add('exit');
+  setTimeout(() => {
+    loader.classList.add('gone');
+    document.body.style.overflow = '';
+    // Trigger initial reveal
+    triggerReveal();
+  }, 900);
+}
+document.body.style.overflow = 'hidden';
+
+/* ============================================
+   TILE GRID — animated colour tiles
+============================================ */
+const tileGrid = document.getElementById('tileGrid');
+const tileClasses = ['','','','hot','lime','teal','orng'];
+if (tileGrid) {
+  for (let i = 0; i < 20; i++) {
+    const div = document.createElement('div');
+    div.className = 'tile';
+    tileGrid.appendChild(div);
+  }
+  function randomiseTiles() {
+    document.querySelectorAll('.tile').forEach(t => {
+      t.className = 'tile';
+      const r = Math.random();
+      if (r > 0.78) t.classList.add(tileClasses[Math.floor(Math.random()*4)+3]);
+    });
+  }
+  randomiseTiles();
+  setInterval(randomiseTiles, 1800);
+}
+
+/* ============================================
+   CURSOR
+============================================ */
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx - 7 + 'px';
+  cur.style.top  = my - 7 + 'px';
+});
+(function tick() {
+  rx += (mx - rx) * 0.11;
+  ry += (my - ry) * 0.11;
+  ring.style.left = rx - 20 + 'px';
+  ring.style.top  = ry - 20 + 'px';
+  requestAnimationFrame(tick);
+})();
+
+// Cursor reactions
+const cursorTargets = 'a,button,.proj-card,.ws-item,.res-card,.fest-chip,.kw,.btn-funky,.contact-email';
+document.addEventListener('mouseover', e => {
+  if (e.target.closest(cursorTargets)) {
+    cur.style.transform = 'scale(2.8)';
+    cur.style.background = 'var(--hot-magenta)';
+    ring.style.transform = 'scale(1.6)';
+    ring.style.borderColor = 'var(--electric-lime)';
+  }
+});
+document.addEventListener('mouseout', e => {
+  if (e.target.closest(cursorTargets)) {
+    cur.style.transform = 'scale(1)';
+    cur.style.background = 'var(--electric-lime)';
+    ring.style.transform = 'scale(1)';
+    ring.style.borderColor = 'var(--hot-magenta)';
+  }
+});
+
+/* ============================================
+   PAGE WIPE + NAVIGATION
+============================================ */
+const wipe = document.getElementById('page-wipe');
+let currentPage = 'home';
+let isTransitioning = false;
+
+// Wipe colours per destination (funky!)
+const wipeColors = {
+  home:      ['#6C0AFF','#FF2D78','#FF5E1A','#C8FF00','#00FFD1'],
+  about:     ['#FF2D78','#FF5E1A','#C8FF00','#6C0AFF','#00FFD1'],
+  projects:  ['#00FFD1','#6C0AFF','#FF2D78','#FF5E1A','#C8FF00'],
+  workshops: ['#C8FF00','#FF2D78','#6C0AFF','#00FFD1','#FF5E1A'],
+  research:  ['#FF5E1A','#00FFD1','#C8FF00','#FF2D78','#6C0AFF'],
+  contact:   ['#FF2D78','#6C0AFF','#C8FF00','#FF5E1A','#00FFD1'],
+};
+
+function navigateTo(page) {
+  if (page === currentPage || isTransitioning) return;
+  isTransitioning = true;
+
+  // Set wipe column colours for this destination
+  const cols = wipe.querySelectorAll('.wipe-col');
+  const colors = wipeColors[page] || wipeColors.home;
+  cols.forEach((c, i) => c.style.background = colors[i]);
+
+  // Wipe IN
+  wipe.style.pointerEvents = 'all';
+  cols.forEach(c => { c.style.transformOrigin = 'bottom'; });
+  wipe.classList.remove('wipe-out');
+  wipe.classList.add('wipe-in');
+
+  setTimeout(() => {
+    // Switch page
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(page).classList.add('active');
+    window.scrollTo(0, 0);
+    currentPage = page;
+
+    // Update nav active state
+    document.querySelectorAll('.nav-a').forEach(a => {
+      a.classList.toggle('active', a.dataset.page === page);
+    });
+
+    // Nav colour accent on scroll
+    document.querySelector('nav').classList.toggle('coloured', page !== 'home');
+
+    // Wipe OUT
+    cols.forEach(c => { c.style.transformOrigin = 'top'; });
+    wipe.classList.remove('wipe-in');
+    wipe.classList.add('wipe-out');
+
+    setTimeout(() => {
+      wipe.style.pointerEvents = 'none';
+      wipe.classList.remove('wipe-out');
+      isTransitioning = false;
+      // Trigger scroll reveals
+      triggerReveal();
+    }, 650);
+  }, 480);
+}
+
+// Click delegation
+document.addEventListener('click', e => {
+  const link = e.target.closest('[data-page]');
+  if (link) {
+    e.preventDefault();
+    navigateTo(link.dataset.page);
+  }
+});
+
+/* ============================================
+   REVEAL ON SCROLL / PAGE LOAD
+============================================ */
+function triggerReveal() {
+  setTimeout(() => {
+    const revealEls = document.querySelectorAll('.page.active .reveal');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => {
+      el.classList.remove('visible');
+      io.observe(el);
+    });
+  }, 100);
+}
+
+/* ============================================
+   GLITCH RANDOM TIMING
+============================================ */
+const gw = document.querySelector('.glitch-wrap');
+if (gw) {
+  setInterval(() => {
+    gw.style.animationDelay = Math.random() * 5 + 's';
+  }, 5000);
+}
+
+/* ============================================
+   NAV SCROLL EFFECT
+============================================ */
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.borderBottomColor =
+    window.scrollY > 60 ? 'rgba(255,45,120,0.3)' : 'rgba(200,255,0,0.12)';
+});
+</script>
+</body>
+</html>

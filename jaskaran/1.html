@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jaskaran Anand — Kinetic Identities</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --magenta:     #E0368E;
+  --magenta-mid: #C42D7A;
+  --magenta-deep:#9A1F5E;
+  --ink:         #080006;
+  --ink-mid:     #180010;
+  --ink-lift:    #260018;
+  --cream:       #F5EBF0;
+  --muted:       rgba(245,235,240,0.45);
+  --border:      rgba(8,0,6,0.18);
+  --font-disp:   'Anton', sans-serif;
+  --font-mono:   'IBM Plex Mono', monospace;
+  --font-alt:    'Bebas Neue', sans-serif;
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ═══════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--magenta);
+  font-family: var(--font-mono);
+  color: var(--ink);
+  overflow-x: hidden;
+  cursor: none;
+}
+img { display: block; max-width: 100%; }
+a   { text-decoration: none; color: inherit; }
+ul  { list-style: none; }
+button { font-family: inherit; border: none; background: none; cursor: none; }
+
+/* ═══════════════════════════════════════════
+   CUSTOM CURSOR
+═══════════════════════════════════════════ */
+#cursor-dot, #cursor-ring {
+  position: fixed; pointer-events: none; z-index: 99999; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s;
+}
+#cursor-dot {
+  width: 6px; height: 6px;
+  background: var(--ink);
+  top: 0; left: 0;
+}
+#cursor-ring {
+  width: 34px; height: 34px;
+  border: 1.5px solid var(--ink);
+  top: 0; left: 0;
+  transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out), opacity 0.3s;
+}
+body.cursor-hover #cursor-ring { width: 54px; height: 54px; opacity: 0.6; }
+body.cursor-dark  #cursor-dot  { background: var(--magenta); }
+body.cursor-dark  #cursor-ring { border-color: var(--magenta); }
+
+/* ═══════════════════════════════════════════
+   GRAIN + VIGNETTE
+═══════════════════════════════════════════ */
+#grain {
+  position: fixed; inset: 0; z-index: 9001; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23f)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.04; mix-blend-mode: multiply;
+  animation: grain-shift 0.8s steps(1) infinite;
+}
+@keyframes grain-shift {
+  0%  { transform: translate(0,0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px,-2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px,-2px); }
+  100%{ transform: translate(0,0); }
+}
+
+/* ═══════════════════════════════════════════
+   LOADER
+═══════════════════════════════════════════ */
+#loader {
+  position: fixed; inset: 0; z-index: 99990;
+  background: var(--ink);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+  transition: opacity 0.6s var(--ease-in-out), transform 0.6s var(--ease-in-out);
+}
+#loader.hide { opacity: 0; transform: translateY(-8px); pointer-events: none; }
+.loader__num {
+  font-family: var(--font-disp);
+  font-size: clamp(80px, 14vw, 180px);
+  color: var(--magenta);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  animation: count-up 1.6s var(--ease-out) forwards;
+}
+.loader__label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--cream);
+  opacity: 0.4;
+}
+.loader__bar {
+  width: 200px; height: 1px;
+  background: rgba(245,235,240,0.15);
+  position: relative; overflow: hidden;
+}
+.loader__bar::after {
+  content: '';
+  position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+  background: var(--magenta);
+  animation: bar-fill 1.4s var(--ease-out) forwards;
+}
+@keyframes bar-fill  { to { left: 0; } }
+@keyframes count-up  {
+  0%   { content: '00'; }
+  100% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════════
+   PAGE ENTER
+═══════════════════════════════════════════ */
+#page { opacity: 0; transition: opacity 0.7s ease; }
+#page.visible { opacity: 1; }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.w { max-width: 1180px; margin: 0 auto; padding: 0 40px; }
+
+/* ═══════════════════════════════════════════
+   EYEBROW
+═══════════════════════════════════════════ */
+.eyebrow {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 22px 40px 0;
+  max-width: 1180px; margin: 0 auto;
+}
+.eyebrow__num {
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.04em; line-height: 1.4;
+  min-width: 24px;
+}
+.eyebrow__copy {
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  line-height: 1.6; opacity: 0.75;
+}
+.eyebrow__copy strong {
+  display: block; font-weight: 700; font-size: 10.5px;
+  opacity: 1; margin-bottom: 1px;
+}
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+.nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 40px 16px;
+  max-width: 1180px; margin: 0 auto;
+  position: relative; z-index: 200;
+}
+.nav__logo {
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.24em; text-transform: uppercase;
+  position: relative;
+}
+.nav__logo::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0;
+  width: 100%; height: 1px;
+  background: var(--ink); transform: scaleX(0); transform-origin: right;
+  transition: transform 0.3s var(--ease-out);
+}
+.nav__logo:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.nav__links { display: flex; gap: 32px; }
+.nav__links a {
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  opacity: 0.45; transition: opacity 0.2s;
+  position: relative; padding-bottom: 2px;
+}
+.nav__links a::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 0;
+  width: 100%; height: 1.5px; background: var(--ink);
+  transform: scaleX(0); transform-origin: right;
+  transition: transform 0.25s var(--ease-out);
+}
+.nav__links a.active { opacity: 1; }
+.nav__links a.active::after { transform: scaleX(1); }
+.nav__links a:hover   { opacity: 1; }
+.nav__links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+.nav__right { display: flex; align-items: center; gap: 20px; }
+.nav__tag {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; opacity: 0.35;
+}
+.nav__burger { display: flex; flex-direction: column; gap: 5px; cursor: none; }
+.nav__burger span {
+  display: block; height: 1.5px; background: var(--ink);
+  transition: transform 0.3s, width 0.3s;
+}
+.nav__burger span:nth-child(1) { width: 22px; }
+.nav__burger span:nth-child(2) { width: 22px; }
+.nav__burger span:nth-child(3) { width: 12px; }
+.nav__burger:hover span:nth-child(3) { width: 22px; }
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero {
+  position: relative;
+  max-width: 1180px; margin: 0 auto;
+  padding: 8px 40px 0;
+  display: grid;
+  grid-template-columns: auto 1fr 200px;
+  min-height: 460px;
+  align-items: stretch;
+}
+
+/* Title */
+.hero__title-col {
+  grid-column: 1; display: flex; flex-direction: column;
+  justify-content: space-between; padding-right: 12px; z-index: 5;
+}
+.hero__title {
+  font-family: var(--font-disp);
+  font-size: clamp(82px, 10vw, 122px);
+  line-height: 0.87; letter-spacing: -0.01em;
+  text-transform: uppercase; color: var(--ink);
+  display: block;
+  clip-path: inset(0 100% 0 0);
+  animation: slide-in 0.8s var(--ease-out) forwards;
+}
+.hero__title:nth-child(2) { animation-delay: 0.12s; }
+@keyframes slide-in { to { clip-path: inset(0 0% 0 0); } }
+
+.hero__dance-data {
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.16em; text-transform: uppercase; line-height: 1.6;
+  padding-bottom: 6px;
+  opacity: 0; animation: fade-up 0.6s 0.6s var(--ease-out) forwards;
+}
+
+/* Images */
+.hero__images {
+  grid-column: 2;
+  display: flex; align-items: flex-end; gap: 6px;
+  padding: 0 12px; height: 450px;
+  opacity: 0; animation: fade-up 0.7s 0.25s var(--ease-out) forwards;
+}
+
+.frame {
+  position: relative; overflow: hidden; flex-shrink: 0;
+  background: var(--ink-mid);
+}
+.frame--sm  { width: 124px; height: 192px; align-self: flex-end; }
+.frame--lg  { width: 168px; height: 100%; border: 3px solid var(--ink); }
+.frame--md  { width: 140px; height: 218px; align-self: flex-start; }
+
+.frame img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%) contrast(1.12) brightness(0.8);
+  transition: filter 0.6s var(--ease-out), transform 0.7s var(--ease-out);
+}
+.frame::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 1;
+  background: var(--magenta); mix-blend-mode: multiply; opacity: 0.42;
+  transition: opacity 0.5s;
+}
+.frame:hover img    { filter: grayscale(20%) contrast(1.1) brightness(0.92); transform: scale(1.06); }
+.frame:hover::before { opacity: 0.14; }
+
+/* Frame label on hover */
+.frame__label {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
+  padding: 28px 12px 12px;
+  background: linear-gradient(transparent, rgba(8,0,6,0.7));
+  font-size: 8px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--cream); opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s, transform 0.35s var(--ease-out);
+}
+.frame:hover .frame__label { opacity: 1; transform: translateY(0); }
+
+/* Info col */
+.hero__info {
+  grid-column: 3;
+  display: flex; flex-direction: column;
+  justify-content: center; padding-left: 22px; z-index: 5;
+  opacity: 0; animation: fade-up 0.6s 0.4s var(--ease-out) forwards;
+}
+.hero__star {
+  width: 48px; height: 48px; margin-bottom: 16px;
+  background: var(--ink);
+  clip-path: polygon(50% 0%,52.5% 47.5%,100% 50%,52.5% 52.5%,50% 100%,47.5% 52.5%,0% 50%,47.5% 47.5%);
+  animation: star-pulse 3s ease-in-out infinite;
+}
+@keyframes star-pulse {
+  0%,100% { transform: scale(1) rotate(0deg); }
+  50%     { transform: scale(1.08) rotate(22.5deg); }
+}
+.hero__info-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; line-height: 1.35; margin-bottom: 12px;
+}
+.hero__info-text {
+  font-size: 9px; letter-spacing: 0.08em; line-height: 1.7;
+  opacity: 0.78;
+}
+
+/* Decorative SVG lines */
+.hero__deco {
+  position: absolute; top: 0; right: 40px;
+  pointer-events: none; z-index: 2;
+}
+
+/* Corner star */
+.hero__star-sm {
+  position: absolute; top: 16px; left: 40px; z-index: 10;
+  width: 16px; height: 16px; background: var(--ink);
+  clip-path: polygon(50% 0%,52.5% 47.5%,100% 50%,52.5% 52.5%,50% 100%,47.5% 52.5%,0% 50%,47.5% 47.5%);
+}
+
+/* ═══════════════════════════════════════════
+   TICKER
+═══════════════════════════════════════════ */
+.ticker {
+  border-top: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  overflow: hidden; margin-top: 12px;
+  background: var(--magenta); position: relative;
+}
+.ticker__track {
+  display: flex; white-space: nowrap;
+  animation: ticker-go 24s linear infinite;
+  padding: 11px 0;
+}
+.ticker:hover .ticker__track { animation-play-state: paused; }
+.ticker__item {
+  display: inline-flex; align-items: center; gap: 22px;
+  padding: 0 36px;
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+}
+.ticker__dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--ink); opacity: 0.4; flex-shrink: 0;
+}
+@keyframes ticker-go {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ═══════════════════════════════════════════
+   SHARED SECTION STYLES
+═══════════════════════════════════════════ */
+.s-border { border-top: 1.5px solid var(--ink); }
+.s-pad    { padding: 68px 40px; max-width: 1180px; margin: 0 auto; }
+
+/* Section heading */
+.sh {
+  font-family: var(--font-disp); text-transform: uppercase;
+  line-height: 0.92; color: var(--ink);
+}
+.sh--xl { font-size: clamp(52px, 5.5vw, 70px); }
+.sh--lg { font-size: clamp(42px, 4.5vw, 58px); }
+
+/* Label pill */
+.label-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 8.5px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; opacity: 0.45;
+}
+.label-pill::before {
+  content: '';
+  width: 18px; height: 1.5px; background: var(--ink); display: block;
+}
+
+/* Body text */
+.body-text {
+  font-size: 10.5px; line-height: 1.82; opacity: 0.78; margin-bottom: 14px;
+}
+
+/* CTA */
+.cta {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 12px 26px; margin-top: 28px;
+  font-size: 9px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: gap 0.25s var(--ease-out);
+  cursor: none;
+}
+.cta--dark  { background: var(--ink); color: var(--magenta); }
+.cta--dark:hover  { background: var(--ink-lift); }
+.cta--ghost { border: 1.5px solid var(--ink); color: var(--ink); }
+.cta--ghost:hover { background: var(--ink); color: var(--magenta); }
+.cta--pink  { background: var(--magenta); color: var(--ink); }
+.cta--pink:hover  { background: var(--magenta-mid); color: var(--cream); }
+.cta:hover { gap: 18px; }
+.cta__arrow { font-size: 14px; transition: transform 0.25s var(--ease-out); }
+.cta:hover .cta__arrow { transform: translateX(4px); }
+
+/* ═══════════════════════════════════════════
+   MARQUEE BAND (between sections)
+═══════════════════════════════════════════ */
+.band {
+  background: var(--ink); overflow: hidden; padding: 10px 0;
+}
+.band__track {
+  display: flex; white-space: nowrap;
+  animation: ticker-go 30s linear infinite;
+}
+.band__item {
+  display: inline-flex; align-items: center; gap: 28px;
+  padding: 0 40px;
+  font-family: var(--font-alt); font-size: 38px;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  color: var(--magenta); opacity: 0.12;
+}
+.band__item--accent { opacity: 0.5; }
+
+/* ═══════════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════════ */
+.about-grid {
+  display: grid; grid-template-columns: 1fr 420px;
+  gap: 80px; align-items: center;
+}
+.about-grid .sh--lg { margin: 14px 0 24px; }
+
+.about__photo {
+  position: relative;
+}
+.about__photo-inner {
+  position: relative; overflow: hidden;
+}
+.about__photo-inner img {
+  width: 100%; aspect-ratio: 2/3; object-fit: cover; object-position: top center;
+  filter: grayscale(100%) contrast(1.1) brightness(0.85);
+  display: block;
+  transition: transform 0.8s var(--ease-out);
+}
+.about__photo-inner:hover img { transform: scale(1.04); }
+.about__photo-inner::after {
+  content: ''; position: absolute; inset: 0;
+  background: var(--magenta); mix-blend-mode: multiply; opacity: 0.38;
+  pointer-events: none;
+}
+.about__photo-label {
+  position: absolute; bottom: -22px; right: 0;
+  font-size: 8px; letter-spacing: 0.15em;
+  text-transform: uppercase; opacity: 0.4;
+}
+
+/* Stats row */
+.stats-row {
+  display: flex; gap: 0; margin-top: 40px;
+  border-top: 1.5px solid var(--ink);
+}
+.stat {
+  flex: 1; padding: 20px 0;
+  border-right: 1px solid rgba(8,0,6,0.15);
+}
+.stat:last-child { border-right: none; }
+.stat__num {
+  font-family: var(--font-disp); font-size: 36px; line-height: 1;
+  margin-bottom: 4px;
+}
+.stat__label {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; opacity: 0.45;
+}
+
+/* ═══════════════════════════════════════════
+   PROJECTS
+═══════════════════════════════════════════ */
+.projects-hdr {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 36px;
+}
+.projects-grid {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 4px;
+}
+.proj {
+  position: relative; overflow: hidden; background: var(--ink);
+  aspect-ratio: 2/3; cursor: none;
+  transition: transform 0.4s var(--ease-out);
+}
+.proj:hover { transform: scale(1.016); z-index: 3; }
+.proj img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%) brightness(0.52);
+  transition: filter 0.5s, transform 0.6s var(--ease-out);
+}
+.proj:hover img {
+  filter: grayscale(30%) brightness(0.72);
+  transform: scale(1.07);
+}
+.proj__overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(8,0,6,0) 40%, rgba(8,0,6,0.72) 100%);
+  z-index: 1;
+}
+.proj__pink-bar {
+  position: absolute; top: 0; left: 0; bottom: 0; width: 0;
+  background: var(--magenta); mix-blend-mode: overlay; z-index: 2;
+  transition: width 0.4s var(--ease-out); opacity: 0.18;
+}
+.proj:hover .proj__pink-bar { width: 100%; }
+.proj__body {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 18px;
+}
+.proj__num {
+  position: absolute; top: 14px; left: 16px;
+  font-size: 7.5px; font-weight: 700; letter-spacing: 0.22em;
+  color: var(--magenta); opacity: 0.7;
+}
+.proj__title {
+  font-family: var(--font-disp); font-size: 20px;
+  text-transform: uppercase; color: var(--cream);
+  line-height: 1.05; margin-bottom: 8px;
+}
+.proj__desc {
+  font-size: 8px; line-height: 1.65; color: var(--cream); opacity: 0.45;
+  max-height: 0; overflow: hidden;
+  transition: max-height 0.4s var(--ease-out), opacity 0.4s;
+}
+.proj:hover .proj__desc { max-height: 60px; opacity: 0.7; }
+.proj__tag {
+  position: absolute; top: 14px; right: 14px;
+  font-size: 7px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--magenta); opacity: 0.65;
+}
+
+/* ═══════════════════════════════════════════
+   PULL QUOTE
+═══════════════════════════════════════════ */
+.pull-quote-section {
+  background: var(--ink); padding: 80px 40px;
+}
+.pull-quote-inner {
+  max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: 60px 1fr; gap: 28px; align-items: start;
+}
+.pull-quote__mark {
+  font-family: var(--font-disp); font-size: 120px; line-height: 0.7;
+  color: var(--magenta); opacity: 0.25; user-select: none;
+}
+.pull-quote__text {
+  font-family: var(--font-disp); font-size: clamp(28px, 3.5vw, 46px);
+  text-transform: uppercase; color: var(--cream);
+  line-height: 1.15; letter-spacing: 0.01em;
+}
+.pull-quote__text em {
+  font-style: normal; color: var(--magenta);
+}
+.pull-quote__attr {
+  margin-top: 28px; font-size: 8.5px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--cream); opacity: 0.3;
+}
+
+/* ═══════════════════════════════════════════
+   RESEARCH
+═══════════════════════════════════════════ */
+.research-grid {
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 80px; align-items: start;
+}
+.research__quote-block {
+  border-left: 3px solid var(--ink); padding-left: 22px;
+  margin: 24px 0 22px;
+  font-size: 12px; line-height: 1.75; font-style: italic;
+}
+.research-nodes { display: flex; flex-direction: column; gap: 0; }
+.r-node {
+  padding: 18px 0; border-bottom: 1px solid var(--border);
+  display: grid; grid-template-columns: 28px 1fr; gap: 12px; align-items: start;
+  cursor: none;
+  transition: padding-left 0.25s var(--ease-out);
+}
+.r-node:hover { padding-left: 8px; }
+.r-node__num  {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.14em; opacity: 0.35;
+  padding-top: 3px;
+}
+.r-node__title {
+  font-family: var(--font-disp); font-size: 18px;
+  text-transform: uppercase; margin-bottom: 5px;
+}
+.r-node__desc { font-size: 8.5px; line-height: 1.65; opacity: 0.58; }
+
+/* Image strip */
+.img-strip {
+  display: flex; gap: 4px; margin-top: 52px; overflow-x: auto;
+  scrollbar-width: none; padding-bottom: 2px;
+}
+.img-strip::-webkit-scrollbar { display: none; }
+.strip-thumb {
+  flex: 0 0 auto; width: 210px; height: 145px;
+  overflow: hidden; position: relative; background: var(--ink);
+  cursor: none;
+}
+.strip-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(100%) brightness(0.62);
+  transition: filter 0.4s, transform 0.5s var(--ease-out);
+}
+.strip-thumb:hover img {
+  filter: grayscale(25%) brightness(0.8); transform: scale(1.07);
+}
+.strip-thumb::after {
+  content: ''; position: absolute; inset: 0;
+  background: var(--magenta); mix-blend-mode: multiply; opacity: 0.28;
+  pointer-events: none; transition: opacity 0.4s;
+}
+.strip-thumb:hover::after { opacity: 0.08; }
+.strip-thumb__cap {
+  position: absolute; bottom: 9px; left: 12px; z-index: 2;
+  font-size: 7px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--cream); opacity: 0.65;
+}
+
+/* ═══════════════════════════════════════════
+   WORKSHOPS
+═══════════════════════════════════════════ */
+.ws-hdr {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 10px;
+}
+.ws-list { width: 100%; }
+.ws-row {
+  display: grid; grid-template-columns: 36px 1fr auto;
+  gap: 20px; align-items: center;
+  padding: 18px 0; border-bottom: 1px solid var(--border);
+  cursor: none; transition: padding-left 0.25s var(--ease-out);
+  position: relative;
+}
+.ws-row::before {
+  content: ''; position: absolute; left: -40px; right: 0; top: 0; bottom: 0;
+  background: var(--ink); transform: scaleX(0); transform-origin: left;
+  transition: transform 0.35s var(--ease-out); z-index: 0;
+}
+.ws-row:hover { padding-left: 14px; }
+.ws-row:hover .ws-row__num,
+.ws-row:hover .ws-row__name,
+.ws-row:hover .ws-row__meta { position: relative; z-index: 1; }
+.ws-row:hover .ws-row__name { color: var(--magenta); }
+.ws-row:hover::before { transform: scaleX(1); }
+
+.ws-row__num  {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 0.14em;
+  opacity: 0.3; position: relative; z-index: 1;
+}
+.ws-row__name {
+  font-family: var(--font-disp); font-size: 24px;
+  text-transform: uppercase; line-height: 1;
+  position: relative; z-index: 1;
+  transition: color 0.3s;
+}
+.ws-row__meta {
+  font-size: 8px; letter-spacing: 0.1em; opacity: 0.45;
+  text-align: right; line-height: 1.6;
+  position: relative; z-index: 1;
+  transition: color 0.3s;
+}
+.ws-row:hover .ws-row__meta { color: var(--cream); }
+
+/* ═══════════════════════════════════════════
+   FESTIVALS
+═══════════════════════════════════════════ */
+.festivals {
+  background: var(--ink); padding: 40px 0;
+  border-top: 1px solid #1a000f;
+}
+.festivals__inner {
+  max-width: 1180px; margin: 0 auto; padding: 0 40px;
+  display: flex; flex-wrap: wrap; gap: 8px 6px; align-items: center;
+}
+.festivals__label {
+  font-size: 7.5px; font-weight: 700; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--magenta); opacity: 0.5;
+  margin-right: 18px; flex-shrink: 0;
+}
+.fest-pill {
+  padding: 6px 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(224,54,142,0.18);
+  font-size: 7.5px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--cream); opacity: 0.5;
+  transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+  cursor: none;
+}
+.fest-pill:hover {
+  opacity: 1; border-color: var(--magenta);
+  background: rgba(224,54,142,0.08);
+}
+
+/* ═══════════════════════════════════════════
+   UPCOMING
+═══════════════════════════════════════════ */
+.upcoming-section {
+  background: var(--ink); padding: 68px 40px;
+}
+.upcoming-inner { max-width: 1180px; margin: 0 auto; }
+.upcoming-hdr {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 32px;
+}
+.upcoming-hdr .sh--lg { color: var(--magenta); }
+
+.ev-list { display: flex; flex-direction: column; gap: 2px; }
+.ev {
+  display: grid; grid-template-columns: 130px 1fr auto;
+  gap: 28px; align-items: center;
+  padding: 20px 24px;
+  background: var(--ink-mid);
+  border-left: 3px solid var(--magenta);
+  cursor: none; transition: background 0.25s, padding-left 0.25s;
+}
+.ev:hover { background: var(--ink-lift); padding-left: 30px; }
+.ev__date {
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.14em;
+  color: var(--magenta); line-height: 1.55;
+}
+.ev__title {
+  font-family: var(--font-disp); font-size: 24px;
+  text-transform: uppercase; color: var(--cream);
+}
+.ev__venue {
+  font-size: 8.5px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--cream); opacity: 0.35; text-align: right; line-height: 1.65;
+}
+
+/* ═══════════════════════════════════════════
+   SOCIAL STRIP
+═══════════════════════════════════════════ */
+.social-strip {
+  background: var(--magenta); padding: 22px 40px;
+  border-top: 1.5px solid rgba(8,0,6,0.2);
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 100%;
+}
+.social-strip__inner {
+  max-width: 1180px; margin: 0 auto; width: 100%;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.social-strip__label {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; opacity: 0.5;
+}
+.social-strip__links { display: flex; gap: 24px; }
+.social-link {
+  font-size: 8.5px; font-weight: 700; letter-spacing: 0.16em;
+  text-transform: uppercase; opacity: 0.55;
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.social-link:hover { opacity: 1; border-color: var(--ink); }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+footer {
+  background: var(--ink); padding: 52px 40px 32px;
+}
+.footer-inner {
+  max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px;
+}
+.footer__brand-name {
+  font-family: var(--font-disp); font-size: 34px;
+  text-transform: uppercase; color: var(--magenta);
+  line-height: 0.95; margin-bottom: 10px;
+}
+.footer__brand-sub {
+  font-size: 8.5px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--cream); opacity: 0.28;
+  line-height: 1.7;
+}
+.footer__col-title {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--magenta); opacity: 0.5;
+  margin-bottom: 16px;
+}
+.footer__nav { display: flex; flex-direction: column; gap: 10px; }
+.footer__nav a, .footer__social a {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--cream); opacity: 0.35;
+  transition: opacity 0.2s, color 0.2s; display: inline-block;
+  padding-bottom: 1px;
+}
+.footer__nav a:hover, .footer__social a:hover { opacity: 1; color: var(--magenta); }
+.footer__social { display: flex; flex-direction: column; gap: 10px; }
+
+.footer-bottom {
+  max-width: 1180px; margin: 40px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid rgba(245,235,240,0.06);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footer-copy {
+  font-size: 8px; letter-spacing: 0.1em;
+  color: var(--cream); opacity: 0.18;
+}
+.footer-trivium {
+  font-size: 8px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--magenta); opacity: 0.3;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════ */
+.reveal {
+  opacity: 0; transform: translateY(28px);
+  transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+}
+.reveal.in { opacity: 1; transform: none; }
+
+/* ═══════════════════════════════════════════
+   SHARED KEYFRAMES
+═══════════════════════════════════════════ */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--magenta); }
+::-webkit-scrollbar-thumb { background: var(--ink); }
+
+</style>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<!-- Grain -->
+<div id="grain" aria-hidden="true"></div>
+
+<!-- Loader -->
+<div id="loader" role="status" aria-label="Loading">
+  <div class="loader__num">JA</div>
+  <div class="loader__bar"></div>
+  <div class="loader__label">Kinetic Identities — Loading</div>
+</div>
+
+<div id="page">
+
+<!-- ── EYEBROW ── -->
+<div class="eyebrow">
+  <span class="eyebrow__num">04</span>
+  <div class="eyebrow__copy">
+    <strong>KINETIC IDENTITIES</strong>
+    Bold, experimental, movement-first experience with visual rhythm.
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <a href="#" class="nav__logo">Jaskaran Anand</a>
+  <ul class="nav__links">
+    <li><a href="#" class="active">MOVEMENT</a></li>
+    <li><a href="#about">IDENTITY</a></li>
+    <li><a href="#research">RESEARCH</a></li>
+    <li><a href="#workshops">TEACHING</a></li>
+    <li><a href="#upcoming">BOOKING</a></li>
+  </ul>
+  <div class="nav__right">
+    <span class="nav__tag">Linz, AT</span>
+    <div class="nav__burger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+
+  <div class="hero__star-sm" aria-hidden="true"></div>
+
+  <svg class="hero__deco" width="170" height="100" viewBox="0 0 170 100"
+       fill="none" xmlns="http://www.w3.org/2000/svg" overflow="visible" aria-hidden="true">
+    <line x1="165" y1="-35" x2="85" y2="100" stroke="#080006" stroke-width="1.3" opacity=".5"/>
+    <line x1="143" y1="-35" x2="63" y2="100" stroke="#080006" stroke-width="1.3" opacity=".5"/>
+    <circle cx="165" cy="-35" r="3" fill="#080006" opacity=".35"/>
+    <circle cx="143" cy="-35" r="3" fill="#080006" opacity=".35"/>
+  </svg>
+
+  <!-- Title -->
+  <div class="hero__title-col">
+    <div>
+      <span class="hero__title">KINETIC</span>
+      <span class="hero__title">IDENTITIES</span>
+    </div>
+    <div class="hero__dance-data">DANCE<br>IS<br>DATA</div>
+  </div>
+
+  <!-- Images -->
+  <div class="hero__images">
+
+    <div class="frame frame--sm">
+      <img src="https://www.jaskarananand.com/img/machinedhuman/1.jpg"
+           alt="MachinedHuman! performance" loading="eager"
+           onerror="this.closest('.frame').style.background='#1e0015'">
+      <span class="frame__label">MachinedHuman!</span>
+    </div>
+
+    <div class="frame frame--lg">
+      <img src="https://www.jaskarananand.com/img/L-INKED.png"
+           alt="L-Inked — Jaskaran Anand" loading="eager"
+           onerror="this.closest('.frame').style.background='#140010'">
+      <span class="frame__label">L-Inked</span>
+    </div>
+
+    <div class="frame frame--md">
+      <img src="https://www.jaskarananand.com/img/sculptures/sculptures1.jpg"
+           alt="Sculptures performance" loading="eager"
+           onerror="this.closest('.frame').style.background='#1a0012'">
+      <span class="frame__label">Sculptures</span>
+    </div>
+
+  </div>
+
+  <!-- Info -->
+  <div class="hero__info">
+    <div class="hero__star" aria-hidden="true"></div>
+    <div class="hero__info-label">CHOREOGRAPHING<br>THE BETWEEN</div>
+    <div class="hero__info-text">
+      Exploring the intersections<br>
+      of body, technology,<br>
+      memory and culture.
+    </div>
+  </div>
+
+</div><!-- /hero -->
+
+<!-- ── TICKER ── -->
+<div class="ticker" aria-hidden="true">
+  <div class="ticker__track">
+    <span class="ticker__item">MOVEMENT ARCHIVES<span class="ticker__dot"></span></span>
+    <span class="ticker__item">BODY &amp; TECHNOLOGY<span class="ticker__dot"></span></span>
+    <span class="ticker__item">CULTURAL MEMORY<span class="ticker__dot"></span></span>
+    <span class="ticker__item">PERFORMANCE RESEARCH<span class="ticker__dot"></span></span>
+    <span class="ticker__item">KINETIC IDENTITIES<span class="ticker__dot"></span></span>
+    <span class="ticker__item">NEW DELHI → LINZ<span class="ticker__dot"></span></span>
+    <span class="ticker__item">MOVEMENT ARCHIVES<span class="ticker__dot"></span></span>
+    <span class="ticker__item">BODY &amp; TECHNOLOGY<span class="ticker__dot"></span></span>
+    <span class="ticker__item">CULTURAL MEMORY<span class="ticker__dot"></span></span>
+    <span class="ticker__item">PERFORMANCE RESEARCH<span class="ticker__dot"></span></span>
+    <span class="ticker__item">KINETIC IDENTITIES<span class="ticker__dot"></span></span>
+    <span class="ticker__item">NEW DELHI → LINZ<span class="ticker__dot"></span></span>
+  </div>
+</div>
+
+<!-- ── ABOUT ── -->
+<section id="about" class="s-border">
+  <div class="s-pad">
+    <div class="about-grid reveal">
+      <div>
+        <span class="label-pill">Identity</span>
+        <h2 class="sh sh--lg" style="margin:14px 0 26px">Performance-<br>Maker.<br>Researcher.<br>Performer.</h2>
+        <p class="body-text">Born (1992) in New Delhi, India. Living in Linz since 2015. Trans-disciplinary interventions at the intersections of performative-art, scientific &amp; art-based research, and participatory-collaborative artistic practices.</p>
+        <p class="body-text">An internationally acclaimed artist working as a performance-maker, dancer-choreographer, pedagogue, researcher, and video dramaturge-editor — using choreography &amp; dance as method of communication in— &amp; beyond— traditional art and public spaces.</p>
+        <p class="body-text">Co-founder and chairperson of <em>trivium</em> — a Linz-based art, cultural &amp; research organisation unravelling the cultural intersectionality present in human bodies.</p>
+
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat__num">15+</div>
+            <div class="stat__label">Countries</div>
+          </div>
+          <div class="stat" style="padding-left:24px;">
+            <div class="stat__num">40+</div>
+            <div class="stat__label">Productions</div>
+          </div>
+          <div class="stat" style="padding-left:24px;">
+            <div class="stat__num">8+</div>
+            <div class="stat__label">Years in Linz</div>
+          </div>
+        </div>
+
+        <a href="https://www.jaskarananand.com/about.php" target="_blank" class="cta cta--dark">
+          Full Biography <span class="cta__arrow">→</span>
+        </a>
+      </div>
+
+      <div class="about__photo">
+        <div class="about__photo-inner">
+          <img src="https://www.jaskarananand.com/img/L-INKED.png"
+               alt="Jaskaran Anand" loading="lazy"
+               onerror="this.style.display='none'">
+        </div>
+        <span class="about__photo-label">jaskarananand.com</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MARQUEE BAND ── -->
+<div class="band" aria-hidden="true">
+  <div class="band__track">
+    <span class="band__item band__item--accent">KINETIC</span>
+    <span class="band__item">IDENTITIES</span>
+    <span class="band__item band__item--accent">DANCE IS DATA</span>
+    <span class="band__item">TRIVIUM</span>
+    <span class="band__item band__item--accent">LINZ × VIENNA</span>
+    <span class="band__item">PERFORMATIVE ART</span>
+    <span class="band__item band__item--accent">KINETIC</span>
+    <span class="band__item">IDENTITIES</span>
+    <span class="band__item band__item--accent">DANCE IS DATA</span>
+    <span class="band__item">TRIVIUM</span>
+    <span class="band__item band__item--accent">LINZ × VIENNA</span>
+    <span class="band__item">PERFORMATIVE ART</span>
+  </div>
+</div>
+
+<!-- ── PROJECTS ── -->
+<section id="projects" class="s-border">
+  <div class="s-pad">
+    <div class="projects-hdr reveal">
+      <h2 class="sh sh--xl">Project(s)</h2>
+      <a href="https://www.jaskarananand.com/projects.php" target="_blank" class="cta cta--ghost" style="margin-top:0;">
+        View All <span class="cta__arrow">→</span>
+      </a>
+    </div>
+    <div class="projects-grid reveal">
+
+      <a href="https://l-inked.jaskarananand.com/" target="_blank" class="proj" style="display:block;">
+        <img src="https://www.jaskarananand.com/img/L-INKED.png" alt="L-Inked" loading="lazy">
+        <div class="proj__overlay"></div>
+        <div class="proj__pink-bar"></div>
+        <span class="proj__num">01 //</span>
+        <div class="proj__body">
+          <div class="proj__title">L-Inked</div>
+          <div class="proj__desc">Intersectional perspective on gender, sexuality, culture &amp; identity through collaborative performance.</div>
+        </div>
+        <span class="proj__tag">2021–22 ↗</span>
+      </a>
+
+      <a href="https://www.jaskarananand.com/hibernating-further.php" target="_blank" class="proj" style="display:block;">
+        <img src="https://www.jaskarananand.com/img/hibernating_further/2.jpg" alt="Hibernating Further" loading="lazy">
+        <div class="proj__overlay"></div>
+        <div class="proj__pink-bar"></div>
+        <span class="proj__num">02 //</span>
+        <div class="proj__body">
+          <div class="proj__title">Hibernating Further</div>
+          <div class="proj__desc">Ecology &amp; the psychology of society facing environmental change.</div>
+        </div>
+        <span class="proj__tag">ONGOING ↗</span>
+      </a>
+
+      <a href="https://www.jaskarananand.com/machined-human.php" target="_blank" class="proj" style="display:block;">
+        <img src="https://www.jaskarananand.com/img/machinedhuman/1.jpg" alt="MachinedHuman!" loading="lazy">
+        <div class="proj__overlay"></div>
+        <div class="proj__pink-bar"></div>
+        <span class="proj__num">03 //</span>
+        <div class="proj__body">
+          <div class="proj__title">Machined Human!</div>
+          <div class="proj__desc">Cyborg — durational installation-performance on post-humanism.</div>
+        </div>
+        <span class="proj__tag">INSTALL ↗</span>
+      </a>
+
+      <a href="https://www.jaskarananand.com/no-smell-in-outer-space.php" target="_blank" class="proj" style="display:block;">
+        <img src="https://www.jaskarananand.com/img/nosmell/9.jpg" alt="No Smell in Outer Space" loading="lazy">
+        <div class="proj__overlay"></div>
+        <div class="proj__pink-bar"></div>
+        <span class="proj__num">04 //</span>
+        <div class="proj__body">
+          <div class="proj__title">No Smell in Outer Space</div>
+          <div class="proj__desc">Body, race &amp; postcolonial memory — collaboration with Dr. Sandra Chatterjee.</div>
+        </div>
+        <span class="proj__tag">TOURING ↗</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── PULL QUOTE ── -->
+<div class="pull-quote-section">
+  <div class="pull-quote-inner reveal">
+    <div class="pull-quote__mark" aria-hidden="true">"</div>
+    <div>
+      <div class="pull-quote__text">
+        Dance is a method of communication — <em>in &amp; beyond</em> the traditional art and public spaces.
+      </div>
+      <div class="pull-quote__attr">— Jaskaran Anand, Artistic Statement</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESEARCH ── -->
+<section id="research" class="s-border">
+  <div class="s-pad">
+    <div class="research-grid reveal">
+      <div>
+        <span class="label-pill">Research</span>
+        <h2 class="sh sh--xl" style="margin:14px 0 0">Dance<br>Is<br>Data</h2>
+        <div class="research__quote-block">
+          "Deconstructing the philosophical concept(s) of Self — fascinated by spirituality, the neuroscientific &amp; psychological understandings of the self &amp; socio-political society."
+        </div>
+        <p class="body-text">Research orientates in the conscious re-unification of the collective.self — investigating factors that may segregate an individual into a reality of its own, due to interaction, sensation &amp; perception with objects present in its environment.</p>
+        <p class="body-text">References: Antonio Damasio's neuroscientific hypothesis; Georg H. Mead's True.Self &amp; False.Self; Indian philosophy of Advaita Vedanta; the concept of Avataar &amp; quantum mechanics.</p>
+        <a href="https://www.jaskarananand.com/about.php" target="_blank" class="cta cta--dark">
+          Research Archive <span class="cta__arrow">→</span>
+        </a>
+      </div>
+      <div>
+        <div class="label-pill" style="margin-bottom:16px;">Research Nodes</div>
+        <div class="research-nodes">
+          <div class="r-node">
+            <span class="r-node__num">01</span>
+            <div>
+              <div class="r-node__title">Neuroscience of Self</div>
+              <div class="r-node__desc">Damasio's embodied cognition — the body as seat of consciousness &amp; selfhood.</div>
+            </div>
+          </div>
+          <div class="r-node">
+            <span class="r-node__num">02</span>
+            <div>
+              <div class="r-node__title">Advaita Vedanta</div>
+              <div class="r-node__desc">Indian non-dualism — unified self beyond cultural separation and ego.</div>
+            </div>
+          </div>
+          <div class="r-node">
+            <span class="r-node__num">03</span>
+            <div>
+              <div class="r-node__title">Postcolonial Bodies</div>
+              <div class="r-node__desc">Identity, post-colonialism &amp; racism in dance — with Dr. Sandra Chatterjee.</div>
+            </div>
+          </div>
+          <div class="r-node">
+            <span class="r-node__num">04</span>
+            <div>
+              <div class="r-node__title">Body as Interface</div>
+              <div class="r-node__desc">The human body crossing borders in artistic media as a technological interface.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image strip -->
+    <div class="img-strip reveal">
+      <div class="strip-thumb">
+        <img src="https://www.jaskarananand.com/img/opacity/Opacity-la-triennale-di-milano-foto-gianluca-di-ioia.jpg" alt="Opacity IV" loading="lazy">
+        <span class="strip-thumb__cap">Opacity IV</span>
+      </div>
+      <div class="strip-thumb">
+        <img src="https://www.jaskarananand.com/img/projects/Excelsior.jpg" alt="Excelsior" loading="lazy">
+        <span class="strip-thumb__cap">Excelsior</span>
+      </div>
+      <div class="strip-thumb">
+        <img src="https://www.jaskarananand.com/img/himmel/4.jpg" alt="Über Uns nur der Himmel" loading="lazy">
+        <span class="strip-thumb__cap">Über Uns nur der Himmel</span>
+      </div>
+      <div class="strip-thumb">
+        <img src="https://www.jaskarananand.com/img/mudrasonata/mudrasonata2.JPG" alt="Mudra Sonata" loading="lazy">
+        <span class="strip-thumb__cap">Mudra Sonata</span>
+      </div>
+      <div class="strip-thumb">
+        <img src="https://www.jaskarananand.com/img/projects/Trans-Reality.jpg" alt="Trans Reality" loading="lazy">
+        <span class="strip-thumb__cap">Trans Reality (VR)</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WORKSHOPS ── -->
+<section id="workshops" class="s-border">
+  <div class="s-pad">
+    <div class="ws-hdr reveal">
+      <h2 class="sh sh--xl">Teaching</h2>
+      <span class="label-pill">Pedagogue since 2017</span>
+    </div>
+    <ul class="ws-list reveal">
+      <li class="ws-row">
+        <span class="ws-row__num">01</span>
+        <span class="ws-row__name">Moving Energies / Transcending Ego(s)</span>
+        <span class="ws-row__meta">ImPulsTanz Vienna<br>Public Moves, since 2019</span>
+      </li>
+      <li class="ws-row">
+        <span class="ws-row__num">02</span>
+        <span class="ws-row__name">City Swarming: A Dance Marathon</span>
+        <span class="ws-row__meta">Streets of Linz<br>Public Spaces</span>
+      </li>
+      <li class="ws-row">
+        <span class="ws-row__num">03</span>
+        <span class="ws-row__name">Playful Bodies</span>
+        <span class="ws-row__meta">PANGEA Werkstatt<br>Linz / Europe</span>
+      </li>
+      <li class="ws-row">
+        <span class="ws-row__num">04</span>
+        <span class="ws-row__name">Conscious Body Improvisation</span>
+        <span class="ws-row__meta">Anton Bruckner Univ.<br>Zeitgenössischer Tanz</span>
+      </li>
+    </ul>
+    <a href="https://www.jaskarananand.com/workshops.php" target="_blank" class="cta cta--ghost reveal" style="margin-top:32px;">
+      All Workshops <span class="cta__arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- ── FESTIVALS ── -->
+<div class="festivals">
+  <div class="festivals__inner">
+    <span class="festivals__label">Presented at //</span>
+    <span class="fest-pill">Imagetanz / brut Wien</span>
+    <span class="fest-pill">ImPulsTanz Vienna</span>
+    <span class="fest-pill">ARS Electronica</span>
+    <span class="fest-pill">Oriente Occidente</span>
+    <span class="fest-pill">Roma Europa Festival</span>
+    <span class="fest-pill">Tanztage Vienna</span>
+    <span class="fest-pill">Furore Festival</span>
+    <span class="fest-pill">Museums Totale Linz</span>
+    <span class="fest-pill">Opéra de Lausanne</span>
+    <span class="fest-pill">Teatro della Tosse</span>
+    <span class="fest-pill">La Triennale di Milano</span>
+  </div>
+</div>
+
+<!-- ── UPCOMING ── -->
+<section id="upcoming" class="upcoming-section">
+  <div class="upcoming-inner">
+    <div class="upcoming-hdr reveal">
+      <h2 class="sh sh--lg" style="color:var(--magenta);">// Upcoming</h2>
+      <span class="label-pill" style="color:var(--cream);opacity:.4;">2024 Season</span>
+    </div>
+    <div class="ev-list reveal">
+      <div class="ev">
+        <span class="ev__date">25.02.2024<br>// 15:00h CET</span>
+        <span class="ev__title">City Voices — Mapping Event</span>
+        <span class="ev__venue">Museums Totale<br>Nordico Stadt Museum, Linz</span>
+      </div>
+      <div class="ev">
+        <span class="ev__date">29.06.2024</span>
+        <span class="ev__title">SPORT Tour @ Rome</span>
+        <span class="ev__venue">Roma Europa<br>Festival</span>
+      </div>
+    </div>
+    <a href="mailto:contact@jaskarananand.com" class="cta cta--pink reveal" style="margin-top:40px;">
+      Book / Contact <span class="cta__arrow">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- ── SOCIAL STRIP ── -->
+<div class="social-strip">
+  <div class="social-strip__inner">
+    <span class="social-strip__label">Follow the work //</span>
+    <div class="social-strip__links">
+      <a href="https://www.facebook.com/harmonical.self"  target="_blank" class="social-link">Facebook</a>
+      <a href="https://vimeo.com/jaskaran"                target="_blank" class="social-link">Vimeo</a>
+      <a href="https://www.instagram.com/jaskaran_anand/" target="_blank" class="social-link">Instagram</a>
+      <a href="https://www.jaskarananand.com"             target="_blank" class="social-link">Website</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer__brand-name">Jaskaran<br>Anand</div>
+      <div class="footer__brand-sub">
+        Performance-Maker · Researcher<br>
+        Choreographer · Pedagogue<br>
+        New Delhi → Linz, AT
+      </div>
+    </div>
+    <div>
+      <div class="footer__col-title">// Navigation</div>
+      <nav class="footer__nav">
+        <a href="https://www.jaskarananand.com/index.php"    target="_blank">Home</a>
+        <a href="https://www.jaskarananand.com/about.php"    target="_blank">About</a>
+        <a href="https://www.jaskarananand.com/projects.php" target="_blank">Projects</a>
+        <a href="https://www.jaskarananand.com/workshops.php" target="_blank">Workshops</a>
+        <a href="https://www.jaskarananand.com/articles.php" target="_blank">Articles</a>
+      </nav>
+    </div>
+    <div>
+      <div class="footer__col-title">// Connect</div>
+      <div class="footer__social">
+        <a href="https://www.facebook.com/harmonical.self"   target="_blank">Facebook</a>
+        <a href="https://vimeo.com/jaskaran"                 target="_blank">Vimeo</a>
+        <a href="https://www.instagram.com/jaskaran_anand/"  target="_blank">Instagram</a>
+        <a href="mailto:contact@jaskarananand.com">Email</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">Ⓒ 2023–2024 Jaskaran Anand. All rights reserved.</span>
+    <span class="footer-trivium">trivium ↗</span>
+  </div>
+</footer>
+
+</div><!-- /page -->
+
+<script>
+/* ── Loader ── */
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loader').classList.add('hide');
+    setTimeout(() => {
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('page').classList.add('visible');
+    }, 650);
+  }, 1600);
+});
+
+/* ── Custom cursor ── */
+const dot  = document.getElementById('cursor-dot');
+const ring = document.getElementById('cursor-ring');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+
+(function loop() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  dot.style.left  = mx + 'px';
+  dot.style.top   = my + 'px';
+  ring.style.left = rx + 'px';
+  ring.style.top  = ry + 'px';
+  requestAnimationFrame(loop);
+})();
+
+const hovers = document.querySelectorAll('a, button, .frame, .proj, .ws-row, .ev, .fest-pill, .strip-thumb');
+hovers.forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+});
+
+/* Dark sections flip cursor color */
+const darks = document.querySelectorAll('.upcoming-section, footer, .pull-quote-section, .festivals, .band');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) document.body.classList.add('cursor-dark');
+    else {
+      const anyVisible = [...darks].some(el => el.getBoundingClientRect().top < window.innerHeight && el.getBoundingClientRect().bottom > 0);
+      if (!anyVisible) document.body.classList.remove('cursor-dark');
+    }
+  });
+}, { threshold: 0.3 });
+darks.forEach(el => observer.observe(el));
+
+/* ── Scroll reveal ── */
+const revealEls = document.querySelectorAll('.reveal');
+const ro = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      e.target.style.transitionDelay = (i % 3 * 0.08) + 's';
+      e.target.classList.add('in');
+      ro.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+revealEls.forEach(el => ro.observe(el));
+</script>
+
+</body>
+</html>
