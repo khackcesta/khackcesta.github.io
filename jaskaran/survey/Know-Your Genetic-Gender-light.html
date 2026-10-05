@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Know Your Genetic Gender</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--bg:#FFFFFF;--ink:#0F1B33;--mute:#566077;--card:#F6F7FB;--line:#DADFEA;--ac:#1F4FD8;--m:#1565C0;--f:#C2185B;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*:before,*:after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 18px/1.55 "Source Serif 4",Georgia,serif}
+h1,h2,h3,.sans,button,label.opt,select,input{font-family:"Archivo","Helvetica Neue",Arial,sans-serif}
+h1,h2,h3{margin:0;font-weight:800;letter-spacing:-.02em;line-height:1.02}
+h1{font-size:clamp(2.6rem,9vw,5.8rem);font-stretch:112%}
+h2{font-size:clamp(1.8rem,5vw,3rem)}
+h3{font-size:1.15rem;letter-spacing:0}
+p{margin:.6em 0;max-width:62ch}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 22px 80px}
+header.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.brand{font:800 .95rem "Archivo",sans-serif;display:flex;gap:10px;align-items:center}
+.brand i{width:22px;height:22px;display:block;background:linear-gradient(90deg,var(--m) 50%,var(--f) 50%);border-radius:50%}
+.snd{border:1.5px solid var(--ink);background:none;color:var(--ink);border-radius:99px;padding:8px 16px;font-weight:700;font-size:.85rem;cursor:pointer}
+.snd[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible,select:focus-visible,label.opt:focus-within{outline:3px solid var(--ac);outline-offset:2px}
+.btn{background:var(--ink);color:var(--bg);border:0;padding:15px 28px;font-weight:800;font-size:1rem;cursor:pointer;border-radius:0;transition:transform .15s}
+.btn:hover:not(:disabled){transform:translate(-3px,-3px);box-shadow:3px 3px 0 var(--ac)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:none;color:var(--ink);border:2px solid var(--ink)}
+.hero{display:grid;grid-template-columns:1.15fr 1fr;gap:36px;align-items:center}
+.hero .lede{font-size:1.25rem}
+.hero svg{width:100%;height:auto}
+.spin{transform-origin:200px 150px;animation:sp 40s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:44px;border-top:3px solid var(--ink)}
+.rules div{padding:18px 18px 0 0}
+.rules b{font:800 1rem "Archivo",sans-serif;display:block;margin-bottom:4px}
+.rules span{font-size:.97rem;color:var(--mute)}
+.panel{background:var(--card);border:1.5px solid var(--line);padding:clamp(20px,4vw,40px);margin-top:20px}
+.fld{margin:22px 0}
+.fld>label,.fld>.q{display:block;font:700 .95rem "Archivo",sans-serif;margin-bottom:8px}
+input[type=text],select{width:100%;padding:13px 14px;font-size:1rem;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:0}
+.seg{display:flex;flex-wrap:wrap;gap:10px}
+label.opt{position:relative;border:1.5px solid var(--line);padding:11px 20px;cursor:pointer;font-weight:700;background:var(--bg);user-select:none}
+label.opt input{position:absolute;opacity:0;inset:0;cursor:pointer}
+label.opt:has(input:checked){background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.qrow{padding:22px 0;border-top:1px solid var(--line)}
+.qrow:first-of-type{border-top:0}
+.qrow p{margin:0 0 12px;font-size:1.05rem}
+.catHead{padding:34px clamp(20px,4vw,40px);color:#fff;display:flex;justify-content:space-between;align-items:end;gap:20px}
+.catHead .ic{width:84px;height:84px;background:#fff;opacity:.92;flex:none}
+.hub{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+.card{position:relative;color:#fff;text-align:left;border:0;padding:18px;min-height:170px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:transform .15s}
+.card:hover{transform:translateY(-4px)}
+.card .ic{width:46px;height:46px;background:#fff;opacity:.9}
+.card h3{font-size:1.1rem}.card small{font:600 .8rem "Archivo",sans-serif;opacity:.9}
+.card.done{opacity:.86}.card.done:after{content:"Done";position:absolute;top:14px;right:14px;background:#fff;color:#111;font:800 .72rem "Archivo",sans-serif;padding:3px 9px}
+.prog{display:flex;gap:5px;margin:14px 0 6px}
+.prog i{flex:1;height:10px;background:var(--line)}
+.prog i.on{background:var(--ink)}
+.note{font-size:.92rem;color:var(--mute)}
+.hint{border-left:5px solid var(--ac);padding:8px 16px;background:var(--card);margin-top:20px;font-size:.98rem}
+.meter{display:flex;height:84px;margin:30px 0 14px;font:800 2rem "Archivo",sans-serif;color:#fff}
+.meter div{display:flex;align-items:center;padding:0 18px;transition:width 1.4s cubic-bezier(.2,.8,.2,1);width:50%;white-space:nowrap}
+.meter .a{background:#1565C0}.meter .b{background:#C2185B;justify-content:flex-end}
+.big{font:800 clamp(2rem,7vw,4.4rem)/1 "Archivo",sans-serif;letter-spacing:-.03em}
+.calm{padding:70px 0;text-align:center}.calm p{margin:20px auto;font-size:1.5rem}
+.arch{border:3px solid var(--ink);background:var(--card)}
+.arch>div{padding:22px 28px;border-top:1.5px solid var(--line)}
+.arch>div:first-child{border:0;background:var(--ink);color:var(--bg)}
+.arch b{font:800 .85rem "Archivo",sans-serif;display:block;margin-bottom:2px;color:var(--mute)}
+.arch>div:first-child b{color:inherit;opacity:.7}
+.deep{background:var(--ink);color:var(--bg);padding:clamp(24px,5vw,52px);margin-top:26px}
+.deep input{margin:18px 0 12px;background:#fff;color:#111;border:0}
+.deep .btn{background:var(--bg);color:var(--ink)}
+.crumb{background:none;border:0;color:var(--mute);font-weight:700;cursor:pointer;padding:0 0 10px}
+
+.stripe{height:10px;margin:-10px 0 30px;background:linear-gradient(90deg,#6B4FA0,#C2185B,#3E8E41,#00897B,#1565C0,#7B1FA2,#D2691E,#B8860B,#6B4FA0);background-size:200% 100%;animation:flow 7s linear infinite}
+@keyframes flow{to{background-position:-200% 0}}
+body{transition:background .7s}
+.fl{transform-box:fill-box;transform-origin:center;animation:fl 5s ease-in-out infinite alternate}
+@keyframes fl{to{transform:translateY(-16px) rotate(10deg)}}
+.rules div{border-top:7px solid var(--c);margin-top:-3px}
+.rules div:nth-child(1){--c:#1565C0}.rules div:nth-child(2){--c:#C2185B}.rules div:nth-child(3){--c:#B8860B}
+.card{animation:pop .6s both}
+@keyframes pop{from{opacity:0;transform:scale(.8) rotate(-4deg)}}
+.card .ic{transition:transform .5s}.card:hover .ic{transform:rotate(90deg) scale(1.2)}
+.catHead .ic{animation:sp2 14s linear infinite}
+@keyframes sp2{to{transform:rotate(360deg)}}
+label.opt:has(input:checked){background:var(--cc,var(--ink));border-color:var(--cc,var(--ink));color:#fff}
+label.opt:hover{border-color:var(--cc,var(--ink))}
+.hint{border-left-color:var(--cc,var(--ac))}
+.meter .a,.meter .b{background-image:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.28) 50%,transparent 70%);background-size:250% 100%;animation:sh 3s linear infinite}
+@keyframes sh{to{background-position:-250% 0}}
+.arch>div:first-child{color:#fff}
+.conf i{position:fixed;top:-24px;width:14px;height:14px;pointer-events:none;animation:fall 3.6s ease-in forwards;z-index:9}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.deep{background:linear-gradient(120deg,#1565C0,#6B4FA0,#C2185B);background-size:200% 200%;animation:flow2 10s ease infinite;color:#fff}
+@keyframes flow2{50%{background-position:100% 100%}}
+.deep .btn{background:#fff;color:#111}
+@media(prefers-reduced-motion:reduce){.stripe,.fl,.card,.catHead .ic,.meter .a,.meter .b,.deep,.conf i{animation:none}}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.hub{grid-template-columns:1fr 1fr}.rules{grid-template-columns:1fr}.catHead{flex-direction:column;align-items:start}}
+@media(prefers-reduced-motion:reduce){.spin{animation:none}.meter div{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <header class="bar"><div class="brand"><i></i>Know Your Genetic Gender</div><button class="snd" id="snd" aria-pressed="false">Music off</button></header>
+ <div class="stripe" aria-hidden="true"></div>
+ <main id="app"></main>
+</div>
+<script>
+const CATS=[
+["Demographics / Self-Reported","#6B4FA0","circle",null,["Is the world you live in — society, work, school — more male or more female?","Is the society you live in more male or more female?","Is the place you work in more male or more female?","Is the circle you walk in more male or more female?","Growing up at home, was it more male or more female?","Who held more power at home — more male or more female?"]],
+["Body","#C2185B","tri",0,[["Have you ever looked in the mirror, sucked in your stomach for 2 seconds, and thought, “Yeah, I've still got it”?","M"],["Has someone ever told you “You'd be so much prettier/handsomer if you smiled,” making you want to bite their hand off?","F"],["Have you ever worn a giant jacket in the blazing summer heat just so strangers wouldn't perceive your physical form?","F"],["Do you check how you look before leaving the house, every time?","F"],["Have you ever removed hair from your body (shaving etc.)?","F"]]],
+["Home","#3E8E41","sq",0,[["Can you lift a heavy, boiling pot of pasta to the sink without making a noise that sounds like a lifting championship?","M"],["Would you rather spend 4 hours breaking a household appliance further than admit defeat and call a professional?","M"],["When handed a tight jar, do you secretly wipe your palm on your shirt first to maximize your absolute maximum torque?","M"],["Will you actively cut off the blood circulation to all ten of your fingers before you ever make a second trip to the car for bags?","M"],["Do you experience a sharp physical ache when you see someone loading a dishwasher inefficiently and you aren't allowed to intervene?","M"]]],
+["Care","#00897B","half",0,[["Have you carried something as heavy as a full cooking pot of 5L+ without help?","F"],["Have you eaten an entire meal standing over the kitchen sink because sitting down feels like a luxury you haven't earned?","F"],["Can you carry a toddler, two leaking grocery bags, a set of keys, and hold a fluent conversation about the economy at the same time?","F"],["Have you opened a jar for someone?","M"],["Have you given directions to someone who didn't ask?","M"],["Have you held someone while they cried?","F"]]],
+["Work","#1565C0","quarter",0,[["Have you nodded intensely in a meeting/classroom while having absolutely no clue what the acronyms meant?","M"],["When you tell people your profession, do they nod respectfully instead of asking, “But what is your real job?”","M"],["Has a stranger or coworker ever asked you how you “balance it all,” as if you are a tightrope walker in a circus?","F"],["Have you been asked how you manage children and work?","F"],["Has anyone ever assumed your career comes first without asking?","M"]]],
+["Social","#7B1FA2","diamond",0,[["Did you dress today specifically to send a silent, calculated psychological message to a single person you might encounter?","F"],["Do you say “I'm fine” when you're not?","F"],["Do you avoid asking for help even when you clearly need it?","M"],["Do you often put others' needs before your own without being asked?","F"]]],
+["Emotional","#D2691E","drop",0,[["Have you apologized to an inanimate object (like a door or a chair) after accidentally bumping into it this week?","F"],["Did you violently blink back tears during a movie just so the person sitting next to you wouldn't see your human vulnerability?","M"],["When someone cries near you, do you offer a warm hug instead of awkwardly handing them a dry paper towel from arm's length?","F"],["Are you currently losing sleep over a dramatic life event that is happening to a friend of a friend you barely know?","F"],["Do you feel guilty resting while others are working?","F"],["Do you hide when you're scared instead of saying it?","M"],["Do you avoid crying in front of people?","M"],["Have you cried this year?","F"]]],
+["Finance","#B8860B","bar",0,[["Are you currently working in a job that could easily be automated by AI, but you still wear a suit to feel powerful?","M"],["If you won $10 million tomorrow, would you still feel immense existential guilt for sleeping past 8:00 AM?","M"],["Do you view your bank account balance as a direct, mathematical measurement of your worth as a human being?","M"],["Do you feel like your job defines who you are?","M"],["Have you ever found out a colleague who does half your workload gets paid enough to buy a small island while you get “experience”?","F"],["Do you earn more than your partner?","M"],["Have you ever been offered less money for the same job as a colleague?","F"]]]];
+const SHAPE={circle:"circle(50%)",tri:"polygon(50% 0,100% 100%,0 100%)",sq:"inset(0)",half:"inset(0 0 50% 0 round 100% 100% 0 0)",quarter:"circle(100% at 0 100%)",diamond:"polygon(50% 0,100% 50%,50% 100%,0 50%)",drop:"inset(0 0 0 0 round 50% 50% 50% 0)",bar:"polygon(0 40%,100% 40%,100% 100%,0 100%)"};
+const HOF={Austria:[79,"High","Japan, Switzerland"],Japan:[95,"High","Austria, Slovakia"],Germany:[66,"High","USA, UK"],"United States":[62,"High","Germany, UK"],"United Kingdom":[66,"High","Germany, USA"],Sweden:[5,"Low","Norway, Netherlands"],Norway:[8,"Low","Sweden, Netherlands"],Netherlands:[14,"Low","Sweden, Norway, Denmark"],Denmark:[16,"Low","Netherlands, Norway"]};
+const COUNTRIES=["Global",...Object.keys(HOF),"Australia","Brazil","Canada","China","France","India","Indonesia","Italy","Mexico","Nigeria","Pakistan","Poland","South Africa","South Korea","Spain","Switzerland","Turkey","Other"];
+const ARCH={
+stoic:["The Corporate Stoic","You think you are just a naturally independent, practical person who gets things done, opens jars, and carries all the groceries in one trip.","Congratulations, you have successfully memorized the traditional patriarchal script. You swallow your tears, view your bank account as a mathematical measurement of your human worth, and would honestly rather spend four hours breaking an appliance further than admit defeat and call a professional.","This isn't biological code; it's a software bug called “societal pressure.” You've been trained to mistake survival instincts and ego for a personality. You aren't a machine. You are a Mensch (a human) who is allowed to rest, cry at a movie, and ask for help without losing your status."],
+janitor:["The Emotional Janitor","You think you are just an empathetic, caring soul who happens to be a neat freak and a great listener.","You passed your traditional “female” upbringing with straight A's. You are currently losing sleep over a dramatic life event happening to a friend of a friend you barely know, you eat meals standing up over the sink because sitting feels like a luxury you haven't earned, and you probably just apologized to your screen for clicking a button too hard.","Society trained you to keep the peace at your own expense while telling you to “smile more.” You weren't born to carry everyone else's baggage. You are a Mensch (a human) who has simply been conditioned to believe that your own needs are secondary to everyone else's comfort."],
+hybrid:["The Overloaded Hybrid","You think you are a modern, empowered, multi-tasking superstar who “has it all.”","Welcome to the 21st-century trap. You have inherited the worst of both worlds. You face the crushing existential guilt of the modern career/financial breadwinner (Type A), but you are still carrying the full weight of emotional overthinking and social anxiety (Type B). You want to conquer the corporate world, look effortlessly flawless, but you almost have a panic attack drafting a polite two-sentence email.","You are living proof that trying to perform all constructed gender roles simultaneously leads straight to exhaustion. You are a Mensch trying to act like a multi-threaded supercomputer."],
+glitch:["The Glitch in the Matrix","You might think you failed the test because your scores are all over the place.","System error! You refuse to play the game. You cry when you're sad, you ask for help when a pot is too heavy, and you don't give a damn about using corporate buzzwords to look important in a meeting.","You are living the exact truth this survey wants to prove: you have managed to strip away the social programming. You aren't performing a gender role; you are just out here being a Mensch."]};
+
+const ACOL={stoic:"#1565C0",janitor:"#C2185B",hybrid:"linear-gradient(90deg,#1565C0,#6B4FA0,#C2185B)",glitch:"linear-gradient(90deg,#6B4FA0,#C2185B,#3E8E41,#00897B,#1565C0,#D2691E,#B8860B)"};
+const S={v:"intro",b:{gender:"",custom:"",sex:"",age:"",nc:"",country:"Global",mode:"seen"},w:{},ans:{},cur:0,step:0,sent:false};
+const $=s=>document.querySelector(s),app=$("#app");
+const done=i=>!!S.ans[i], dnaDone=()=>CATS.filter((c,i)=>i&&done(i)).length, allDone=()=>CATS.filter((c,i)=>done(i)).length;
+const ic=(k,c)=>`<span class="ic" style="clip-path:${SHAPE[k]}"></span>`;
+const esc=t=>t.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
+
+/* ---------- audio: soft generative pad, opt-in ---------- */
+let AC,master,on=false;
+function startMusic(){
+ AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+ if(!master){master=AC.createGain();master.gain.value=0;master.connect(AC.destination);
+  const lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=900;lp.connect(master);
+  [110,164.81,220,261.63,329.63].forEach((f,i)=>{const o=AC.createOscillator(),g=AC.createGain(),l=AC.createOscillator(),lg=AC.createGain();
+   o.type=i%2?"sine":"triangle";o.frequency.value=f;o.detune.value=(i-2)*4;g.gain.value=.05;
+   l.frequency.value=.05+i*.03;lg.gain.value=.03;l.connect(lg);lg.connect(g.gain);o.connect(g);g.connect(lp);o.start();l.start()});}
+ AC.resume();master.gain.cancelScheduledValues(AC.currentTime);master.gain.linearRampToValueAtTime(.7,AC.currentTime+3);
+}
+function blip(f=523){if(!on||!AC)return;const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type="sine";g.gain.setValueAtTime(.08,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.4);o.connect(g);g.connect(AC.destination);o.start();o.stop(AC.currentTime+.4)}
+$("#snd").onclick=e=>{on=!on;if(on)startMusic();else if(master)master.gain.linearRampToValueAtTime(0,AC.currentTime+1);e.target.setAttribute("aria-pressed",on);e.target.textContent=on?"Music on":"Music off"};
+document.addEventListener("click",e=>{if(e.target.closest(".btn,.card,label.opt"))blip(e.target.closest(".card")?659:523)});
+
+/* ---------- views ---------- */
+function go(v){S.v=v;window.scrollTo({top:0,behavior:"smooth"});render()}
+function render(){const cc=S.v=="cat"?CATS[S.cur][1]:"";app.style.setProperty("--cc",cc);document.body.style.background=cc?`color-mix(in srgb,${cc} 11%,var(--bg))`:"";app.innerHTML=V[S.v]();(B[S.v]||(()=>{}))()}
+const V={},B={};
+
+V.intro=()=>`
+<section class="hero">
+ <div>
+  <h1>Know your genetic gender</h1>
+  <p class="lede">A satirical survey. Don't choose an answer just because it happened once. Let's reflect together: is gender about what's between your legs, or about how you were raised to act?</p>
+  <p class="note">You can answer how you want to be seen, or how you actually are. You choose before you start.</p>
+  <button class="btn" id="go">Begin the survey</button>
+ </div>
+ <svg viewBox="0 0 400 300" role="img" aria-label="Geometric composition of circles, a triangle and squares in the survey's category colors">
+  <rect class="fl" x="20" y="20" width="170" height="170" fill="#1565C0"/>
+  <circle class="fl" style="animation-delay:-1.5s" cx="275" cy="105" r="85" fill="#C2185B"/>
+  <path class="fl" style="animation-delay:-3s" d="M20 280 A85 85 0 0 1 190 280Z" fill="#B8860B"/>
+  <polygon class="fl" style="animation-delay:-2s" points="215,280 300,195 385,280" fill="#00897B"/>
+  <g class="spin"><circle cx="200" cy="150" r="46" fill="none" stroke="var(--ink)" stroke-width="5" stroke-dasharray="2 12" stroke-linecap="round"/></g>
+  <rect x="318" y="20" width="62" height="62" fill="#D2691E" transform="rotate(45 349 51) scale(.7) translate(130 22)"/>
+  <circle class="fl" style="animation-delay:-4s" cx="105" cy="105" r="28" fill="#6B4FA0"/><circle class="fl" style="animation-delay:-2.5s" cx="350" cy="250" r="22" fill="#D2691E"/><rect class="fl" style="animation-delay:-1s" x="330" y="150" width="34" height="34" fill="#7B1FA2"/>
+ </svg>
+</section>
+<section class="rules" aria-label="How it works">
+ <div><b>Eight categories, your order</b><span>Demographics, Body, Home, Care, Work, Social, Emotional and Finance. Pick them in any sequence.</span></div>
+ <div><b>Four to unlock</b><span>Finish at least 4 of the 7 scored categories to see a result. Finish all 8 for the full analysis.</span></div>
+ <div><b>Reflect, then laugh</b><span>Your result arrives in four screens: your gender, your split, a question, and an archetype.</span></div>
+</section>`;
+B.intro=()=>{$("#go").onclick=()=>go("basics")};
+
+V.basics=()=>{const b=S.b;return`
+<h2>Basics</h2>
+<div class="panel">
+ <div class="fld"><div class="q">Answer as</div><div class="seg">
+  ${[["seen","How I want to be seen"],["actual","How I actually am"]].map(([v,t])=>`<label class="opt"><input type="radio" name="mode" value="${v}" ${b.mode==v?"checked":""}>${t}</label>`).join("")}</div></div>
+ <div class="fld"><div class="q">Gender</div><div class="seg">
+  ${["Male","Female","Other"].map(v=>`<label class="opt"><input type="radio" name="g" value="${v}" ${b.gender==v?"checked":""}>${v=="Other"?"I prefer myself as:":v}</label>`).join("")}</div>
+  <input type="text" id="custom" placeholder="In your own words" value="${esc(b.custom)}" style="margin-top:10px;${b.gender=="Other"?"":"display:none"}"></div>
+ <div class="fld"><label for="sex">Sexuality</label><input type="text" id="sex" value="${esc(b.sex)}"></div>
+ <div class="fld"><label for="age">Age</label><input type="text" id="age" inputmode="numeric" value="${esc(b.age)}"></div>
+ <div class="fld"><label for="nc">How many countries do you feel you are from or belong to?</label><input type="text" id="nc" value="${esc(b.nc)}"></div>
+ <div class="fld"><label for="ctry">Which one country matters most to you?</label><select id="ctry">${COUNTRIES.map(c=>`<option ${b.country==c?"selected":""}>${c}</option>`).join("")}</select></div>
+ <button class="btn" id="next" disabled>Continue to warm-up</button>
+</div>`};
+B.basics=()=>{const ok=()=>{const g=S.b.gender;$("#next").disabled=!(g&&(g!="Other"||S.b.custom.trim()))};
+ document.querySelectorAll('input[name=mode]').forEach(r=>r.onchange=()=>S.b.mode=r.value);
+ document.querySelectorAll('input[name=g]').forEach(r=>r.onchange=()=>{S.b.gender=r.value;$("#custom").style.display=r.value=="Other"?"block":"none";ok()});
+ [["custom","custom"],["sex","sex"],["age","age"],["nc","nc"]].forEach(([id,k])=>$("#"+id).oninput=e=>{S.b[k]=e.target.value;ok()});
+ $("#ctry").onchange=e=>S.b.country=e.target.value;ok();$("#next").onclick=()=>go("warm")};
+
+V.warm=()=>`
+<h2>Warm-up</h2><p class="note">Two light questions. They set the tone and carry no score.</p>
+<div class="panel">
+ <div class="qrow"><p>When handed a tight jar, do you do it yourself or pass it on?</p><div class="seg">${["Do it myself","Pass it on"].map(v=>`<label class="opt"><input type="radio" name="w1" value="${v}">${v}</label>`).join("")}</div></div>
+ <div class="qrow"><p>Have you nodded intensely in a meeting while having no clue what it meant?</p><div class="seg">${["Yes","No"].map(v=>`<label class="opt"><input type="radio" name="w2" value="${v}">${v}</label>`).join("")}</div></div>
+ <button class="btn" id="next" disabled>Choose your categories</button>
+</div>`;
+B.warm=()=>{const ok=()=>$("#next").disabled=!(document.querySelector("[name=w1]:checked")&&document.querySelector("[name=w2]:checked"));
+ document.querySelectorAll("input[type=radio]").forEach(r=>r.onchange=ok);$("#next").onclick=()=>go("hub")};
+
+V.hub=()=>{const n=dnaDone(),full=allDone()==8;return`
+<h2>Choose your categories</h2>
+<p>Pick your own order. Answer at least 4 of the 7 scored categories to unlock your result. Answer all 8 for the full analysis.</p>
+<div class="prog" aria-hidden="true">${CATS.map((c,i)=>`<i class="${done(i)?"on":""}"></i>`).join("")}</div>
+<p class="sans note" style="font-family:Archivo,sans-serif;font-weight:700"><span id="cnt">${allDone()} of 8 done</span> — ${n>=4?"result unlocked":`${4-n} more scored ${4-n==1?"category":"categories"} needed for a result`}</p>
+<div class="hub">${CATS.map((c,i)=>`<button class="card ${done(i)?"done":""}" style="background:${c[1]};animation-delay:${i*70}ms" data-i="${i}">${ic(c[2])}<div><h3>${c[0]}</h3><small>${c[4].length} questions${i==0?" · reflective only":""}</small></div></button>`).join("")}</div>
+<p style="margin-top:28px"><button class="btn" id="res" ${n<4?"disabled":""}>See my result</button> ${full?"":n>=4?`<span class="note"> You can keep going past 4.</span>`:""}</p>`};
+B.hub=()=>{document.querySelectorAll(".card").forEach(c=>c.onclick=()=>{S.cur=+c.dataset.i;go("cat")});$("#res").onclick=()=>{S.step=0;go("res")}};
+
+V.cat=()=>{const i=S.cur,c=CATS[i],old=S.ans[i]||[];
+ const tell=i==0&&HOF[S.b.country]?`<div class="hint sans">Your anchor country, ${S.b.country}, scores ${HOF[S.b.country][0]} on Hofstede's masculinity index (${HOF[S.b.country][1].toLowerCase()}). Comparable countries: ${HOF[S.b.country][2]}. Keep that in mind as you answer.</div>`:"";
+ const opts=i==0?["More male","More female"]:["Yes","No"];
+ return`<button class="crumb" id="back">← All categories</button>
+<div class="catHead" style="background:${c[1]}"><div><h2>${c[0]}</h2><p class="sans" style="margin:6px 0 0;font-weight:600">${i==0?"Reflective only. These answers are shown back to you, never scored.":"Answer honestly. Not just what happened once."}</p></div>${ic(c[2])}</div>
+${tell}
+<div class="panel" style="margin-top:0;border-top:0">
+${c[4].map((q,j)=>`<div class="qrow"><p>${j+1}. ${esc(i==0?q:q[0])}</p><div class="seg">${opts.map((o,k)=>`<label class="opt"><input type="radio" name="q${j}" value="${k}" ${old[j]===k?"checked":""}>${o}</label>`).join("")}</div></div>`).join("")}
+<button class="btn" id="save" style="background:${c[1]};color:#fff" disabled>Save and return</button></div>`};
+B.cat=()=>{const n=CATS[S.cur][4].length,chk=()=>$("#save").disabled=document.querySelectorAll("input:checked").length<n;
+ document.querySelectorAll("input").forEach(r=>r.onchange=chk);chk();
+ $("#back").onclick=()=>go("hub");
+ $("#save").onclick=()=>{S.ans[S.cur]=[...Array(n)].map((_,j)=>+document.querySelector(`[name=q${j}]:checked`).value);blip(784);go("hub")}};
+
+/* ---------- scoring ---------- */
+function score(){let m=0,f=0,y=0,t=0;
+ CATS.forEach((c,i)=>{if(!i||!done(i))return;c[4].forEach((q,j)=>{t++;if(S.ans[i][j]===0){y++;q[1]=="M"?m++:f++}})});
+ const pm=m+f?m/(m+f)*100:50,pf=100-pm,gap=Math.abs(pm-pf);
+ const k=t&&y/t<.2?"glitch":gap<=10?"hybrid":pm>pf?"stoic":"janitor";
+ return{m:Math.round(pm),f:Math.round(pf),k}}
+
+V.res=()=>{const r=score(),g=S.b.gender=="Other"?S.b.custom:S.b.gender,full=allDone()==8,names=CATS.filter((c,i)=>i&&done(i)).map(c=>c[0]);
+ const nav=(t,last)=>`<p style="margin-top:30px"><button class="btn" id="nx">${t}</button></p>`;
+ if(S.step==0)return`<p class="note sans">Your result, screen 1 of 4</p><h2>You told us:</h2><div class="big" style="margin:18px 0">${esc(g)}.</div><p>That's your starting point. Now let's see how your answers read it.</p>${nav("Show my split")}`;
+ if(S.step==1)return`<p class="note sans">Screen 2 of 4</p><h2>${full?"Based on your full answers across all 8 categories":"Based on your answers in: "+names.join(", ")}</h2>
+ <p>Your thinking follows social codes that are <b>${r.m}% Male</b> and <b>${r.f}% Female</b>.</p>
+ <div class="meter" role="img" aria-label="${r.m} percent male, ${r.f} percent female"><div class="a" id="ma">${r.m}% Male</div><div class="b" id="fb">${r.f}% Female</div></div>
+ <p class="note">Percentages come from the Yes answers in the scored categories you completed.</p>${nav("Continue")}`;
+ if(S.step==2)return`<div class="calm"><h2>Do you find yourself happy here?</h2><p>Would you like to change?</p><p class="note">There's no answer to give. Take your time.</p><button class="btn ghost" id="nx">Continue when you're ready</button></div>`;
+ if(S.step==3){const a=ARCH[r.k];return`<p class="note sans">Screen 4 of 4 — a lighter note</p><div class="arch" style="border-color:${r.k=="stoic"?"#1565C0":r.k=="janitor"?"#C2185B":"#6B4FA0"}"><div style="background:${ACOL[r.k]}"><b>Your archetype</b><h2>${a[0]}</h2></div><div><b>The illusion</b>${a[1]}</div><div><b>The satirical truth</b>${a[2]}</div><div><b>The mirror</b>${a[3]}</div></div>${nav("One last thing")}`}
+ const rest=CATS.map((c,i)=>[c,i]).filter(([c,i])=>!done(i));
+ if(!full)return`<h2>You've answered ${allDone()} of 8.</h2><p>This result rests on ${names.length} scored categories. Want the fuller picture? Continue with:</p>
+ <div class="hub">${rest.map(([c,i])=>`<button class="card" style="background:${c[1]}" data-i="${i}">${ic(c[2])}<div><h3>${c[0]}</h3><small>${c[4].length} questions</small></div></button>`).join("")}</div>
+ <div class="panel sans"><b>Not now?</b> Leave your email and we'll share what the full picture looks like.${mail("Keep me posted")}</div>`;
+ return`<div class="deep"><h2>You went all the way.</h2><p>If you want to go deeper than a screen can, we'd like to actually talk. Leave your email if you're open to a real exchange about how this result came together, one-on-one or in a small group.</p>${mail("Count me in")}</div>`};
+const mail=t=>S.sent?`<p class="sans" style="font-weight:800;margin-top:16px">Thank you. We'll be in touch.</p>`:`<div><input type="email" id="em" placeholder="Email address" aria-label="Email address" style="padding:13px 14px;font-size:1rem;width:100%;border:1.5px solid var(--line);margin:14px 0 10px"><button class="btn" id="send" style="background:var(--ink);color:var(--bg)">${t}</button></div>`;
+B.res=()=>{const nx=$("#nx");if(nx)nx.onclick=()=>{S.step++;go("res")};
+ if(S.step==1){const r=score();$("#ma").style.width="50%";setTimeout(()=>{$("#ma").style.width=r.m+"%";$("#fb").style.width=r.f+"%"},150)}
+ if(S.step==3){const w=document.createElement("div");w.className="conf";CATS.forEach(c=>{for(let k=0;k<6;k++){const i=document.createElement("i");i.style.cssText=`left:${Math.random()*100}vw;background:${c[1]};border-radius:${["50%","0","50% 50% 0 50%"][k%3]};animation-delay:${Math.random()*1.2}s`;w.appendChild(i)}});document.body.appendChild(w);setTimeout(()=>w.remove(),5500)}
+ document.querySelectorAll(".card").forEach(c=>c.onclick=()=>{S.cur=+c.dataset.i;go("cat")});
+ const s=$("#send");if(s)s.onclick=()=>{if(/\S+@\S+/.test($("#em").value)){S.sent=true;render()}else $("#em").style.borderColor="#C2185B"}};
+render();
+</script>
+</body>
+</html>
